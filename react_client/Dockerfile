@@ -10,8 +10,11 @@ RUN npm install -g react-native-cli
 
 WORKDIR /app
 
-COPY . .
+COPY package*.json ./
 
+ENV PORT=5000 8081
 EXPOSE 5000 8081
 
-CMD ["bash", "-c", "yarn start --host 0.0.0.0"]
+COPY . .
+
+CMD ["npm", "start"]
