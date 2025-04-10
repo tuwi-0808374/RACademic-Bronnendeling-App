@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Jan Jansen",
+    "email": "jan.jansen@school.com",
+    "course": "Wiskunde"
+  },
+  {
+    "name": "Marie de Vries",
+    "email": "marie.devries@school.com",
+    "course": "Geschiedenis"
+  },
+  {
+    "name": "Pieter de Boer",
+    "email": "pieter.deboer@school.com",
+    "course": "Informatica"
+  }
+]
