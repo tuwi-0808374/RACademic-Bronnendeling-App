@@ -2,6 +2,7 @@
   "name": "wp4kiwiapp",
   "main": "expo-router/entry",
   "version": "1.0.0",
+  "proxy": "http://localhost:5000",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
