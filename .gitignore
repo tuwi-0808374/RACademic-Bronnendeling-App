@@ -49,6 +49,7 @@ ENV/
 # Python distribution / packaging
 build/
 dist/
+__pycache__/
 *.egg-info/
 
 # IDE-specific files (PyCharm, VSCode, etc.)
