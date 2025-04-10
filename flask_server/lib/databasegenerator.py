@@ -9,7 +9,6 @@ class DatabaseGenerator:
         self.database_overwrite = overwrite
         self.test_file_location()
         self.conn = sqlite3.connect(self.database_file)
-        #dit zorgt ervoor dat FK's werkelijk echt zijn
         self.conn.execute("PRAGMA foreign_keys = ON")
 
     # Runs all db generation functions
@@ -20,8 +19,17 @@ class DatabaseGenerator:
         self.create_table_ratings()
         self.create_table_tags()
         self.create_table_badges()
+        self.create_table_user_badges()
+        self.create_table_post_tags()
         if self.create_initial_data:
             self.insert_initial_users()
+            self.insert_initial_posts()
+            self.insert_initial_comments()
+            self.insert_initial_ratings()
+            self.insert_initial_tags()
+            self.insert_initial_badges()
+            self.insert_initial_user_badges()
+            self.insert_initial_post_tags()
 
     # Create database table for users
     def create_table_user(self):
@@ -40,6 +48,7 @@ class DatabaseGenerator:
         );
         """
         self.__execute_transaction_statement(create_statement)
+        print("✅ Table users was created")
 
     # Create database table for ratings
     def create_table_ratings(self):
@@ -57,7 +66,7 @@ class DatabaseGenerator:
         );
         """
         self.__execute_transaction_statement(create_statement)
-
+        print("✅ Table ratings was created")
 
     # Create database table for posts
     def create_table_post(self):
@@ -73,6 +82,7 @@ class DatabaseGenerator:
         );
         """
         self.__execute_transaction_statement(create_statement)
+        print("✅ Table posts was created")
 
     # Create database table for comments
     def create_table_comments(self):
@@ -92,6 +102,7 @@ class DatabaseGenerator:
         );
         """
         self.__execute_transaction_statement(create_statement)
+        print("✅ Table comments was created")
 
     # Create database table for tags
     def create_table_tags(self):
@@ -103,6 +114,7 @@ class DatabaseGenerator:
         );
         """
         self.__execute_transaction_statement(create_statement)
+        print("✅ Table tags was created")
 
     # Create database table for badges
     def create_table_badges(self):
@@ -114,6 +126,7 @@ class DatabaseGenerator:
         );
         """
         self.__execute_transaction_statement(create_statement)
+        print("✅ Table badges was created")
 
     # Create database join table for badges and users
     def create_table_user_badges(self):
@@ -126,6 +139,7 @@ class DatabaseGenerator:
         )
         """
         self.__execute_transaction_statement(create_statement)
+        print("✅ Table user_badges was created")
 
     # Create database join table for posts and tags
     def create_table_post_tags(self):
@@ -138,8 +152,9 @@ class DatabaseGenerator:
         )
         """
         self.__execute_transaction_statement(create_statement)
-
-    #data is gemaakt door chatgpt en de code was van wp3
+        print("✅ Table post_tags was created")
+    # alle code van initialiseren van data is van wp3 en de data is gegenereerd door chatgpt
+    # Insert initial users into the database
     def insert_initial_users(self):
         users = [
             {"email": "student@hr.nl", "display_name": "User1", "first_name": "John", "prefix": "",
@@ -174,33 +189,125 @@ class DatabaseGenerator:
              user["password"], user["is_admin"], user["is_public"], user["is_banned"])
             for user in users
         ]
-
         create_statement = """INSERT INTO users (email, display_name, first_name, prefix, last_name, password, is_admin, is_public, is_banned) 
                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
-
-        # Call the method to execute the insert
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
+        print("✅ Initial users inserted")
 
+    # Insert initial posts into the database
+    def insert_initial_posts(self):
+        posts = [
+            {"title": "Eerste post!", "content": "Dit is de eerste post", "user_id": 1, "posted_date": 1681100000},
+            {"title": "Gerapporteerde post", "content": "Dit bericht is gerapporteerd", "user_id": 5,
+             "posted_date": 1681200000},
+            {"title": "markdown test", "content": """This is a markdown *test* ![screamingkiwi](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzL-qI5ImbMMkm9kZoZaIauxJDQ_8djZRpPWS9mVd7YASM2p0CdDe6aHcCKdl4OFnc_54&usqp=CAU)
 
-    def __execute_many_transaction_statement(
-            self, create_statement, list_of_parameters=()
-    ):
-        c = self.conn.cursor()
-        c.executemany(create_statement, list_of_parameters)
+Markdown is cool""", "user_id": 6,
+             "posted_date": 1681300000},
+            {"title": "OOP en design patterns", "content": "Alles over OOP en design patterns", "user_id": 7,
+             "posted_date": 1681400000}
+        ]
+        list_of_parameters = [(post["title"], post["content"], post["user_id"], post["posted_date"]) for post in
+                              posts]
+        create_statement = """INSERT INTO posts (title, content, user_id, posted_date) VALUES (?, ?, ?, ?)"""
+        self.__execute_many_transaction_statement(create_statement, list_of_parameters)
+        print("✅ Initial posts inserted")
+
+    # Insert initial comments into the database
+    def insert_initial_comments(self):
+        comments = [
+            {"title": "Interessante discussie", "content": "Ik ben het niet helemaal eens, maar interessant.",
+             "user_id": 2, "post_id": 3, "reaction_on": None, "posted_date": 1681500000},
+            {"title": "Reageer op de Python post", "content": "Python is veel beter dan C++ voor beginners!",
+             "user_id": 3, "post_id": 2, "reaction_on": None, "posted_date": 1681600000},
+            {"title": "Nog een reactie", "content": "Laten we verder praten over OOP.", "user_id": 4, "post_id": 4,
+             "reaction_on": 2, "posted_date": 1681700000}
+        ]
+        list_of_parameters = [(comment["title"], comment["content"], comment["user_id"], comment["post_id"],
+                               comment["reaction_on"], comment["posted_date"]) for comment in comments]
+        create_statement = """INSERT INTO comments (title, content, user_id, post_id, reaction_on, posted_date) VALUES (?, ?, ?, ?, ?, ?)"""
+        self.__execute_many_transaction_statement(create_statement, list_of_parameters)
+        print("✅ Initial comments inserted")
+
+    # Insert initial ratings into the database
+    def insert_initial_ratings(self):
+        ratings = [
+            {"user_id": 1, "post_id": 1, "comment_id": None, "is_favorite": True, "is_reported": False,
+             "report_reason": None},
+            {"user_id": 2, "post_id": None, "comment_id": 2, "is_favorite": False, "is_reported": True,
+             "report_reason": "Ongepaste inhoud"},
+            {"user_id": 3, "post_id": None, "comment_id": 1, "is_favorite": False, "is_reported": False,
+             "report_reason": None},
+            {"user_id": 4, "post_id": None, "comment_id": 3, "is_favorite": False, "is_reported": False,
+             "report_reason": None}
+        ]
+        list_of_parameters = [(rating["user_id"], rating["post_id"], rating["comment_id"], rating["is_favorite"],
+                               rating["is_reported"], rating["report_reason"]) for rating in ratings]
+        create_statement = """INSERT INTO ratings (user_id, post_id, comment_id, is_favorite, is_reported, report_reason) VALUES (?, ?, ?, ?, ?, ?)"""
+        self.__execute_many_transaction_statement(create_statement, list_of_parameters)
+        print("✅ Initial ratings inserted")
+
+    # Insert initial tags into the database
+    def insert_initial_tags(self):
+        tags = [
+            {"title": "python", "content": "Dit is een Python gerelateerd bericht"},
+            {"title": "c++", "content": "Dit is een C++ gerelateerd bericht"},
+            {"title": "oop", "content": "Object georiënteerd programmeren"},
+            {"title": "c#", "content": "Dit is een C# gerelateerd bericht"}
+        ]
+        list_of_parameters = [(tag["title"], tag["content"]) for tag in tags]
+        create_statement = """INSERT INTO tags (title, content) VALUES (?, ?)"""
+        self.__execute_many_transaction_statement(create_statement, list_of_parameters)
+        print("✅ Initial tags inserted")
+
+    # Insert initial badges into the database
+    def insert_initial_badges(self):
+        badges = [
+            {"title": "First Post!", "requirement": "Eerste bericht geplaatst"},
+            {"title": "5 Posts", "requirement": "Minimaal 5 berichten geplaatst"},
+            {"title": "10 Posts", "requirement": "Minimaal 10 berichten geplaatst"}
+        ]
+        list_of_parameters = [(badge["title"], badge["requirement"]) for badge in badges]
+        create_statement = """INSERT INTO badges (title, requirement) VALUES (?, ?)"""
+        self.__execute_many_transaction_statement(create_statement, list_of_parameters)
+        print("✅ Initial badges inserted")
+
+    # Insert initial user badges into the database
+    def insert_initial_user_badges(self):
+        user_badges = [
+            {"user_id": 1, "badge_id": 1},
+            {"user_id": 1, "badge_id": 2},
+            {"user_id": 2, "badge_id": 3}
+        ]
+        list_of_parameters = [(user_badge["user_id"], user_badge["badge_id"]) for user_badge in user_badges]
+        create_statement = """INSERT INTO user_badges (user_id, badge_id) VALUES (?, ?)"""
+        self.__execute_many_transaction_statement(create_statement, list_of_parameters)
+        print("✅ Initial user badges inserted")
+
+    # Insert initial post tags into the database
+    def insert_initial_post_tags(self):
+        post_tags = [
+            {"post_id": 1, "tag_id": 1},
+            {"post_id": 1, "tag_id": 2},
+            {"post_id": 2, "tag_id": 3},
+            {"post_id": 3, "tag_id": 4}
+        ]
+        list_of_parameters = [(post_tag["post_id"], post_tag["tag_id"]) for post_tag in post_tags]
+        create_statement = """INSERT INTO post_tags (post_id, tag_id) VALUES (?, ?)"""
+        self.__execute_many_transaction_statement(create_statement, list_of_parameters)
+        print("✅ Initial post tags inserted")
+
+    # Utility method to execute SQL transaction with one statement
+    def __execute_transaction_statement(self, statement):
+        cursor = self.conn.cursor()
+        cursor.execute(statement)
         self.conn.commit()
 
-
-
-    # Executes a single SQL query with error checking, copied from previous project
-    def __execute_transaction_statement(self, statement, params=None):
-        try:
-            with self.conn:
-                if params:
-                    self.conn.execute(statement, params)
-                else:
-                    self.conn.execute(statement)
-        except sqlite3.Error as e:
-            raise RuntimeError(f"Database execution failed: {e}")
+    # Utility method to execute SQL transaction with multiple statements
+    def __execute_many_transaction_statement(self, statement, parameters):
+        cursor = self.conn.cursor()
+        cursor.executemany(statement, parameters)
+        self.conn.commit()
 
     # Check if the database file location is valid, copied from previous project
     def test_file_location(self):
