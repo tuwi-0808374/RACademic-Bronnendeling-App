@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+import random
 
 class DatabaseGenerator:
     def __init__(self, database_file, overwrite=False, initial_data=False):
@@ -8,6 +9,8 @@ class DatabaseGenerator:
         self.database_overwrite = overwrite
         self.test_file_location()
         self.conn = sqlite3.connect(self.database_file)
+        #dit zorgt ervoor dat FK's werkelijk echt zijn
+        self.conn.execute("PRAGMA foreign_keys = ON")
 
     # Runs all db generation functions
     def generate_database(self):
@@ -15,15 +18,17 @@ class DatabaseGenerator:
         self.create_table_post()
         self.create_table_comments()
         self.create_table_ratings()
-        if self.create_initial_data:
-            self.insert_users_data()
+        self.create_table_tags()
+        self.create_table_badges()
+        # if self.create_initial_data:
+        #     self.insert_users_data()
 
     # Create database table for users
     def create_table_user(self):
         create_statement = """
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE CHECK(email LIKE '%@hr.nl'),
             display_name TEXT NOT NULL,
             first_name TEXT NOT NULL,
             prefix TEXT,
@@ -35,7 +40,7 @@ class DatabaseGenerator:
         );
         """
         self.__execute_transaction_statement(create_statement)
-        
+
     # Create database table for ratings
     def create_table_ratings(self):
         create_statement = """
@@ -125,7 +130,7 @@ class DatabaseGenerator:
     # Create database join table for posts and tags
     def create_table_post_tags(self):
         create_statement = """
-        CREATE TABLE IF NOT EXISTS user_badges (
+        CREATE TABLE IF NOT EXISTS post_tags (
         post_id INTEGER NOT NULL,
         tag_id INTEGER NOT NULL,
         FOREIGN KEY (post_id) REFERENCES posts(id),
@@ -133,27 +138,20 @@ class DatabaseGenerator:
         )
         """
         self.__execute_transaction_statement(create_statement)
-    # Inserts test data into the database
-    def insert_users_data(self):
-        user_data = [
-            ("1103166@hr.nl", "Alice", "Alice", "A", "Smith", "password1"),
-            ("1103166@hr.nl", "Bob", "Bob", "B", "Jones", "password2"),
-            ("1103166@hr.nl", "Charlie", "Charlie", "C", "Brown", "password3")
-        ]
-        with self.conn:
-            self.conn.executemany(
-                "INSERT INTO users (email, display_name, first_name, prefix, last_name, password) VALUES (?, ?, ?, ?, ?, ?)", test_data
-            )
 
-    # Executes a single SQL query with error checking
-    def __execute_transaction_statement(self, statement):
+
+    # Executes a single SQL query with error checking, copied from previous project
+    def __execute_transaction_statement(self, statement, params=None):
         try:
             with self.conn:
-                self.conn.execute(statement)
+                if params:
+                    self.conn.execute(statement, params)
+                else:
+                    self.conn.execute(statement)
         except sqlite3.Error as e:
             raise RuntimeError(f"Database execution failed: {e}")
 
-    # Check if the database file location is valid
+    # Check if the database file location is valid, copied from previous project
     def test_file_location(self):
         if not self.database_file.parent.exists():
             raise ValueError(
