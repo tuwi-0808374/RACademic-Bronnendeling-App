@@ -1,11 +1,17 @@
-from flask import Flask
+from flask import Flask, jsonify
 import os
+from flask_cors import CORS
 
-from flask_server.blueprints.voorbeeld_blueprint.voorbeeld_models.Example import Example
-voorbeeld_bp = Example()
 
 app = Flask(__name__)
-app.register_blueprint(voorbeeld_bp)
+CORS(app)
+
+@app.route('/members')
+def members():
+    return jsonify({
+        "members": ["Member1", "Member2", "Member3", "Membertest"] 
+    })
+
 
 if __name__ == "__main__":
     app.run(debug=True)
