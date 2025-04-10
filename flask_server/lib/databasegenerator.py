@@ -1,6 +1,6 @@
 import sqlite3
 from pathlib import Path
-import random
+import bcrypt
 
 class DatabaseGenerator:
     def __init__(self, database_file, overwrite=False, initial_data=False):
@@ -20,8 +20,8 @@ class DatabaseGenerator:
         self.create_table_ratings()
         self.create_table_tags()
         self.create_table_badges()
-        # if self.create_initial_data:
-        #     self.insert_users_data()
+        if self.create_initial_data:
+            self.insert_initial_users()
 
     # Create database table for users
     def create_table_user(self):
@@ -138,6 +138,57 @@ class DatabaseGenerator:
         )
         """
         self.__execute_transaction_statement(create_statement)
+
+    #data is gemaakt door chatgpt en de code was van wp3
+    def insert_initial_users(self):
+        users = [
+            {"email": "student@hr.nl", "display_name": "User1", "first_name": "John", "prefix": "",
+             "last_name": "Doe", "password": "1", "is_admin": False, "is_public": True, "is_banned": False},
+            {"email": "1234567@hr.nl", "display_name": "User2", "first_name": "Jane", "prefix": "",
+             "last_name": "Smith", "password": "password2", "is_admin": False, "is_public": True,
+             "is_banned": False},
+            {"email": "1034367@hr.nl", "display_name": "User3", "first_name": "Alice", "prefix": "",
+             "last_name": "Johnson", "password": "password3", "is_admin": False, "is_public": True,
+             "is_banned": False},
+            {"email": "1230003@hr.nl", "display_name": "User4", "first_name": "Bob", "prefix": "",
+             "last_name": "Brown", "password": "password4", "is_admin": False, "is_public": True,
+             "is_banned": False},
+            {"email": "admin@hr.nl", "display_name": "Admin1", "first_name": "Admin", "prefix": "",
+             "last_name": "One", "password": "1", "is_admin": True, "is_public": True, "is_banned": False},
+            {"email": "1230008@hr.nl", "display_name": "User5", "first_name": "Charlie", "prefix": "",
+             "last_name": "Davis", "password": "password5", "is_admin": False, "is_public": True,
+             "is_banned": False},
+            {"email": "1230001@hr.nl", "display_name": "Admin2", "first_name": "Admin", "prefix": "",
+             "last_name": "Two", "password": "adminpassword2", "is_admin": True, "is_public": True,
+             "is_banned": False},
+            {"email": "0000000@hr.nl", "display_name": "User6", "first_name": "David", "prefix": "",
+             "last_name": "Wilson", "password": "password6", "is_admin": False, "is_public": True,
+             "is_banned": False}
+        ]
+
+        for user in users:
+            user["password"] = bcrypt.hashpw(user["password"].encode('utf-8'), bcrypt.gensalt())
+
+        list_of_parameters = [
+            (user["email"], user["display_name"], user["first_name"], user["prefix"], user["last_name"],
+             user["password"], user["is_admin"], user["is_public"], user["is_banned"])
+            for user in users
+        ]
+
+        create_statement = """INSERT INTO users (email, display_name, first_name, prefix, last_name, password, is_admin, is_public, is_banned) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+
+        # Call the method to execute the insert
+        self.__execute_many_transaction_statement(create_statement, list_of_parameters)
+
+
+    def __execute_many_transaction_statement(
+            self, create_statement, list_of_parameters=()
+    ):
+        c = self.conn.cursor()
+        c.executemany(create_statement, list_of_parameters)
+        self.conn.commit()
+
 
 
     # Executes a single SQL query with error checking, copied from previous project
