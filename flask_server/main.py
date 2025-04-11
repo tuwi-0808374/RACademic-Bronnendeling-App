@@ -1,10 +1,13 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, blueprints, Blueprint
 import os
 from flask_cors import CORS
 
+from blueprints.post.post import post_bp
 
 app = Flask(__name__)
 CORS(app)
+
+app.register_blueprint(post_bp)
 
 @app.route('/members')
 def members():
