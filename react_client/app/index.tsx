@@ -1,9 +1,12 @@
-import { Text, View } from 'react-native';
+import { Text, View} from 'react-native';
 import HelloWorld from '@/components/HelloWorld-components/HelloWorld';
 import TeacherList from "@/components/HelloWorld-components/GetTeachers";
+import { Link } from 'expo-router';
 
 export default function Index() {
     return (
+
+        
         <View
             style={{
                 flex: 1,
@@ -11,6 +14,11 @@ export default function Index() {
                 alignItems: 'center',
             }}
         >
+            
+            <Link href={'/login'}> 
+                Login
+            </Link>
+             
             <Text>
                 Er is een file 'app-example' die kan verwijdered worden, maar ik laat hem
                 nog even staan als voorbeeld voor de gene die het nog willen bekijken
