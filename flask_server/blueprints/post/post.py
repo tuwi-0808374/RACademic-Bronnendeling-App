@@ -19,3 +19,9 @@ def get_posts():
     posts = post.get_posts()
     return jsonify({'status': 'success', 'data': posts})
 
+@post_bp.route('/posts/<int:id>', methods=['GET'])
+def get_posts_by_id(id):
+    post = Post()
+    posts = post.get_post_by_id(id)
+    return jsonify({'status': 'success', 'data': posts})
+

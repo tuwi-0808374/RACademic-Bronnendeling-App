@@ -18,3 +18,11 @@ class Post:
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
         return result_dicts
+    
+    def get_post_by_id(self, post_id):
+        query = "SELECT * FROM posts WHERE id = ?"
+        self.cursor.execute(query, (post_id,))
+        post = self.cursor.fetchone()
+        if post:
+            return dict(post)
+        return None
