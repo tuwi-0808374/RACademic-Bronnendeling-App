@@ -17,11 +17,16 @@ def get_examples():
 def get_posts():
     post = Post()
     posts = post.get_posts()
-    return jsonify({'status': 'success', 'data': posts})
+    if not posts:
+        return jsonify({'status': 'error', 'message': 'No posts found'}), 404
+    return jsonify({'status': 'success', 'data': posts}), 200
+
 
 @post_bp.route('/posts/<int:id>', methods=['GET'])
 def get_posts_by_id(id):
     post = Post()
     posts = post.get_post_by_id(id)
-    return jsonify({'status': 'success', 'data': posts})
+    if not posts:
+        return jsonify({'status': 'error', 'message': 'Post not found'}), 404
+    return jsonify({'status': 'success', 'data': posts}), 200
 
