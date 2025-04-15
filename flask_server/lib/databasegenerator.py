@@ -221,7 +221,13 @@ Markdown is cool""", "user_id": 6,
             {"title": "Reageer op de Python post", "content": "Python is veel beter dan C++ voor beginners!",
              "user_id": 3, "post_id": 2, "reaction_on": None, "posted_date": 1681600000},
             {"title": "Nog een reactie", "content": "Laten we verder praten over OOP.", "user_id": 4, "post_id": 4,
-             "reaction_on": 2, "posted_date": 1681700000}
+             "reaction_on": 2, "posted_date": 1681700000},
+            {"title": "Boeiend", "content": "Bedankt voor het delen!",
+             "user_id": 2, "post_id": 1, "reaction_on": None, "posted_date": 1681500000},
+            {"title": "Mooi mooi", "content": "Dit is heel erg interessant!",
+             "user_id": 3, "post_id": 1, "reaction_on": None, "posted_date": 1681600000},
+            {"title": "Een korte reactie", "content": "Wauw heel mooi om te zien dit", "user_id": 4, "post_id": 4,
+             "reaction_on": 1, "posted_date": 1681700000}
         ]
         list_of_parameters = [(comment["title"], comment["content"], comment["user_id"], comment["post_id"],
                                comment["reaction_on"], comment["posted_date"]) for comment in comments]

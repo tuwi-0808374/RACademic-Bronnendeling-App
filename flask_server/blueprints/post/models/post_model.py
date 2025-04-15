@@ -23,6 +23,23 @@ class Post:
         query = "SELECT * FROM posts WHERE id = ?"
         self.cursor.execute(query, (post_id,))
         post = self.cursor.fetchone()
-        if post:
-            return dict(post)
+
+        dict_post = dict(post) if post else None
+
+        comments = self.get_comments_by_post_id(post_id)
+        dict_post['comments'] = comments if comments else []
+
+        if dict_post:
+            return dict_post
         return None
+    
+    def get_comments_by_post_id(self, post_id):
+        query = "SELECT * FROM comments WHERE post_id = ?"
+        self.cursor.execute(query, (post_id,))
+        comments = self.cursor.fetchall()
+
+        if comments:
+            result_dicts = [dict(row) for row in comments]
+            return result_dicts
+        return None
+
