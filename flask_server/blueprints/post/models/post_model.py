@@ -1,4 +1,5 @@
 import sqlite3, os
+from datetime import datetime
 
 class Post:
     def __init__(self):
@@ -51,6 +52,17 @@ class Post:
             result_dicts = [dict(row) for row in comments]
             return result_dicts
         return None
+
+    #bron https://docs.python.org/3/library/datetime.html
+    def post_create_post(self, user_id, data):
+        posted_date = datetime.now().strftime("%Y-%m-%d %H:%M")
+        query = "INSERT INTO posts (title, content, user_id, posted_date) VALUES (?,?,?,?)"
+        result = self.cursor.execute(query, (data["title"], data["content"], user_id, posted_date))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
     
     def get_favorite_posts(self, user_id):
         query = """

@@ -33,6 +33,18 @@ def get_posts_by_id(id):
         return jsonify({'status': 'error', 'message': 'Post not found'}), 404
     return jsonify({'status': 'success', 'data': posts}), 200
 
+# bron https://flask-restful.readthedocs.io/en/latest/quickstart.html#resourceful-routing
+@post_bp.route('/posts', methods=['POST'])
+def create_posts():
+    post = Post()
+    user_id = 1
+    if request.method == "POST":
+        data = request.get_json()
+        posts = post.post_create_post(user_id, data)
+        if not posts:
+            return jsonify({'status': 'error', 'message': 'Post not found'}), 404
+        return jsonify({'status': 'success', 'data': posts}), 200
+
 @post_bp.route('/posts/favorite', methods=['GET'])
 def get_favorite_posts():
     print(request.args)
@@ -57,4 +69,5 @@ def add_post_as_favorite(post_id):
     if not result:
         return jsonify({'status': 'error', 'post': 'Post not found'}), 404
     return jsonify({'status': 'success', 'post': result}), 200
+
 
