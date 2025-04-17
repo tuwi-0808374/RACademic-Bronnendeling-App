@@ -1,0 +1,17 @@
+meta {
+  name: add_post_as_favorite
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:5000/posts/2/favorite
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "user_id": 1
+  }
+}
