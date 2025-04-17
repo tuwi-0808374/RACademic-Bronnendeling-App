@@ -36,10 +36,12 @@ class Post:
         tag = Tag()
         params = ()
         query = "SELECT * FROM posts WHERE 1=1 "
-        print("has tags " + str(tag_ids))
         if tag_ids:
+            post_ids = tag.get_post_by_tags(tag_ids)
+            total_params = ','.join(['?'] * len(post_ids))
+            query += f"AND id IN ({total_params}) "
+            params += tuple(post_ids)
 
-            tag.get_post_by_tags(tag_ids)
         if content:
             # split content en voegt voor elk woord samen in een tuple params
             words = content.split()

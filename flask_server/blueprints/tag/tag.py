@@ -1,5 +1,5 @@
 from flask import *
-from blueprints.tag.models.tag_model import Tag
+from flask_server.blueprints.tag.models.tag_model import Tag
 
 tag_bp = Blueprint('tag', __name__)
 base = Blueprint('base', __name__)
