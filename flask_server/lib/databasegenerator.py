@@ -57,6 +57,7 @@ class DatabaseGenerator:
             user_id INTEGER NOT NULL,
             post_id INTEGER,
             comment_id INTEGER,
+            rating INTEGER CHECK (rating IN (1, -1) OR rating IS NULL),
             is_favorite BOOLEAN DEFAULT false,
             is_reported BOOLEAN DEFAULT false,
             report_reason TEXT,
@@ -145,10 +146,11 @@ class DatabaseGenerator:
     def create_table_post_tags(self):
         create_statement = """
         CREATE TABLE IF NOT EXISTS post_tags (
-        post_id INTEGER NOT NULL,
-        tag_id INTEGER NOT NULL,
-        FOREIGN KEY (post_id) REFERENCES posts(id),
-        FOREIGN KEY (tag_id) REFERENCES tags(id)
+            post_id INTEGER NOT NULL,
+            tag_id INTEGER NOT NULL,
+            PRIMARY KEY (post_id, tag_id),
+            FOREIGN KEY (post_id) REFERENCES posts(id),
+            FOREIGN KEY (tag_id) REFERENCES tags(id)
         )
         """
         self.__execute_transaction_statement(create_statement)
@@ -238,13 +240,13 @@ Markdown is cool""", "user_id": 6,
     # Insert initial ratings into the database
     def insert_initial_ratings(self):
         ratings = [
-            {"user_id": 1, "post_id": 1, "comment_id": None, "is_favorite": True, "is_reported": False,
+            {"user_id": 1, "post_id": 1, "comment_id": None,"rating": 1 , "is_favorite": True, "is_reported": False,
              "report_reason": None},
-            {"user_id": 2, "post_id": None, "comment_id": 2, "is_favorite": False, "is_reported": True,
+            {"user_id": 2, "post_id": None, "comment_id": 2,"rating": -1 , "is_favorite": False, "is_reported": True,
              "report_reason": "Ongepaste inhoud"},
-            {"user_id": 3, "post_id": None, "comment_id": 1, "is_favorite": False, "is_reported": False,
+            {"user_id": 3, "post_id": None, "comment_id": 1,"rating": -1, "is_favorite": False, "is_reported": False,
              "report_reason": None},
-            {"user_id": 4, "post_id": None, "comment_id": 3, "is_favorite": False, "is_reported": False,
+            {"user_id": 4, "post_id": None, "comment_id": 3,"rating": 1 ,"is_favorite": False, "is_reported": False,
              "report_reason": None}
         ]
         list_of_parameters = [(rating["user_id"], rating["post_id"], rating["comment_id"], rating["is_favorite"],
@@ -293,10 +295,10 @@ Markdown is cool""", "user_id": 6,
     # Insert initial post tags into the database
     def insert_initial_post_tags(self):
         post_tags = [
-            {"post_id": 1, "tag_id": 1},
-            {"post_id": 1, "tag_id": 2},
-            {"post_id": 2, "tag_id": 3},
-            {"post_id": 3, "tag_id": 4}
+            {"id": 11, "post_id": 1, "tag_id": 1},
+            {"id": 12, "post_id": 1, "tag_id": 2},
+            {"id": 23, "post_id": 2, "tag_id": 3},
+            {"id": 34, "post_id": 3, "tag_id": 4}
         ]
         list_of_parameters = [(post_tag["post_id"], post_tag["tag_id"]) for post_tag in post_tags]
         create_statement = """INSERT INTO post_tags (post_id, tag_id) VALUES (?, ?)"""
