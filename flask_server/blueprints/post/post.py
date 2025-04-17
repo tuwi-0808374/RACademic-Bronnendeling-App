@@ -1,6 +1,6 @@
 from flask import *
 
-from blueprints.post.models.post_model import Post
+from flask_server.blueprints.post.models.post_model import Post
 
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
@@ -29,4 +29,15 @@ def get_posts_by_id(id):
     if not posts:
         return jsonify({'status': 'error', 'message': 'Post not found'}), 404
     return jsonify({'status': 'success', 'data': posts}), 200
+
+@post_bp.route('/posts', methods=['POST'])
+def create_posts():
+    post = Post()
+    user_id = 1
+    if request.method == "POST":
+        data = request.get_json()
+        posts = post.post_create_post(user_id, data)
+        if not posts:
+            return jsonify({'status': 'error', 'message': 'Post not found'}), 404
+        return jsonify({'status': 'success', 'data': posts}), 200
 

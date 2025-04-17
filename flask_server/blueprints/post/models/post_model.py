@@ -43,3 +43,14 @@ class Post:
             return result_dicts
         return None
 
+    def post_create_post(self, user_id, data):
+        posted_date = 'niks'
+        query = "INSERT INTO posts (title, content, user_id, posted_date) VALUES (?,?,?,?)"
+        result = self.cursor.execute(query, (data["title"], data["content"], user_id, posted_date))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
+
+
