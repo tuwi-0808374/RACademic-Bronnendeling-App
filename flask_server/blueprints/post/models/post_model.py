@@ -16,9 +16,9 @@ class Post:
     def get_posts(self, user_id = None):
         if user_id:
             query = """
-                    SELECT posts.*, ratings.is_favorite FROM posts
-                    LEFT JOIN ratings ON posts.id = ratings.post_id
-                    WHERE ratings.user_id = ?
+                    SELECT posts.*, ratings.is_favorite 
+                    FROM posts
+                    LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
                     """
             self.cursor.execute(query, (user_id,))
         else:
