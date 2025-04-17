@@ -9,6 +9,7 @@ CORS(app)
 
 app.register_blueprint(post_bp)
 
+
 @app.route('/members')
 def members():
     return jsonify({
