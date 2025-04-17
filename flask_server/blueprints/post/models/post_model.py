@@ -1,5 +1,6 @@
 import sqlite3, os
 from datetime import datetime
+from flask import jsonify
 
 class Post:
     def __init__(self):
@@ -64,6 +65,22 @@ class Post:
         return False
 
 
+    def get_latest_posts_id(self):
+        query = "SELECT id FROM posts ORDER BY id DESC LIMIT 1"
+        self.cursor.execute(query)
+        result = self.cursor.fetchone()
+        dict_result = dict(result) if result else None
+        return dict_result
+
+
+    def assign_post_tags(self, tag_ids, post_id):
+        query = "INSERT INTO post_tags (tag_id, post_id) VALUES (?,?)"
+        result = self.cursor.execute(query, (tag_ids, post_id))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
     def get_favorite_posts(self, user_id):
         query = """
                 SELECT posts.* FROM posts
@@ -118,9 +135,3 @@ class Post:
         dict_result = dict(result) if result else None
         return dict_result
 
-    def get_posts_id(self):
-        query = "SELECT id FROM posts ORDER BY id DESC LIMIT 1"
-        self.cursor.execute(query)
-        posts = self.cursor.fetchall()
-        result_dicts = [dict(row) for row in posts]
-        return result_dicts

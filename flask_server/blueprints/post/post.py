@@ -5,6 +5,7 @@ from flask_server.blueprints.post.models.post_model import Post
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
 
+
 @post_bp.route('/example', methods=['GET'])
 def get_examples():
     data = [
@@ -12,6 +13,7 @@ def get_examples():
         {'id': 2, 'name': 'Voorbeeld 2'}
     ]
     return jsonify({'status': 'success', 'data': data})
+
 
 @post_bp.route('/posts', methods=['GET'])
 def get_posts():
@@ -33,6 +35,7 @@ def get_posts_by_id(id):
         return jsonify({'status': 'error', 'message': 'Post not found'}), 404
     return jsonify({'status': 'success', 'data': posts}), 200
 
+
 # bron https://flask-restful.readthedocs.io/en/latest/quickstart.html#resourceful-routing
 @post_bp.route('/posts', methods=['POST'])
 def create_posts():
@@ -40,10 +43,17 @@ def create_posts():
     user_id = 1
     if request.method == "POST":
         data = request.get_json()
-        posts = post.post_create_post(user_id, data)
-        if not posts:
+        created_posts = post.post_create_post(user_id, data)
+        post_id = post.get_latest_posts_id()
+        recent_post_id = post_id['id']
+        tag_ids = data['tag_ids']
+        created_post_tags = post.assign_post_tags(tag_ids, recent_post_id)
+        if not created_posts:
             return jsonify({'status': 'error', 'message': 'Post not found'}), 404
-        return jsonify({'status': 'success', 'data': posts}), 200
+        elif not created_post_tags:
+            return jsonify({'status': 'error', 'message': 'Post_tags not found'}), 404
+        return jsonify({'status': 'success', 'data': created_posts}), 200
+
 
 @post_bp.route('/posts/favorite', methods=['GET'])
 def get_favorite_posts():
@@ -57,6 +67,7 @@ def get_favorite_posts():
     if not favorite_posts:
         return jsonify({'status': 'error', 'message': 'No favorite posts found'}), 404
     return jsonify({'status': 'success', 'data': favorite_posts}), 200
+
 
 @post_bp.route('/posts/<int:post_id>/favorite', methods=['POST'])
 def add_post_as_favorite(post_id):
@@ -72,11 +83,5 @@ def add_post_as_favorite(post_id):
 
 
 
-@post_bp.route('/post_id', methods=['GET'])
-def get_posts_id():
-    post = Post()
-    posts = post.get_posts_id()
-    if not posts:
-        return jsonify({'status': 'error', 'message': 'No posts found'}), 404
-    return jsonify({'status': 'success', 'data': posts}), 200,
+
 
