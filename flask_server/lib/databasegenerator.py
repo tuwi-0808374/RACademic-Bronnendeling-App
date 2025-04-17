@@ -147,10 +147,10 @@ class DatabaseGenerator:
         create_statement = """
         CREATE TABLE IF NOT EXISTS post_tags (
             post_id INTEGER NOT NULL,
-            tag_id INTEGER NOT NULL,
-            PRIMARY KEY (post_id, tag_id),
+            tags_id INTEGER NOT NULL,
+            PRIMARY KEY (post_id, tags_id),
             FOREIGN KEY (post_id) REFERENCES posts(id),
-            FOREIGN KEY (tag_id) REFERENCES tags(id)
+            FOREIGN KEY (tags_id) REFERENCES tags(id)
         )
         """
         self.__execute_transaction_statement(create_statement)
@@ -263,7 +263,7 @@ Markdown is cool""", "user_id": 6,
             {"title": "oop", "content": "Object georiënteerd programmeren"},
             {"title": "c#", "content": "Dit is een C# gerelateerd bericht"}
         ]
-        list_of_parameters = [(tag["title"], tag["content"]) for tag in tags]
+        list_of_parameters = [(tags["title"], tags["content"]) for tags in tags]
         create_statement = """INSERT INTO tags (title, content) VALUES (?, ?)"""
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
         print("✅ Initial tags inserted")
@@ -295,13 +295,13 @@ Markdown is cool""", "user_id": 6,
     # Insert initial post tags into the database
     def insert_initial_post_tags(self):
         post_tags = [
-            {"id": 11, "post_id": 1, "tag_id": 1},
-            {"id": 12, "post_id": 1, "tag_id": 2},
-            {"id": 23, "post_id": 2, "tag_id": 3},
-            {"id": 34, "post_id": 3, "tag_id": 4}
+            {"id": 11, "post_id": 1, "tags_id": 1},
+            {"id": 12, "post_id": 1, "tags_id": 2},
+            {"id": 23, "post_id": 2, "tags_id": 3},
+            {"id": 34, "post_id": 3, "tags_id": 4}
         ]
-        list_of_parameters = [(post_tag["post_id"], post_tag["tag_id"]) for post_tag in post_tags]
-        create_statement = """INSERT INTO post_tags (post_id, tag_id) VALUES (?, ?)"""
+        list_of_parameters = [(post_tags["post_id"], post_tags["tags_id"]) for post_tags in post_tags]
+        create_statement = """INSERT INTO post_tags (post_id, tags_id) VALUES (?, ?)"""
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
         print("✅ Initial post tags inserted")
 
