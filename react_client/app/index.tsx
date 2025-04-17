@@ -18,6 +18,10 @@ export default function Index() {
             <Link href={'/login'}> 
                 Login
             </Link>
+
+            <Link href={'/CreatePost'}>
+                Create Post
+            </Link>
              
             <Text>
                 Er is een file 'app-example' die kan verwijdered worden, maar ik laat hem
