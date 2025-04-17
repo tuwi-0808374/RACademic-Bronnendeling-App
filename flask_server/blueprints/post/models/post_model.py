@@ -42,6 +42,17 @@ class Post:
             result_dicts = [dict(row) for row in comments]
             return result_dicts
         return None
+    
+    def get_favorite_posts(self, user_id):
+        query = """
+                SELECT posts.* FROM posts
+                JOIN ratings ON posts.id = ratings.post_id
+                WHERE ratings.user_id = ? AND ratings.is_favorite = 1
+                """
+        self.cursor.execute(query, (user_id,))
+        favorite_posts = self.cursor.fetchall()
+        result_dicts = [dict(row) for row in favorite_posts]
+        return result_dicts
 
     def add_post_as_favorite(self, post_id, user_id):
         # CREATE TABLE "ratings" (
