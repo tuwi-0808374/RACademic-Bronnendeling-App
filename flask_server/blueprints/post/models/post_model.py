@@ -47,12 +47,22 @@ class Post:
     #bron https://docs.python.org/3/library/datetime.html
     def post_create_post(self, user_id, data):
         posted_date = datetime.now().strftime("%Y-%m-%d %H:%M")
-        query = "INSERT INTO posts (title, content, user_id, posted_date) VALUES (?,?,?,?)"
+        query = "INSERT INTO posts (title, content, user_id, posted_date) VALUES (?,?,?,?);"
         result = self.cursor.execute(query, (data["title"], data["content"], user_id, posted_date))
         self.con.commit()
+        print(id)
         if result:
             return True
         return False
+
+
+
+    def get_posts_id(self):
+        query = "SELECT * FROM posts ORDER BY id DESC LIMIT 1"
+        self.cursor.execute(query)
+        posts = self.cursor.fetchall()
+        result_dicts = [dict(row) for row in posts]
+        return result_dicts
 
 
 

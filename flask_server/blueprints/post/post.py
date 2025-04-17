@@ -42,3 +42,12 @@ def create_posts():
             return jsonify({'status': 'error', 'message': 'Post not found'}), 404
         return jsonify({'status': 'success', 'data': posts}), 200
 
+
+@post_bp.route('/post_id', methods=['GET'])
+def get_posts_id():
+    post = Post()
+    posts = post.get_posts_id()
+    if not posts:
+        return jsonify({'status': 'error', 'message': 'No posts found'}), 404
+    return jsonify({'status': 'success', 'data': posts}), 200
+
