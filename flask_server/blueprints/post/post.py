@@ -49,5 +49,5 @@ def get_posts_id():
     posts = post.get_posts_id()
     if not posts:
         return jsonify({'status': 'error', 'message': 'No posts found'}), 404
-    return jsonify({'status': 'success', 'data': posts}), 200
+    return jsonify({'status': 'success', 'data': posts}), 200,
 

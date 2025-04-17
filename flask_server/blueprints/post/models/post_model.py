@@ -56,9 +56,8 @@ class Post:
         return False
 
 
-
     def get_posts_id(self):
-        query = "SELECT * FROM posts ORDER BY id DESC LIMIT 1"
+        query = "SELECT id FROM posts ORDER BY id DESC LIMIT 1"
         self.cursor.execute(query)
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
