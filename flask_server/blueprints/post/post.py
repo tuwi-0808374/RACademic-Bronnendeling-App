@@ -16,7 +16,10 @@ def get_examples():
 @post_bp.route('/posts', methods=['GET'])
 def get_posts():
     post = Post()
-    posts = post.get_posts()
+    # For testing default to 1
+    # Will be replaced with user_id from token or session
+    user_id = request.args.get('user_id', default=1, type=int)
+    posts = post.get_posts(user_id)
     if not posts:
         return jsonify({'status': 'error', 'message': 'No posts found'}), 404
     return jsonify({'status': 'success', 'data': posts}), 200
@@ -52,6 +55,6 @@ def add_post_as_favorite(post_id):
     post = Post()
     result = post.add_post_as_favorite(post_id, user_id)
     if not result:
-        return jsonify({'status': 'error', 'message': 'Post not found'}), 404
-    return jsonify({'status': 'success', 'message': 'Post added as favorite'}), 200
+        return jsonify({'status': 'error', 'post': 'Post not found'}), 404
+    return jsonify({'status': 'success', 'post': result}), 200
 

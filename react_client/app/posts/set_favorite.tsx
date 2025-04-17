@@ -2,6 +2,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
 import { Alert } from 'react-native';
+import FavoriteButton from '../../components/posts/FavoriteButton';
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
@@ -53,6 +54,8 @@ export default function Test() {
           {'\n'}
           {post['total_rating']}
           {'\n'}
+          <FavoriteButton id = {post['id']} is_favorited = {post['is_favorite']}/>
+          -----------------------------------
 
         </Text>       
         

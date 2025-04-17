@@ -12,9 +12,18 @@ class Post:
         cursor = con.cursor()
         return cursor, con
     
-    def get_posts(self):
-        query = "SELECT * FROM posts"
-        self.cursor.execute(query)
+    def get_posts(self, user_id = None):
+        if user_id:
+            query = """
+                    SELECT posts.*, ratings.is_favorite FROM posts
+                    JOIN ratings ON posts.id = ratings.post_id
+                    WHERE ratings.user_id = ?
+                    """
+            self.cursor.execute(query, (user_id,))
+        else:
+            query = "SELECT * FROM posts"
+            self.cursor.execute(query)
+
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
         return result_dicts
@@ -28,7 +37,7 @@ class Post:
 
         comments = self.get_comments_by_post_id(post_id)
         dict_post['comments'] = comments if comments else []
-
+        
         if dict_post:
             return dict_post
         return None
@@ -72,21 +81,27 @@ class Post:
                 WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
                 """  
         self.cursor.execute(query, (user_id, post_id))
-        already_has_a_rating = self.cursor.fetchone()
+        is_favorite = self.cursor.fetchone()
 
-        if already_has_a_rating:
+        if is_favorite:
             query = """
                     UPDATE ratings
                     SET is_favorite = ?
                     WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
                     """
-            self.cursor.execute(query, (True, user_id, post_id))
+            toggle_favorite = not is_favorite['is_favorite']
+            self.cursor.execute(query, (toggle_favorite, user_id, post_id))
             self.con.commit()
-            return True
         else:
             query = """INSERT INTO ratings (user_id, post_id, is_favorite) VALUES (?, ?, ?)"""
             self.cursor.execute(query, (user_id, post_id, True))
             self.con.commit()
-            return True
-        return False
         
+        query = """
+                SELECT * FROM ratings
+                WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
+                """  
+        self.cursor.execute(query, (user_id, post_id))
+        result = self.cursor.fetchone()
+        dict_result = dict(result) if result else None
+        return dict_result
