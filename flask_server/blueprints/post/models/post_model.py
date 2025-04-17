@@ -29,7 +29,26 @@ class Post:
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
         return result_dicts
-    
+
+    def search_posts(self,content, tags):
+        params = ()
+        query = "SELECT * FROM posts WHERE 1=1 "
+        if content:
+            # split content en voegt voor elk woord samen in een tuple params
+            words = content.split()
+            for word in words:
+                query += "AND LOWER(content) LIKE ? "
+                params += (str('%' + word.lower() + '%'),)
+        print(query, params)
+        if tags:
+            print("has tags")
+        self.cursor.execute(query, params,)
+
+        posts = self.cursor.fetchall()
+        result_dicts = [dict(row) for row in posts]
+
+        return result_dicts
+
     def get_post_by_id(self, post_id):
         query = "SELECT * FROM posts WHERE id = ?"
         self.cursor.execute(query, (post_id,))
@@ -127,4 +146,3 @@ class Post:
         result = self.cursor.fetchone()
         dict_result = dict(result) if result else None
         return dict_result
-
