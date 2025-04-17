@@ -22,7 +22,7 @@ def get_posts():
     # Will be replaced with user_id from token or session
     user_id = request.args.get('user_id', default=1, type=int)
     content = request.args.get('search_terms', default=None)
-    tag_ids = request.args.get('tag_ids', default=None)
+    tag_ids = request.args.getlist('tag_id')
 
     if content or tag_ids:
         posts = post.search_posts(content, tag_ids)

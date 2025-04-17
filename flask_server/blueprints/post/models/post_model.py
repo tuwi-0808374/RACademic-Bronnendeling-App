@@ -1,6 +1,8 @@
 import sqlite3, os
 from datetime import datetime
 from flask import jsonify
+from flask_server.blueprints.tag.models.tag_model import Tag
+
 
 class Post:
     def __init__(self):
@@ -30,9 +32,14 @@ class Post:
         result_dicts = [dict(row) for row in posts]
         return result_dicts
 
-    def search_posts(self,content, tags):
+    def search_posts(self,content, tag_ids):
+        tag = Tag()
         params = ()
         query = "SELECT * FROM posts WHERE 1=1 "
+        print("has tags " + str(tag_ids))
+        if tag_ids:
+
+            tag.get_post_by_tags(tag_ids)
         if content:
             # split content en voegt voor elk woord samen in een tuple params
             words = content.split()
@@ -40,10 +47,8 @@ class Post:
                 query += "AND LOWER(content) LIKE ? "
                 params += (str('%' + word.lower() + '%'),)
         print(query, params)
-        if tags:
-            print("has tags")
-        self.cursor.execute(query, params,)
 
+        self.cursor.execute(query, params,)
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
 

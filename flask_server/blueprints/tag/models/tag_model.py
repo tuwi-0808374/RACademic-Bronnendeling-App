@@ -18,3 +18,14 @@ class Tag:
         tags = self.cursor.fetchall()
         result_dicts = [dict(row) for row in tags]
         return result_dicts
+
+    def get_post_by_tags(self, tag_ids):
+        result = []
+        for tag_id in tag_ids:
+            query = "SELECT post_id FROM post_tags WHERE tag_id = ?"
+            self.cursor.execute(query, (tag_id,))
+        results = self.cursor.fetchall()
+        dict_result = [dict(row) for row in results]
+        if dict_result:
+            return dict_result
+        return False
