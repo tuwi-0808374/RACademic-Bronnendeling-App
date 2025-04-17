@@ -44,13 +44,15 @@ def create_posts():
     if request.method == "POST":
         data = request.get_json()
         created_posts = post.post_create_post(user_id, data)
+        if not created_posts:
+            return jsonify({'status': 'error', 'message': 'Post not found'}), 404
         post_id = post.get_latest_posts_id()
         recent_post_id = post_id['id']
         tag_ids = data['tag_ids']
+        if not recent_post_id or not tag_ids:
+            return jsonify({'status': 'error', 'message': 'No post_id or tag_ids found'}), 404
         created_post_tags = post.assign_post_tags(tag_ids, recent_post_id)
-        if not created_posts:
-            return jsonify({'status': 'error', 'message': 'Post not found'}), 404
-        elif not created_post_tags:
+        if not created_post_tags:
             return jsonify({'status': 'error', 'message': 'Post_tags not found'}), 404
         return jsonify({'status': 'success', 'data': created_posts}), 200
 

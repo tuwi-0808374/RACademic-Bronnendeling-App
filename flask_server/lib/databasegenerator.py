@@ -295,10 +295,10 @@ Markdown is cool""", "user_id": 6,
     # Insert initial post tags into the database
     def insert_initial_post_tags(self):
         post_tags = [
-            {"id": 11, "post_id": 1, "tag_id": 1},
-            {"id": 12, "post_id": 1, "tag_id": 2},
-            {"id": 23, "post_id": 2, "tag_id": 3},
-            {"id": 34, "post_id": 3, "tag_id": 4}
+            {"post_id": 1, "tag_id": 1},
+            {"post_id": 1, "tag_id": 2},
+            {"post_id": 2, "tag_id": 3},
+            {"post_id": 3, "tag_id": 4}
         ]
         list_of_parameters = [(post_tags["post_id"], post_tags["tag_id"]) for post_tags in post_tags]
         create_statement = """INSERT INTO post_tags (post_id, tag_id) VALUES (?, ?)"""

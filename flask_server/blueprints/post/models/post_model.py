@@ -74,9 +74,11 @@ class Post:
 
 
     def assign_post_tags(self, tag_ids, post_id):
-        query = "INSERT INTO post_tags (tag_id, post_id) VALUES (?,?)"
-        result = self.cursor.execute(query, (tag_ids, post_id))
-        self.con.commit()
+        result = None
+        for tag_id in tag_ids:
+            query = "INSERT INTO post_tags (tag_id, post_id) VALUES (?,?)"
+            result = self.cursor.execute(query, (tag_id, post_id))
+            self.con.commit()
         if result:
             return True
         return False
