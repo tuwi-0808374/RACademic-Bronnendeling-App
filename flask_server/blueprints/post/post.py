@@ -30,6 +30,7 @@ def get_posts_by_id(id):
         return jsonify({'status': 'error', 'message': 'Post not found'}), 404
     return jsonify({'status': 'success', 'data': posts}), 200
 
+# bron https://flask-restful.readthedocs.io/en/latest/quickstart.html#resourceful-routing
 @post_bp.route('/posts', methods=['POST'])
 def create_posts():
     post = Post()
