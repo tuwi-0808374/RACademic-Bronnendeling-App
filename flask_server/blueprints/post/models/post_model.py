@@ -17,9 +17,9 @@ class Post:
     def get_posts(self, user_id = None):
         if user_id:
             query = """
-                    SELECT posts.*, ratings.is_favorite FROM posts
-                    JOIN ratings ON posts.id = ratings.post_id
-                    WHERE ratings.user_id = ?
+                    SELECT posts.*, ratings.is_favorite 
+                    FROM posts
+                    LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
                     """
             self.cursor.execute(query, (user_id,))
         else:
@@ -39,7 +39,7 @@ class Post:
 
         comments = self.get_comments_by_post_id(post_id)
         dict_post['comments'] = comments if comments else []
-
+        
         if dict_post:
             return dict_post
         return None
@@ -95,18 +95,7 @@ class Post:
         return result_dicts
 
     def add_post_as_favorite(self, post_id, user_id):
-        # CREATE TABLE "ratings" (
-        #     "user_id"	INTEGER NOT NULL,
-        #     "post_id"	INTEGER,
-        #     "comment_id"	INTEGER,
-        #     "is_favorite"	BOOLEAN DEFAULT false,
-        #     "is_reported"	BOOLEAN DEFAULT false,
-        #     "report_reason"	TEXT,
-        #     FOREIGN KEY("comment_id") REFERENCES "comments"("id"),
-        #     FOREIGN KEY("post_id") REFERENCES "posts"("id"),
-        #     FOREIGN KEY("user_id") REFERENCES "users"("id")
-        # );
-
+        # Check if the post is already marked as favorite by the user
         query = """
                 SELECT * FROM ratings
                 WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
@@ -120,6 +109,7 @@ class Post:
                     SET is_favorite = ?
                     WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
                     """
+            # Toggle the favorite status
             toggle_favorite = not is_favorite['is_favorite']
             self.cursor.execute(query, (toggle_favorite, user_id, post_id))
             self.con.commit()
@@ -128,6 +118,7 @@ class Post:
             self.cursor.execute(query, (user_id, post_id, True))
             self.con.commit()
 
+        # Return the post with the updated favorite status
         query = """
                 SELECT * FROM ratings
                 WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
