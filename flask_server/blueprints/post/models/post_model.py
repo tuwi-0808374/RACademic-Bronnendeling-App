@@ -13,9 +13,18 @@ class Post:
         cursor = con.cursor()
         return cursor, con
     
-    def get_posts(self):
-        query = "SELECT * FROM posts"
-        self.cursor.execute(query)
+    def get_posts(self, user_id = None):
+        if user_id:
+            query = """
+                    SELECT posts.*, ratings.is_favorite FROM posts
+                    JOIN ratings ON posts.id = ratings.post_id
+                    WHERE ratings.user_id = ?
+                    """
+            self.cursor.execute(query, (user_id,))
+        else:
+            query = "SELECT * FROM posts"
+            self.cursor.execute(query)
+
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
         return result_dicts
@@ -47,14 +56,67 @@ class Post:
     #bron https://docs.python.org/3/library/datetime.html
     def post_create_post(self, user_id, data):
         posted_date = datetime.now().strftime("%Y-%m-%d %H:%M")
-        query = "INSERT INTO posts (title, content, user_id, posted_date) VALUES (?,?,?,?);"
+        query = "INSERT INTO posts (title, content, user_id, posted_date) VALUES (?,?,?,?)"
         result = self.cursor.execute(query, (data["title"], data["content"], user_id, posted_date))
         self.con.commit()
-        print(id)
         if result:
             return True
         return False
 
+
+    def get_favorite_posts(self, user_id):
+        query = """
+                SELECT posts.* FROM posts
+                JOIN ratings ON posts.id = ratings.post_id
+                WHERE ratings.user_id = ? AND ratings.is_favorite = 1
+                """
+        self.cursor.execute(query, (user_id,))
+        favorite_posts = self.cursor.fetchall()
+        result_dicts = [dict(row) for row in favorite_posts]
+        return result_dicts
+
+    def add_post_as_favorite(self, post_id, user_id):
+        # CREATE TABLE "ratings" (
+        #     "user_id"	INTEGER NOT NULL,
+        #     "post_id"	INTEGER,
+        #     "comment_id"	INTEGER,
+        #     "is_favorite"	BOOLEAN DEFAULT false,
+        #     "is_reported"	BOOLEAN DEFAULT false,
+        #     "report_reason"	TEXT,
+        #     FOREIGN KEY("comment_id") REFERENCES "comments"("id"),
+        #     FOREIGN KEY("post_id") REFERENCES "posts"("id"),
+        #     FOREIGN KEY("user_id") REFERENCES "users"("id")
+        # );
+
+        query = """
+                SELECT * FROM ratings
+                WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
+                """
+        self.cursor.execute(query, (user_id, post_id))
+        is_favorite = self.cursor.fetchone()
+
+        if is_favorite:
+            query = """
+                    UPDATE ratings
+                    SET is_favorite = ?
+                    WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
+                    """
+            toggle_favorite = not is_favorite['is_favorite']
+            self.cursor.execute(query, (toggle_favorite, user_id, post_id))
+            self.con.commit()
+        else:
+            query = """INSERT INTO ratings (user_id, post_id, is_favorite) VALUES (?, ?, ?)"""
+            self.cursor.execute(query, (user_id, post_id, True))
+            self.con.commit()
+
+        query = """
+                SELECT * FROM ratings
+                WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
+                """
+        self.cursor.execute(query, (user_id, post_id))
+        result = self.cursor.fetchone()
+        dict_result = dict(result) if result else None
+        return dict_result
 
     def get_posts_id(self):
         query = "SELECT id FROM posts ORDER BY id DESC LIMIT 1"
@@ -62,6 +124,3 @@ class Post:
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
         return result_dicts
-
-
-
