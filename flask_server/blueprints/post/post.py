@@ -30,3 +30,18 @@ def get_posts_by_id(id):
         return jsonify({'status': 'error', 'message': 'Post not found'}), 404
     return jsonify({'status': 'success', 'data': posts}), 200
 
+@post_bp.route('/posts/favorite', methods=['GET'])
+def get_favorite_posts(id):
+
+    return jsonify({'status': 'success', 'data': ''}), 200
+
+@post_bp.route('/posts/<int:post_id>/favorite', methods=['POST'])
+def add_post_as_favorite(post_id):
+    request_data = request.get_json()
+    user_id = request_data.get('user_id', 1)
+    post = Post()
+    result = post.add_post_as_favorite(post_id, user_id)
+    if not result:
+        return jsonify({'status': 'error', 'message': 'Post not found'}), 404
+    return jsonify({'status': 'success', 'message': 'Post added as favorite'}), 200
+

@@ -43,3 +43,39 @@ class Post:
             return result_dicts
         return None
 
+    def add_post_as_favorite(self, post_id, user_id):
+        # CREATE TABLE "ratings" (
+        #     "user_id"	INTEGER NOT NULL,
+        #     "post_id"	INTEGER,
+        #     "comment_id"	INTEGER,
+        #     "is_favorite"	BOOLEAN DEFAULT false,
+        #     "is_reported"	BOOLEAN DEFAULT false,
+        #     "report_reason"	TEXT,
+        #     FOREIGN KEY("comment_id") REFERENCES "comments"("id"),
+        #     FOREIGN KEY("post_id") REFERENCES "posts"("id"),
+        #     FOREIGN KEY("user_id") REFERENCES "users"("id")
+        # );
+        
+        query = """
+                SELECT * FROM ratings
+                WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
+                """  
+        self.cursor.execute(query, (user_id, post_id))
+        already_has_a_rating = self.cursor.fetchone()
+
+        if already_has_a_rating:
+            query = """
+                    UPDATE ratings
+                    SET is_favorite = ?
+                    WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
+                    """
+            self.cursor.execute(query, (True, user_id, post_id))
+            self.con.commit()
+            return True
+        else:
+            query = """INSERT INTO ratings (user_id, post_id, is_favorite) VALUES (?, ?, ?)"""
+            self.cursor.execute(query, (user_id, post_id, True))
+            self.con.commit()
+            return True
+        return False
+        
