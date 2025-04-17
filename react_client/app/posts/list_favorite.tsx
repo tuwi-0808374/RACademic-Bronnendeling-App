@@ -6,7 +6,7 @@ export default function Test() {
   const [posts, setPosts] = useState([]);
 
 
-  // https://jasonwatmore.com/post/2020/01/27/react-fetch-http-get-request-examples
+
   useEffect(() => {
     fetch("http://127.0.0.1:5000/posts/favorite")
       .then(res => res.json())
