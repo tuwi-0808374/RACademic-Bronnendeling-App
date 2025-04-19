@@ -23,15 +23,20 @@ class Tag:
         query = "SELECT post_id FROM post_tags WHERE 1=1 "
         total_params = ','.join(['?'] * len(tag_ids))
         query += f"AND tag_id IN ({total_params}) "
+
+        # checked of de post_id dezelfde aantal tags heeft of meer dan
+        query += "GROUP BY post_id HAVING COUNT(DISTINCT tag_id) >= ?"
+
         # maak een tuple van tag ids en zet de tag ids om naar integers
-        query += "GROUP BY post_id HAVING COUNT(DISTINCT tag_id) = ?"
         params = tuple(int(tag_id) for tag_id in tag_ids) + (len(tag_ids),)
-        print(query,params)
+
         self.cursor.execute(query, params,)
         results = self.cursor.fetchall()
         dict_result = [dict(row) for row in results]
+
         # returns lijst met post ids
         post_ids = [row['post_id'] for row in dict_result]
+
         if post_ids:
             return post_ids
         return False

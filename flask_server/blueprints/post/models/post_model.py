@@ -36,11 +36,17 @@ class Post:
         tag = Tag()
         params = ()
         query = "SELECT * FROM posts WHERE 1=1 "
+
+        #roept functie om alle post_ids met correcte tags op te halen
         if tag_ids:
             post_ids = tag.get_post_by_tags(tag_ids)
-            total_params = ','.join(['?'] * len(post_ids))
-            query += f"AND id IN ({total_params}) "
-            params += tuple(post_ids)
+            # voegt alle post ids met de juiste tags aan de query toe
+            if post_ids:
+                total_params = ','.join(['?'] * len(post_ids))
+                query += f"AND id IN ({total_params}) "
+                params += tuple(post_ids)
+            else:
+                return False
 
         if content:
             # split content en voegt voor elk woord samen in een tuple params
@@ -48,13 +54,15 @@ class Post:
             for word in words:
                 query += "AND LOWER(content) LIKE ? "
                 params += (str('%' + word.lower() + '%'),)
-        print(query, params)
 
         self.cursor.execute(query, params,)
         posts = self.cursor.fetchall()
-        result_dicts = [dict(row) for row in posts]
 
-        return result_dicts
+        if posts:
+            result_dicts = [dict(row) for row in posts]
+            return result_dicts
+        return False
+
 
     def get_post_by_id(self, post_id):
         query = "SELECT * FROM posts WHERE id = ?"
