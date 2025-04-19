@@ -151,7 +151,6 @@ export default function CreatePost() {
 
 
 
-
 // const [data, setData] = useState([]);
 // useEffect(() => {
 //     fetch("http://localhost:5000/tags")
