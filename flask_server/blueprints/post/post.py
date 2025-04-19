@@ -21,11 +21,11 @@ def get_posts():
     # For testing default to 1
     # Will be replaced with user_id from token or session
     user_id = request.args.get('user_id', default=1, type=int)
-    content = request.args.get('search_terms', default=None)
+    search_query = request.args.get('search_query', default=None)
     tag_ids = request.args.getlist('tag_id')
-
-    if content or tag_ids:
-        posts = post.search_posts(content, tag_ids)
+    
+    if search_query or tag_ids:
+        posts = post.search_posts(search_query, tag_ids)
     else:
         posts = post.get_posts(user_id)
     if not posts:

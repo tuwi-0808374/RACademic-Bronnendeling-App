@@ -32,7 +32,7 @@ class Post:
         result_dicts = [dict(row) for row in posts]
         return result_dicts
 
-    def search_posts(self,content, tag_ids):
+    def search_posts(self,search_query, tag_ids):
         tag = Tag()
         params = ()
         query = "SELECT * FROM posts WHERE 1=1 "
@@ -48,11 +48,12 @@ class Post:
             else:
                 return False
 
-        if content:
+        if search_query:
             # split content en voegt voor elk woord samen in een tuple params
-            words = content.split()
+            words = search_query.split()
             for word in words:
-                query += "AND LOWER(content) LIKE ? "
+                # checked voor content en title
+                query += "AND (LOWER(content) or LOWER(title)) LIKE ? "
                 params += (str('%' + word.lower() + '%'),)
 
         self.cursor.execute(query, params,)
