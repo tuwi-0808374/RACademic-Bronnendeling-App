@@ -10,7 +10,6 @@ const COLORS = {
     placeholderText: '#666666',
 };
 
-
 //https://www.youtube.com/watch?v=7LNl2JlZKHA
 // https://www.youtube.com/watch?v=lA_73_-n-V4
 // https://www.youtube.com/watch?v=BJNOceFLdjQ
@@ -18,18 +17,29 @@ export default function CreatePost() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        fetch("http://localhost:5000/tags")
+            .then(res => res.json())
+            .then(data => {
+                setData(data.data);
+                console.log(data.data);
+            })
+    }, []);
+
     const CreatePost = async () => {
         console.warn(title, content);
         const url = "http://localhost:5000/posts"
         let result = await fetch(url, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({title:title,content:content})
+            body: JSON.stringify({title:title,content:content}),
         });
         result = await  result.json();
         if(result){
             console.warn("Bron is saved successfully.")
         }
+
     }
 
 
@@ -62,6 +72,15 @@ export default function CreatePost() {
                             value={content}
                             onChangeText={(text)=> setContent(text)}
                         />
+                    </View>
+
+                    <View style={styles.input}>
+                        <Text style={styles.inputlabel}>Tags</Text>
+                    {data.map((tag, i) => (
+                        <Text style={styles.inputlabel} key={i}>
+                            {tag['title']}
+                        </Text>
+                    ))}
                     </View>
 
                     <View style={styles.create}>
@@ -145,42 +164,3 @@ export default function CreatePost() {
 
 
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const [data, setData] = useState([]);
-// useEffect(() => {
-//     fetch("http://localhost:5000/tags")
-//         .then(res => res.json())
-//         .then(data => {
-//             setData(data.data);
-//             console.log(data.data);
-//         })
-// }, []);
-//
-// return (
-//     <View style={{ padding: 20 }}>
-//         <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Tags:</Text>
-//         {data.map((tag, i) => (
-//             <Text key={i}>
-//                 {tag['title']}
-//                 {'\n'}
-//                 {tag['content']}
-//                 {'\n'}
-//             </Text>
-//
-//         ))}
-//     </View>
-// );
-
