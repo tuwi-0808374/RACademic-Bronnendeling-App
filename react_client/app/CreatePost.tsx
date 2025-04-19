@@ -13,17 +13,25 @@ const COLORS = {
 
 //https://www.youtube.com/watch?v=7LNl2JlZKHA
 // https://www.youtube.com/watch?v=lA_73_-n-V4
+// https://www.youtube.com/watch?v=BJNOceFLdjQ
 export default function CreatePost() {
-    const [title, setTitle] = useState<string>('');
-    const [content, setContent] = useState<string>('');
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
 
-    const handleCreate = () => {
-        if (!title || !content) {
-            console.log('Please fill in both fields.');
-            return;
-
+    const CreatePost = async () => {
+        console.warn(title, content);
+        const url = "http://localhost:5000/posts"
+        let result = await fetch(url, {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({title:title,content:content})
+        });
+        result = await  result.json();
+        if(result){
+            console.warn("Bron is saved successfully.")
         }
-    };
+    }
+
 
 
     return (
@@ -41,7 +49,7 @@ export default function CreatePost() {
                             placeholder="Titel van de bron"
                             placeholderTextColor={COLORS.placeholderText}
                             value={title}
-                            onChangeText={setTitle}
+                            onChangeText={(text)=> setTitle(text)}
                         />
                     </View>
 
@@ -52,12 +60,12 @@ export default function CreatePost() {
                             placeholder="print(Hello World)"
                             placeholderTextColor={COLORS.placeholderText}
                             value={content}
-                            onChangeText={setContent}
+                            onChangeText={(text)=> setContent(text)}
                         />
                     </View>
 
                     <View style={styles.create}>
-                        <TouchableOpacity onPress={handleCreate}>
+                        <TouchableOpacity onPress={CreatePost}>
                             <View style={styles.button}>
                                 <Text style={styles.buttontext}>Create post</Text>
                             </View>
