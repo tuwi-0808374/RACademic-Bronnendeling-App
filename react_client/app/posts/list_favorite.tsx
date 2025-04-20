@@ -20,35 +20,45 @@ export default function Test() {
       .catch(err => console.error("Error fetching favorite posts:", err));
   }
 
-  const [undoID, setundoID] = useState(-1);
+  // https://stackoverflow.com/questions/62917259/how-to-pass-an-array-of-numbers-with-typescript-and-react
+  // https://www.dhiwise.com/post/react-usestate-append-to-array-a-simple-guide
+  const [undoID, setundoID] = useState<number[]>([]); 
 
   const undoDeleteFavorite = async () => {
     console.log("undoDeleteFavorite:", undoID);
-    try {
-      //http://localhost:5000/posts/${post_id}/favorite
-      var url = "http://localhost:5000/posts/"+undoID+"/favorite";
-      const response = await fetch(url, {
-        method: 'POST',
-      });
-      const result = await response.json();
-      
-      setundoID(-1);
-      setPosts([]);
-      fetchPosts();
 
-    } catch (error) {
-      console.error('API request failed:', error);
+    while (undoID.length > 0) {
+      const id = undoID.pop();
+      console.log("undoDeleteFavorite:", id);
+    
+      try {
+        //http://localhost:5000/posts/${post_id}/favorite
+        var url = "http://localhost:5000/posts/"+id+"/favorite";
+        const response = await fetch(url, {
+          method: 'POST',
+        });
+        const result = await response.json();
+
+      } catch (error) {
+        console.error('API request failed:', error);
+      }
     }
+    console.log("undoDeleteFavorite: done");
+    setundoID([]);
+    setPosts([]);
+    fetchPosts();
   };
 
   const showUndoDeleteFavorite = (id: number) => {
-    setundoID(id);
+    if (!undoID.includes(id)) {
+    setundoID([...undoID, id]);
+  }
     console.log("showUndoDeleteFavorite:", id);
   };
 
   return (
     <View style={{ padding: 20 }}>
-      { undoID !== -1 ? 
+      { undoID.length > 0 ? 
       <Button title="Maak ongedaan" onPress={undoDeleteFavorite} ></Button>
        : null }
       
