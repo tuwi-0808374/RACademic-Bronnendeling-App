@@ -1,6 +1,6 @@
 from flask import *
 
-from flask_server.blueprints.post.models.post_model import Post
+from blueprints.post.models.post_model import Post
 
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)

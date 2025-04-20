@@ -1,7 +1,7 @@
 import sqlite3, os
 from datetime import datetime
 from flask import jsonify
-from flask_server.blueprints.tag.models.tag_model import Tag
+from blueprints.tag.models.tag_model import Tag
 
 
 class Post:
