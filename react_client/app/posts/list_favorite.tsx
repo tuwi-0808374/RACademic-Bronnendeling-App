@@ -1,35 +1,70 @@
 import { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import FavoriteButton from '../../components/posts/FavoriteButton';
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+    fetchPosts();
+  }, []);
+
+  const fetchPosts = async () => {
     fetch("http://127.0.0.1:5000/posts/favorite")
       .then(res => res.json())
       .then(data => {
         setPosts(data.data);
+        console.log("Fetching:");
         console.log(data.data);
       })
       .catch(err => console.error("Error fetching favorite posts:", err));
-  }, []);
+  }
+
+  const [undoID, setundoID] = useState(-1);
+
+  const undoDeleteFavorite = async () => {
+    console.log("undoDeleteFavorite:", undoID);
+    try {
+      //http://localhost:5000/posts/${post_id}/favorite
+      var url = "http://localhost:5000/posts/"+undoID+"/favorite";
+      const response = await fetch(url, {
+        method: 'POST',
+      });
+      const result = await response.json();
+      
+      setundoID(-1);
+      setPosts([]);
+      fetchPosts();
+
+    } catch (error) {
+      console.error('API request failed:', error);
+    }
+  };
+
+  const showUndoDeleteFavorite = (id: number) => {
+    setundoID(id);
+    console.log("showUndoDeleteFavorite:", id);
+  };
 
   return (
     <View style={{ padding: 20 }}>
+      { undoID !== -1 ? 
+      <Button title="Maak ongedaan" onPress={undoDeleteFavorite} ></Button>
+       : null }
+      
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts === undefined ? (
         <Text>No favorite posts found.</Text>
       ) : posts.map((post, i) => (
         <Text key={i}>
           {'\n'}
-          {post['title']}
+          Title: {post['title']}
           {'\n'}
-          {post['content']}
+          Content: {post['content']}
           {'\n'}
-          {post['total_rating']}
+          Fav: {post['is_favorite']}
           {'\n'}
-          <FavoriteButton id = {post['id']} is_favorited = {post['is_favorite']}/>
+          <FavoriteButton id = {post['id']} is_favorited = {post['is_favorite']} onPress={() => showUndoDeleteFavorite(post['id'])} />
           <hr></hr>
         </Text>  
         
