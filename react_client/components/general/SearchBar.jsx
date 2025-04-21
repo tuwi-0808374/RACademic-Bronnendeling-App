@@ -3,6 +3,7 @@ import CheckBox from 'expo-checkbox';
 import { TextInput, View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 
 function SearchBar() {
+
     const [data, setData] = useState([]);
     const [checkedTags, setCheckedTags] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
@@ -17,6 +18,9 @@ function SearchBar() {
             .catch(err => console.error('Error fetching tags:', err));
     }, []);
 
+    // ik heb deze bronnen gebruikt om de checkboxes te maken
+    // https://stackoverflow.com/questions/65205428/handle-multiple-checkboxes-in-expo-react-native
+    // https://docs.expo.dev/versions/latest/sdk/checkbox/
     const handleCheckboxChange = (id) => {
         setCheckedTags((prev_checkbox) => ({
             ...prev_checkbox,
@@ -38,6 +42,7 @@ function SearchBar() {
             })
             .catch(err => console.error('Error fetching posts:', err));
     };
+
     const handleOnKeyPress = event =>{
         const key = event.nativeEvent.key
         if(key ==="Enter"){
