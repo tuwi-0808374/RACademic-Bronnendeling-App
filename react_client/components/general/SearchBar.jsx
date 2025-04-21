@@ -13,7 +13,8 @@ function SearchBar() {
             .then(data => {
                 setData(data.data);
                 console.log('Fetched tags:', data.data);
-            });
+            })
+            .catch(err => console.error('Error fetching tags:', err));
     }, []);
 
     const handleCheckboxChange = (id) => {
