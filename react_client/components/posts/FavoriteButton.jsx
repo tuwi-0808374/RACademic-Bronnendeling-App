@@ -7,8 +7,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 const FavoriteButton = ({ id, is_favorited, onPress}) => {
   const [isFilled, setIsFilled] = useState(is_favorited);
-  console.log("is_favorited", is_favorited);
-  console.log("id", id);
 
   const handlePress = async () => {
     try {
@@ -18,7 +16,6 @@ const FavoriteButton = ({ id, is_favorited, onPress}) => {
         method: 'POST',
       });
       const result = await response.json();
-      console.log(result.post['is_favorite']);
       setIsFilled(result.post['is_favorite']);
 
     } catch (error) {

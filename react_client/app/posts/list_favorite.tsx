@@ -9,7 +9,7 @@ export default function Test() {
     fetchPosts();
   }, []);
 
-  const fetchPosts = async () => {
+  const fetchPosts = () => {
     fetch("http://127.0.0.1:5000/posts/favorite")
       .then(res => res.json())
       .then(data => {
@@ -25,12 +25,8 @@ export default function Test() {
   const [undoID, setundoID] = useState<number[]>([]); 
 
   const undoDeleteFavorite = async () => {
-    console.log("undoDeleteFavorite:", undoID);
-
     while (undoID.length > 0) {
-      const id = undoID.pop();
-      console.log("undoDeleteFavorite:", id);
-    
+      const id = undoID.pop();    
       try {
         //http://localhost:5000/posts/${post_id}/favorite
         var url = "http://localhost:5000/posts/"+id+"/favorite";
@@ -43,23 +39,37 @@ export default function Test() {
         console.error('API request failed:', error);
       }
     }
-    console.log("undoDeleteFavorite: done");
+    refresh();
+  };
+
+  // https://react.dev/learn/updating-arrays-in-state
+  const showUndoDeleteFavorite = (id: number) => {
+    console.log("before:", undoID);
+    if (!undoID.includes(id)) {
+    setundoID([...undoID, id]);
+    }
+    else {
+      setundoID(
+        undoID.filter(i => i !== id)
+      );
+    }
+    console.log("after:", undoID);
+    
+  };
+
+  const refresh = () => {
     setundoID([]);
     setPosts([]);
     fetchPosts();
   };
 
-  const showUndoDeleteFavorite = (id: number) => {
-    if (!undoID.includes(id)) {
-    setundoID([...undoID, id]);
-  }
-    console.log("showUndoDeleteFavorite:", id);
-  };
-
   return (
     <View style={{ padding: 20 }}>
       { undoID.length > 0 ? 
+      <>
+      <Button color='green' title="Opslaan" onPress={refresh} ></Button>
       <Button title="Maak ongedaan" onPress={undoDeleteFavorite} ></Button>
+      </>
        : null }
       
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
