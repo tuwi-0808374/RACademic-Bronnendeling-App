@@ -5,15 +5,13 @@ meta {
 }
 
 get {
-  url: http://localhost:5000/posts?tag_id=1&content=dit is&tag_id=2
+  url: http://localhost:5000/posts
   body: none
   auth: inherit
 }
 
 params:query {
-  tag_id: 1
-  content: dit is
-  tag_id: 2
+  ~tag_id: 2
 }
 
 body:json {

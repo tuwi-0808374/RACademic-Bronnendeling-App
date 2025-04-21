@@ -1,7 +1,7 @@
 import sqlite3, os
 from datetime import datetime
 from flask import jsonify
-from flask_server.blueprints.tag.models.tag_model import Tag
+from blueprints.tag.models.tag_model import Tag
 
 
 class Post:
@@ -119,7 +119,7 @@ class Post:
 
     def get_favorite_posts(self, user_id):
         query = """
-                SELECT posts.* FROM posts
+                SELECT posts.*, ratings.is_favorite FROM posts
                 JOIN ratings ON posts.id = ratings.post_id
                 WHERE ratings.user_id = ? AND ratings.is_favorite = 1
                 """
