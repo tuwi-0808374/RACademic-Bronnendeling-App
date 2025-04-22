@@ -17,5 +17,5 @@ def rate_post():
         result = rating.rate(user_id, target_id, rating_value, target)
 
         if not result:
-            return jsonify({'status': 'error', 'message': f'No {target} found'}), 404
+            return jsonify({'status': 'error', 'message': f'Not able to rate {target}'}), 404
         return jsonify({'status': 'success', 'data': result}), 200

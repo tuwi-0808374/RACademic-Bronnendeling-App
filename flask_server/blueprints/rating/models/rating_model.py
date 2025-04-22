@@ -16,19 +16,23 @@ class Rating:
     # kan niet alleen post maar ook comment een rating geven
     def rate(self, user_id, target_id, rating, target):
         if target == "post":
-            query = "SELECT * FROM ratings WHERE user_id = ? AND post_id = ? AND rating IS NOT ?"
-
-        elif target == "comment":
-            query = "SELECT * FROM ratings WHERE user_id = ? AND comment_id = ? AND rating IS NOT ?"
+            query = "SELECT rating FROM ratings WHERE user_id = ? AND post_id = ?"
+        #
+        # elif target == "comment":
+        #     query = "SELECT * FROM ratings WHERE user_id = ? AND comment_id = ? AND rating != ?"
         else:
             query = None
 
         if query:
-            self.cursor.execute(query, (user_id, target_id, rating))
+            self.cursor.execute(query, (user_id, target_id))
             result = self.cursor.fetchone()
-            print("exists",result)
-            if result:
-                print('update')
+            print('result, ',result)
+            print('result rating', result['rating'])
+
+            if result or result != rating:
+                result = self.update_rating(user_id, target_id, rating, target)
+                print('updated ', result)
+                return result
             else:
                 result = self.create_rating(user_id, target_id, rating, target)
                 print('created ', result)
@@ -36,7 +40,7 @@ class Rating:
         return None
 
     def create_rating(self, user_id, target_id, rating, target):
-        print(user_id, target_id, rating, target)
+        print('create',user_id, target_id, rating, target)
         if target == "post":
             query = 'INSERT INTO ratings (user_id,post_id, rating) VALUES (?,?, ?)'
         elif target == "comment":
@@ -45,6 +49,22 @@ class Rating:
             query = None
 
         result = self.cursor.execute(query, (user_id, target_id, rating))
+        self.con.commit()
+
+        if result:
+            return True
+        return False
+
+    def update_rating(self, user_id, target_id, rating, target):
+        print('update',user_id, target_id, rating, target)
+        if target == "post":
+            query = 'UPDATE ratings SET user_id = ?, post_id = ?, rating = ? WHERE user_id = ? and post_id = ?'
+        elif target == "comment":
+            query = 'UPDATE ratings SET user_id = ?, comment_id = ?, rating = ? WHERE user_id = ? and comment_id = ?'
+        else:
+            query = None
+        print(query)
+        result = self.cursor.execute(query, (user_id, target_id, rating,user_id, target_id))
         self.con.commit()
 
         if result:
