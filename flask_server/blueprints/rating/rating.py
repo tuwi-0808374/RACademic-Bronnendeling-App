@@ -13,14 +13,14 @@ def create_rating():
 
 
 
-@rating_bp.route('/rating/<int:userRated>', methods=['PATCH'])
+@rating_bp.route('/rating/<int:user_rated>', methods=['PATCH'])
 def update_rating(user_rated):
     data = request.get_json()
     return handle_rating_process(data, user_rated)
 
 
 
-def handle_rating_process(data, userRated=None):
+def handle_rating_process(data, user_rated=None):
     rating = Rating()
     required_fields = ['user_id', 'target_id', 'rating', 'target']
     for field in required_fields:
@@ -31,9 +31,9 @@ def handle_rating_process(data, userRated=None):
     rating_value = data.get("rating")
     target = data.get("target")
 
-    result = rating.rate(user_id, target_id, rating_value, target)
+    result = rating.rate(user_id, target_id, rating_value, target, user_rated)
     # kijkt of het een update is of een create en geeft de juiste error codes
-    if userRated is None:
+    if user_rated is None:
         if result is None:
             return jsonify({'status': 'error', 'message': f'{target} not found'}), 404
         elif result is False:

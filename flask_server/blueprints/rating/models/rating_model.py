@@ -14,7 +14,7 @@ class Rating:
         return cursor, con
 
     # kan niet alleen post maar ook comment een rating geven
-    def rate(self, user_id, target_id, rating, target):
+    def rate(self, user_id, target_id, rating, target,user_rated):
         # checkt of de comment/post bestaat
         query = f'SELECT * FROM {target} WHERE id = ?'
         target_exists = self.cursor.execute(query, (target_id,))
@@ -26,21 +26,20 @@ class Rating:
             query = "SELECT rating FROM ratings WHERE user_id = ? AND post_id = ?"
         elif target == "comments":
             query = "SELECT rating FROM ratings WHERE user_id = ? AND comment_id = ?"
+        print('query a target check, ', query, (user_id, target_id))
 
         if query:
             self.cursor.execute(query, (user_id, target_id))
             result = self.cursor.fetchone()
 
             # checkt of de rating bestaat en of de rating value niet gelijk zijn
-            if result and result['rating'] != rating:
+            if result and result['rating'] != rating and user_rated:
                 result = self.update_rating(user_id, target_id, rating, target)
-                print('updated ', result)
                 return result
 
             # checkt of de rating niet bestaat
-            elif not result:
+            elif not result and not user_rated:
                 result = self.create_rating(user_id, target_id, rating, target)
-                print('created ', result)
                 return result
             else:
                 return False
@@ -48,25 +47,25 @@ class Rating:
         return None
 
     def create_rating(self, user_id, target_id, rating, target):
-        print('create',user_id, target_id, rating, target)
         post = Post()
-        if target == "post":
+
+        if target == "posts":
             query = 'INSERT INTO ratings (user_id,post_id, rating, userRated) VALUES (?,?, ?, 1)'
             result = self.cursor.execute(query, (user_id, target_id, rating))
             self.con.commit()
+
             if result:
                 result = post.calculate_post_rating(target_id, rating)
                 if result:
                     return True
                 return False
         # moet nog een comment model enzo aanmaken, maar dat is voor later
-        # elif target == "comment":
+        # elif target == "comments":
 
 
     def update_rating(self, user_id, target_id, rating, target):
-        print('update',user_id, target_id, rating, target)
         post = Post()
-        if target == "post":
+        if target == "posts":
             query = 'UPDATE ratings SET user_id = ?, post_id = ?, rating = ? WHERE user_id = ? and post_id = ?'
             result = self.cursor.execute(query, (user_id, target_id, rating,user_id, target_id))
             self.con.commit()
@@ -77,4 +76,4 @@ class Rating:
                 return False
 
         # comment model aanmaken
-        # elif target == "comment":
+        # elif target == "comments":
