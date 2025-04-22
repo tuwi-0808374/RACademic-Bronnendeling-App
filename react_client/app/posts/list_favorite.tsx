@@ -24,7 +24,13 @@ export default function Test() {
   // https://www.dhiwise.com/post/react-usestate-append-to-array-a-simple-guide
   const [undoID, setundoID] = useState<number[]>([]); 
 
+  useEffect(() => {
+    console.log("Updated undoID:", undoID);
+  }, [undoID]);
+
+
   const undoDeleteFavorite = async () => {
+    console.log("Before:", undoID);
     while (undoID.length > 0) {
       const id = undoID.pop();    
       try {
@@ -44,7 +50,6 @@ export default function Test() {
 
   // https://react.dev/learn/updating-arrays-in-state
   const showUndoDeleteFavorite = (id: number) => {
-    console.log("before:", undoID);
     if (!undoID.includes(id)) {
     setundoID([...undoID, id]);
     }
@@ -52,9 +57,7 @@ export default function Test() {
       setundoID(
         undoID.filter(i => i !== id)
       );
-    }
-    console.log("after:", undoID);
-    
+    }    
   };
 
   const refresh = () => {
