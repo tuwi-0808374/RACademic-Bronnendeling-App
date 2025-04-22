@@ -1,34 +1,39 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput, 
-  TouchableOpacity, 
+  TextInput,
+  TouchableOpacity,
   Image,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
   StatusBar,
+  ScrollView 
 } from 'react-native';
+import { Link } from 'expo-router'; 
 
 const COLORS = {
-  red: '#C80032', 
+  red: '#C80032',
   background: '#F8F4EF',
   text: '#333333',
   textLight: '#FFFFFF',
-  inputLine: '#555555', 
-  placeholderText: '#666666', 
+  inputLine: '#555555',
+  placeholderText: '#666666',
+  languageBackground: '#E0E0E0', 
 };
 
-const LoginScreen: React.FC = () => {
+const LoginScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
 
   const handleLogin = () => {
     if (!email || !password) {
       console.log('Please fill in both fields.');
       return;
+      // hier backend
     }
   };
 
@@ -40,6 +45,36 @@ const LoginScreen: React.FC = () => {
         style={styles.keyboardAvoidingContainer}
       >
         <View style={styles.innerContainer}>
+          <View style={styles.languageSelector}>
+            <TouchableOpacity onPress={() => setActiveLanguage('EN')}>
+              <Text
+                style={[
+                  styles.languageText,
+                  activeLanguage === 'EN' && styles.languageActiveText,
+                ]}
+              >
+                EN
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setActiveLanguage('NL')}>
+              <View
+                style={[
+                  styles.languageOption,
+                  activeLanguage === 'NL' && styles.languageActiveBackground, 
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.languageText,
+                    activeLanguage === 'NL' && styles.languageActiveText, 
+                  ]}
+                >
+                  NL
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
           <Image
             source={require('../assets/images/hr-logo.png')}
             style={styles.logo}
@@ -48,10 +83,10 @@ const LoginScreen: React.FC = () => {
           <Text style={styles.logoTitle}>HOGESCHOOL ROTTERDAM</Text>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>E-MAILADRES</Text>
+            <Text style={styles.inputLabel}>EMAIL</Text>
             <TextInput
               style={[styles.input, styles.inputEmail]}
-              placeholder="email@hr.nl"
+              placeholder="voorbeeld@hr.nl"
               placeholderTextColor={COLORS.placeholderText}
               value={email}
               onChangeText={setEmail}
@@ -70,7 +105,7 @@ const LoginScreen: React.FC = () => {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={true}
-              selectionColor={COLORS.inputLine} 
+              selectionColor={COLORS.inputLine}
             />
           </View>
 
@@ -78,6 +113,12 @@ const LoginScreen: React.FC = () => {
             <Text style={styles.loginButtonText}>Inloggen</Text>
           </TouchableOpacity>
 
+          <View style={styles.registerContainer}>
+            <Text style={styles.registerText}>Nog geen account? </Text>
+            <Link href={'/test'}> 
+              <Text style={styles.registerLink}>Registreren</Text>
+            </Link>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -97,8 +138,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 30,
-    paddingTop: 40,
+    paddingTop: 40, 
     paddingBottom: 20,
+  },
+
+  languageSelector: {
+    position: 'absolute',
+    top: 15, 
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 1, 
+  },
+  languageOption: { 
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 15,
+    marginLeft: 10, 
+  },
+  languageText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+  languageActiveBackground: {
+    backgroundColor: COLORS.languageBackground, 
+  },
+  languageActiveText: {
+    color: COLORS.text, 
   },
   logo: {
     width: 150,
@@ -112,7 +179,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 50,
   },
-
   inputGroup: {
     width: '100%',
     marginBottom: 35,
@@ -133,7 +199,7 @@ const styles = StyleSheet.create({
     color: COLORS.text,
   },
   inputEmail: {
-    borderBottomColor: COLORS.red, 
+    borderBottomColor: COLORS.red,
   },
   inputPassword: {
     borderBottomColor: COLORS.inputLine,
@@ -145,8 +211,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     width: '100%',
     alignItems: 'center',
-    marginTop: 20, 
-    marginBottom: 30, 
+    marginTop: 20,
+    marginBottom: 30,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -156,6 +222,21 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: COLORS.textLight,
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  registerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10, 
+  },
+  registerText: {
+    fontSize: 14,
+    color: COLORS.text,
+  },
+  registerLink: {
+    fontSize: 14,
+    color: COLORS.red, 
     fontWeight: 'bold',
   },
 });
