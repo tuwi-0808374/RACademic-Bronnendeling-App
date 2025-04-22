@@ -7,31 +7,22 @@ base = Blueprint('base', __name__)
 
 @rating_bp.route('/rating', methods=['POST'])
 def create_rating():
-    rating = Rating()
-    required_fields = ['user_id', 'target_id', 'rating', 'target']
-
     data = request.get_json()
-    for field in required_fields:
-        if data.get(field) is None:
-            return jsonify({'status': 'error', 'message': f'Missing {field}'}), 400
-    user_id = data.get('user_id')
-    target_id = data.get("target_id")
-    rating_value = data.get("rating")
-    target = data.get("target")
 
-    result = rating.rate(user_id, target_id, rating_value, target)
-    if result is None:
-        return jsonify({'status': 'error', 'message': f'{target} not found'}), 404
-    elif result is False:
-        return jsonify({'status': 'error', 'message': f'No change in rating for {target}'}), 400
-    return jsonify({'status': 'success', 'data': result}), 201
+    return handle_rating_process(data)
+
+
 
 @rating_bp.route('/rating/<int:userRated>', methods=['PATCH'])
-def update_rating(userRated):
+def update_rating(user_rated):
+    data = request.get_json()
+    return handle_rating_process(data, user_rated)
+
+
+
+def handle_rating_process(data, userRated=None):
     rating = Rating()
     required_fields = ['user_id', 'target_id', 'rating', 'target']
-
-    data = request.get_json()
     for field in required_fields:
         if data.get(field) is None:
             return jsonify({'status': 'error', 'message': f'Missing {field}'}), 400
@@ -41,11 +32,17 @@ def update_rating(userRated):
     target = data.get("target")
 
     result = rating.rate(user_id, target_id, rating_value, target)
-    
-    if result is None:
-        return jsonify({'status': 'error', 'message': f'{target} not found'}), 404
-    elif result is False:
-        return jsonify({'status': 'error', 'message': f'No change in rating for {target}'}), 400
+    # kijkt of het een update is of een create en geeft de juiste error codes
+    if userRated is None:
+        if result is None:
+            return jsonify({'status': 'error', 'message': f'{target} not found'}), 404
+        elif result is False:
+            return jsonify({'status': 'error', 'message': f'No change in rating for {target}'}), 400
+        return jsonify({'status': 'success', 'data': result}), 201
+    else:
+        if result is None:
+            return jsonify({'status': 'error', 'message': f'{target} not found'}), 404
+        elif result is False:
+            return jsonify({'status': 'error', 'message': f'No change in rating for {target}'}), 400
 
-    return jsonify({'status': 'success', 'data': result}), 200
-
+        return jsonify({'status': 'success', 'data': result}), 200
