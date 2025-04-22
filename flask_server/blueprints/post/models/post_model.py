@@ -160,3 +160,9 @@ class Post:
         result = self.cursor.fetchone()
         dict_result = dict(result) if result else None
         return dict_result
+    
+    def add_multiple_posts_as_favorite(self, post_ids, user_id):
+        dict_result = {}
+        for post_id in post_ids:
+            dict_result[post_id] = self.add_post_as_favorite(post_id, user_id)
+        return dict_result
