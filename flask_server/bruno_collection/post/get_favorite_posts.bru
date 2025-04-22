@@ -1,0 +1,15 @@
+meta {
+  name: get_favorite_posts
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:5000/posts/favorite
+  body: json
+  auth: none
+}
+
+body:json {
+  {}
+}
