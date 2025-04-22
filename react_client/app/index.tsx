@@ -1,4 +1,6 @@
 import { Text, View} from 'react-native';
+import SearchBar from '../components/general/SearchBar';
+
 import { Link } from 'expo-router';
 
 export default function Index() {
@@ -12,7 +14,7 @@ export default function Index() {
                 alignItems: 'center',
             }}
         >
-            
+            <SearchBar />
             <Link href={'/login'}> 
                 Login
             </Link>
