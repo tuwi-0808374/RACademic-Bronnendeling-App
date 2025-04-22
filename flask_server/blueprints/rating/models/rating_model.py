@@ -26,19 +26,18 @@ class Rating:
             query = "SELECT rating FROM ratings WHERE user_id = ? AND post_id = ?"
         elif target == "comments":
             query = "SELECT rating FROM ratings WHERE user_id = ? AND comment_id = ?"
-        print('query a target check, ', query, (user_id, target_id))
+            print('query a target check, ', query, (user_id, target_id))
 
         if query:
             self.cursor.execute(query, (user_id, target_id))
             result = self.cursor.fetchone()
-
             # checkt of de rating bestaat en of de rating value niet gelijk zijn
-            if result and result['rating'] != rating and user_rated:
+            if result['rating'] and result['rating'] != rating and user_rated:
                 result = self.update_rating(user_id, target_id, rating, target)
                 return result
 
             # checkt of de rating niet bestaat
-            elif not result and not user_rated:
+            elif not result['rating'] and not user_rated:
                 result = self.create_rating(user_id, target_id, rating, target)
                 return result
             else:

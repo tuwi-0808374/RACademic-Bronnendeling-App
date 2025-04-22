@@ -37,7 +37,7 @@ def handle_rating_process(data, user_rated=None):
         if result is None:
             return jsonify({'status': 'error', 'message': f'{target} not found'}), 404
         elif result is False:
-            return jsonify({'status': 'error', 'message': f'No change in rating for {target}'}), 400
+            return jsonify({'status': 'error', 'message': f'Already rated this {target}'}), 400
         return jsonify({'status': 'success', 'data': result}), 201
     else:
         if result is None:
