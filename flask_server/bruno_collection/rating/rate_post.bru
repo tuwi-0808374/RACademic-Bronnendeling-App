@@ -5,13 +5,14 @@ meta {
 }
 
 post {
-  url: http://localhost:5000/rating?target_id=1&rating=1&target=post
+  url: http://localhost:5000/rating?target_id=4&rating=-1&target=post&user_id=3
   body: none
   auth: inherit
 }
 
 params:query {
-  target_id: 1
-  rating: 1
+  target_id: 4
+  rating: -1
   target: post
+  user_id: 3
 }

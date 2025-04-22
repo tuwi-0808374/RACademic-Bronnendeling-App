@@ -14,7 +14,22 @@ class Post:
         con.row_factory = sqlite3.Row
         cursor = con.cursor()
         return cursor, con
-    
+
+    def calculate_post_rating(self,post_id, new_rating):
+        self.cursor.execute('SELECT total_rating FROM posts WHERE id = ?', (post_id,))
+        total_rating = self.cursor.fetchone()
+        calculated_rating = total_rating['total_rating'] + new_rating
+        print('new_rating', new_rating)
+        result = self.cursor.execute('''
+            UPDATE posts 
+            SET total_rating = ? 
+            WHERE id = ?''', (calculated_rating, post_id))
+        self.con.commit()
+        print(calculated_rating)
+        if result:
+            return True
+        return False
+
     def get_posts(self, user_id = None):
         if user_id:
             query = """
