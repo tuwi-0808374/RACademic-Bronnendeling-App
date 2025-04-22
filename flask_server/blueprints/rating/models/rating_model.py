@@ -14,12 +14,12 @@ class Rating:
         return cursor, con
 
     # kan niet alleen post maar ook comment een rating geven
-    def rate(self, user_id, target_id, rating, target):
+    def rate(self, user_id, target_id, rating, target, task):
         if target == "post":
             query = "SELECT rating FROM ratings WHERE user_id = ? AND post_id = ?"
-        #
-        # elif target == "comment":
-        #     query = "SELECT * FROM ratings WHERE user_id = ? AND comment_id = ? AND rating != ?"
+
+        elif target == "comment":
+            query = "SELECT * FROM ratings WHERE user_id = ? AND comment_id = ?"
         else:
             query = None
 
