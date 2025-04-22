@@ -1,6 +1,7 @@
 import sqlite3, os
 from datetime import datetime
-from flask import jsonify
+from flask_server.blueprints.tag.models.tag_model import Tag
+
 
 class Post:
     def __init__(self):
@@ -29,7 +30,39 @@ class Post:
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
         return result_dicts
-    
+
+    def search_posts(self,search_query, tag_ids):
+        tag = Tag()
+        params = ()
+        query = "SELECT * FROM posts WHERE 1=1 "
+
+        #roept functie om alle post_ids met correcte tags op te halen
+        if tag_ids:
+            post_ids = tag.get_post_by_tags(tag_ids)
+            # voegt alle post ids met de juiste tags aan de query toe
+            if post_ids:
+                total_params = ','.join(['?'] * len(post_ids))
+                query += f"AND id IN ({total_params}) "
+                params += tuple(post_ids)
+            else:
+                return False
+
+        if search_query:
+            # split content en voegt voor elk woord samen in een tuple params
+            words = search_query.split()
+            for word in words:
+                # checked voor content en title
+                query += "AND (LOWER(content) LIKE ? or LOWER(title) LIKE ?) "
+                params += (str('%' + word.lower() + '%'),str('%' + word.lower() + '%'),)
+        self.cursor.execute(query, params,)
+        posts = self.cursor.fetchall()
+
+        if posts:
+            result_dicts = [dict(row) for row in posts]
+            return result_dicts
+        return False
+
+
     def get_post_by_id(self, post_id):
         query = "SELECT * FROM posts WHERE id = ?"
         self.cursor.execute(query, (post_id,))
@@ -85,7 +118,7 @@ class Post:
 
     def get_favorite_posts(self, user_id):
         query = """
-                SELECT posts.* FROM posts
+                SELECT posts.*, ratings.is_favorite FROM posts
                 JOIN ratings ON posts.id = ratings.post_id
                 WHERE ratings.user_id = ? AND ratings.is_favorite = 1
                 """
@@ -127,4 +160,3 @@ class Post:
         result = self.cursor.fetchone()
         dict_result = dict(result) if result else None
         return dict_result
-

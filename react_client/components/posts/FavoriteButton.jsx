@@ -3,11 +3,10 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 // https://docs.expo.dev/tutorial/build-a-screen/
+// https://medium.com/@yildizfatma/using-custom-components-in-react-native-expo-702a0116fd23
 
-const FavoriteButton = ({ id, is_favorited }) => {
+const FavoriteButton = ({ id, is_favorited, onPress}) => {
   const [isFilled, setIsFilled] = useState(is_favorited);
-  console.log("is_favorited", is_favorited);
-  console.log("id", id);
 
   const handlePress = async () => {
     try {
@@ -17,11 +16,14 @@ const FavoriteButton = ({ id, is_favorited }) => {
         method: 'POST',
       });
       const result = await response.json();
-      console.log(result.post['is_favorite']);
       setIsFilled(result.post['is_favorite']);
 
     } catch (error) {
       console.error('API request failed:', error);
+    }
+
+    if (onPress) {
+      onPress(id);
     }
   };
 

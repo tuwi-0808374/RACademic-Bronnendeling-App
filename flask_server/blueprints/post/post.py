@@ -1,6 +1,6 @@
 from flask import *
 
-from flask_server.blueprints.post.models.post_model import Post
+from blueprints.post.models.post_model import Post
 
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
@@ -21,7 +21,13 @@ def get_posts():
     # For testing default to 1
     # Will be replaced with user_id from token or session
     user_id = request.args.get('user_id', default=1, type=int)
-    posts = post.get_posts(user_id)
+    search_query = request.args.get('search_query', default=None)
+    tag_ids = request.args.getlist('tag_id')
+    
+    if search_query or tag_ids:
+        posts = post.search_posts(search_query, tag_ids)
+    else:
+        posts = post.get_posts(user_id)
     if not posts:
         return jsonify({'status': 'error', 'message': 'No posts found'}), 404
     return jsonify({'status': 'success', 'data': posts}), 200
@@ -82,8 +88,3 @@ def add_post_as_favorite(post_id):
     if not result:
         return jsonify({'status': 'error', 'post': 'Post not found'}), 404
     return jsonify({'status': 'success', 'post': result}), 200
-
-
-
-
-
