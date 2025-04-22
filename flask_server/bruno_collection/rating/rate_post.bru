@@ -1,0 +1,17 @@
+meta {
+  name: rate_post
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:5000/rating?target_id=1&rating=1&target=post
+  body: none
+  auth: inherit
+}
+
+params:query {
+  target_id: 1
+  rating: 1
+  target: post
+}

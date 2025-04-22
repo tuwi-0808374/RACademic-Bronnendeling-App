@@ -62,7 +62,6 @@ def create_posts():
             return jsonify({'status': 'error', 'message': 'Post_tags not found'}), 404
         return jsonify({'status': 'success', 'data': created_posts}), 200
 
-
 @post_bp.route('/posts/favorite', methods=['GET'])
 def get_favorite_posts():
     print(request.args)
