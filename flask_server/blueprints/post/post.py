@@ -67,7 +67,6 @@ def create_posts():
 
 @post_bp.route('/posts/favorite', methods=['GET'])
 def get_favorite_posts():
-    print(request.args)
     # For testing default to 1
     # Will be replaced with user_id from token or session
     user_id = request.args.get('user_id', default=1, type=int)
@@ -81,7 +80,6 @@ def get_favorite_posts():
 
 @post_bp.route('/posts/<int:post_id>/favorite', methods=['POST'])
 def add_post_as_favorite(post_id):
-    print(request.args)
     # For testing default to 1
     # Will be replaced with user_id from token or session
     user_id = request.args.get('user_id', default=1, type=int)
@@ -90,3 +88,24 @@ def add_post_as_favorite(post_id):
     if not result:
         return jsonify({'status': 'error', 'post': 'Post not found'}), 404
     return jsonify({'status': 'success', 'post': result}), 200
+
+@post_bp.route('/posts/multiple_favorites', methods=['POST'])
+def add_multiple_posts_as_favorite():
+    print(request.args)
+    data = request.get_json()
+    
+    if not data or 'post_ids' not in data:
+        return jsonify({'status': 'error', 'message': 'No post_ids provided'}), 400
+    
+    if data['post_ids'] == []:
+        return jsonify({'status': 'error', 'message': 'Empty post_ids list'}), 400
+    
+    user_id = request.args.get('user_id', default=1, type=int)
+
+    post = Post()
+    result = post.add_multiple_posts_as_favorite(data['post_ids'], user_id)
+    
+    
+    if not result:
+        return jsonify({'status': 'error', 'posts': 'Post not found'}), 404
+    return jsonify({'status': 'success', 'posts': result}), 200

@@ -162,6 +162,13 @@ class Post:
             self.cursor.execute(query, (toggle_favorite, user_id, post_id))
             self.con.commit()
         else:
+            # Check first if the post exists at all
+            query = "SELECT * FROM posts WHERE id = ?"
+            self.cursor.execute(query, (post_id,))
+            post = self.cursor.fetchone()
+            if not post:
+                return None               
+            
             query = """INSERT INTO ratings (user_id, post_id, is_favorite) VALUES (?, ?, ?)"""
             self.cursor.execute(query, (user_id, post_id, True))
             self.con.commit()
@@ -171,7 +178,18 @@ class Post:
                 SELECT * FROM ratings
                 WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
                 """
+
         self.cursor.execute(query, (user_id, post_id))
         result = self.cursor.fetchone()
         dict_result = dict(result) if result else None
         return dict_result
+    
+    def add_multiple_posts_as_favorite(self, post_ids, user_id):
+        result = []
+        for post_id in post_ids:
+            favorite_post = self.add_post_as_favorite(post_id, user_id)
+            if favorite_post:
+                result.append(favorite_post)
+        
+        result_dicts = [dict(row) for row in result]
+        return result_dicts
