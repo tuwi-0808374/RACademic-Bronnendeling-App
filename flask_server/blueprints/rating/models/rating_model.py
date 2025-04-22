@@ -16,16 +16,17 @@ class Rating:
     # kan niet alleen post maar ook comment een rating geven
     def rate(self, user_id, target_id, rating, target):
         if target == "post":
-            query = "SELECT * FROM ratings WHERE user_id = ? AND post_id = ? AND rating != ?"
+            query = "SELECT * FROM ratings WHERE user_id = ? AND post_id = ? AND rating IS NOT ?"
+
         elif target == "comment":
-            query = "SELECT * FROM ratings WHERE user_id = ? AND comment_id = ? AND rating != ?"
+            query = "SELECT * FROM ratings WHERE user_id = ? AND comment_id = ? AND rating IS NOT ?"
         else:
             query = None
 
         if query:
             self.cursor.execute(query, (user_id, target_id, rating))
             result = self.cursor.fetchone()
-
+            print("exists",result)
             if result:
                 print('update')
             else:
@@ -44,7 +45,8 @@ class Rating:
             query = None
 
         result = self.cursor.execute(query, (user_id, target_id, rating))
+        self.con.commit()
 
         if result:
-            return result
-        return None
+            return True
+        return False
