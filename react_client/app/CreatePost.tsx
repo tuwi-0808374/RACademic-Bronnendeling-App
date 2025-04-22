@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import { CheckBox } from "@/components/input";
 
 const COLORS = {
     red: '#C80032',
@@ -10,12 +11,17 @@ const COLORS = {
     placeholderText: '#666666',
 };
 
-//https://www.youtube.com/watch?v=7LNl2JlZKHA
+// Bronnen
+// https://www.youtube.com/watch?v=7LNl2JlZKHA
 // https://www.youtube.com/watch?v=lA_73_-n-V4
 // https://www.youtube.com/watch?v=BJNOceFLdjQ
+// https://docs.expo.dev/versions/latest/sdk/checkbox/
+// https://www.youtube.com/watch?v=C-PVg6HhMNk
+
 export default function CreatePost() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [tagid, setTagid] = useState([]);
 
     const [data, setData] = useState([]);
     useEffect(() => {
@@ -27,13 +33,14 @@ export default function CreatePost() {
             })
     }, []);
 
+    //
     const CreatePost = async () => {
-        console.warn(title, content);
+        console.warn(title, content,tagid);
         const url = "http://localhost:5000/posts"
         let result = await fetch(url, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({title:title,content:content}),
+            body: JSON.stringify({title:title,content:content,tag_ids:tagid}),
         });
         result = await  result.json();
         if(result){
@@ -41,7 +48,6 @@ export default function CreatePost() {
         }
 
     }
-
 
 
     return (
@@ -54,33 +60,35 @@ export default function CreatePost() {
                 <View style={styles.form}>
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Titel</Text>
-                        <TextInput
-                            style={styles.inputcontroltitel}
-                            placeholder="Titel van de bron"
-                            placeholderTextColor={COLORS.placeholderText}
-                            value={title}
-                            onChangeText={(text)=> setTitle(text)}
+                            <TextInput
+                                style={styles.inputcontroltitel}
+                                placeholder="Titel van de bron"
+                                placeholderTextColor={COLORS.placeholderText}
+                                value={title}
+                                onChangeText={(text)=> setTitle(text)}
                         />
                     </View>
 
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Content van de bron</Text>
-                        <TextInput
-                            style={styles.inputcontrolcontent}
-                            placeholder="print(Hello World)"
-                            placeholderTextColor={COLORS.placeholderText}
-                            value={content}
-                            onChangeText={(text)=> setContent(text)}
+                            <TextInput
+                                style={styles.inputcontrolcontent}
+                                placeholder="print(Hello World)"
+                                placeholderTextColor={COLORS.placeholderText}
+                                value={content}
+                                onChangeText={(text)=> setContent(text)}
                         />
                     </View>
 
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Tags</Text>
-                    {data.map((tag, i) => (
-                        <Text style={styles.inputlabel} key={i}>
-                            {tag['title']}
-                        </Text>
-                    ))}
+                            {data.map((tag) => (
+                                <CheckBox options={[
+                                    {label: tag['title'], value: tag['id']},
+                                    ]}
+                                    CheckedValues={tagid}
+                                    onChange={setTagid}
+                                    /> ))}
                     </View>
 
                     <View style={styles.create}>
@@ -159,8 +167,9 @@ export default function CreatePost() {
             fontSize: 20,
             fontWeight: "bold",
             color: COLORS.textLight,
+        },
+        checkbox:{
+            justifyContent: "center",
+            marginBottom: 15
         }
-
-
-
     })
