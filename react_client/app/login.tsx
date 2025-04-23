@@ -32,7 +32,6 @@ const LoginScreen = () => {
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
 
-
   const handleLogin = async () => {
     if (!email || !password) {
       console.log('Please fill in both fields.');
@@ -55,7 +54,8 @@ const LoginScreen = () => {
         const data = await response.json();
         console.log('Login succesvol', data);
         
-        await AsyncStorage.setItem('authToken', data.token);
+        // https://medium.com/@paritasampa95/how-asyncstorage-stores-data-in-react-native-102498260af0
+        await AsyncStorage.setItem('authToken', data['access_token']);
 
         router.push('/test');
       } else {

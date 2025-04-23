@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
 import FavoriteButton from '../../components/posts/FavoriteButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
@@ -9,8 +11,19 @@ export default function Test() {
     fetchPosts();
   }, []);
 
-  const fetchPosts = () => {
-    fetch("http://127.0.0.1:5000/posts/favorite")
+  const fetchPosts = async () => {
+    try {
+      // https://medium.com/better-programming/how-to-authentication-users-with-token-in-a-react-application-f99997c2ee9d
+      const token = await AsyncStorage.getItem('authToken');
+      console.log('Token:', token ?? 'No token');
+
+      fetch("http://127.0.0.1:5000/posts/favorite",{
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': token?.toString() ?? '',
+        },
+      })
       .then(res => res.json())
       .then(data => {
         setPosts(data.data);
@@ -18,7 +31,10 @@ export default function Test() {
         console.log(data.data);
       })
       .catch(err => console.error("Error fetching favorite posts:", err));
-  }
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
 
   // https://stackoverflow.com/questions/62917259/how-to-pass-an-array-of-numbers-with-typescript-and-react
   // https://www.dhiwise.com/post/react-usestate-append-to-array-a-simple-guide
