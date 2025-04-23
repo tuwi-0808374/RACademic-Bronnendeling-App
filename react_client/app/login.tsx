@@ -1,4 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
+
 import {
   View,
   Text,
@@ -12,7 +14,7 @@ import {
   StatusBar,
   ScrollView 
 } from 'react-native';
-import { Link } from 'expo-router'; 
+import { Link, useRouter } from 'expo-router'; 
 
 const COLORS = {
   red: '#C80032',
@@ -28,14 +30,46 @@ const LoginScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
+  const router = useRouter();
 
-  const handleLogin = () => {
+
+  const handleLogin = async () => {
     if (!email || !password) {
       console.log('Please fill in both fields.');
       return;
-      // hier backend
+    }
+  
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/login", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Login succesvol', data);
+        
+        await AsyncStorage.setItem('authToken', data.token);
+
+        router.push('/test');
+      } else {
+        const errorData = await response.json();
+        console.log('Fout bij inloggen:', errorData.message);
+
+      }
+    } catch (error) {
+      console.log('Er is een fout opgetreden:', error);
     }
   };
+  
+
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
