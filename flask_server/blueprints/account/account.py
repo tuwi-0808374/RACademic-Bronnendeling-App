@@ -31,3 +31,21 @@ def login_api():
         return jsonify({"access_token": access_token}), 200
 
     return jsonify({"message": "Foutieve login!"}), 401
+
+@account_bp.route('/profile/<int:id>', methods=['GET'])
+def get_profile_by_email(login_email):    
+    account_model = Account()
+    user = account_model.get_user_by_email(login_email)
+    if not user:
+        return jsonify({'status': 'error', 'message': 'Post not found'}), 404
+    return jsonify({'status': 'success', 'data': user}), 200
+
+@account_bp.route('/profile/<int:id>', methods=['GET'])
+@jwt_required()
+def get_profile_by_id(id):    
+    account_model = Account()
+    user = account_model.get_user_by_id(id)
+    if not user:
+        return jsonify({'status': 'error', 'message': 'Gebruiker niet gevonden'}), 404
+    return jsonify({'status': 'success', 'data': user}), 200
+

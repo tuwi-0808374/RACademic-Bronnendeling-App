@@ -1,20 +1,7 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
-
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  StatusBar,
-  ScrollView 
-} from 'react-native';
-import { Link, useRouter } from 'expo-router'; 
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar } from 'react-native';
+import { Link, useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const COLORS = {
   red: '#C80032',
@@ -23,8 +10,14 @@ const COLORS = {
   textLight: '#FFFFFF',
   inputLine: '#555555',
   placeholderText: '#666666',
-  languageBackground: '#E0E0E0', 
+  languageBackground: '#E0E0E0',
 };
+
+const LoginButton = ({ onPress }: { onPress: () => void }) => (
+  <TouchableOpacity style={styles.loginButton} onPress={onPress}>
+    <Text style={styles.loginButtonText}>Inloggen</Text>
+  </TouchableOpacity>
+);
 
 const LoginScreen = () => {
   const [email, setEmail] = useState<string>('');
@@ -37,7 +30,7 @@ const LoginScreen = () => {
       console.log('Please fill in both fields.');
       return;
     }
-  
+
     try {
       const response = await fetch("http://127.0.0.1:5000/api/login", {
         method: 'POST',
@@ -49,11 +42,11 @@ const LoginScreen = () => {
           password: password,
         }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log('Login succesvol', data);
-        
+
         // https://medium.com/@paritasampa95/how-asyncstorage-stores-data-in-react-native-102498260af0
         await AsyncStorage.setItem('authToken', data['access_token']);
 
@@ -61,15 +54,11 @@ const LoginScreen = () => {
       } else {
         const errorData = await response.json();
         console.log('Fout bij inloggen:', errorData.message);
-
       }
     } catch (error) {
       console.log('Er is een fout opgetreden:', error);
     }
   };
-  
-
-
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -143,9 +132,7 @@ const LoginScreen = () => {
             />
           </View>
 
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>Inloggen</Text>
-          </TouchableOpacity>
+          <LoginButton onPress={handleLogin} />
 
           <View style={styles.registerContainer}>
             <Text style={styles.registerText}>Nog geen account? </Text>
@@ -175,7 +162,6 @@ const styles = StyleSheet.create({
     paddingTop: 40, 
     paddingBottom: 20,
   },
-
   languageSelector: {
     position: 'absolute',
     top: 15, 
@@ -184,11 +170,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 1, 
   },
-  languageOption: { 
+  languageOption: {
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 15,
-    marginLeft: 10, 
+    marginLeft: 10,
   },
   languageText: {
     fontSize: 14,
@@ -196,10 +182,10 @@ const styles = StyleSheet.create({
     color: COLORS.text,
   },
   languageActiveBackground: {
-    backgroundColor: COLORS.languageBackground, 
+    backgroundColor: COLORS.languageBackground,
   },
   languageActiveText: {
-    color: COLORS.text, 
+    color: COLORS.text,
   },
   logo: {
     width: 150,
@@ -209,7 +195,7 @@ const styles = StyleSheet.create({
   logoTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.text,
+    color: COLORS.text, 
     textAlign: 'center',
     marginBottom: 50,
   },
@@ -233,7 +219,7 @@ const styles = StyleSheet.create({
     color: COLORS.text,
   },
   inputEmail: {
-    borderBottomColor: COLORS.red,
+    borderBottomColor: COLORS.red, 
   },
   inputPassword: {
     borderBottomColor: COLORS.inputLine,
@@ -262,7 +248,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10, 
+    marginTop: 10,
   },
   registerText: {
     fontSize: 14,

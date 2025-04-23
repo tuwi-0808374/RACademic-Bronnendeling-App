@@ -1,6 +1,6 @@
 from flask import *
 
-from flask_server.blueprints.rating.models.rating_model import Rating
+from blueprints.rating.models.rating_model import Rating
 
 rating_bp = Blueprint('rating', __name__)
 base = Blueprint('base', __name__)

@@ -1,5 +1,5 @@
 import sqlite3, os
-from flask_server.blueprints.post.models.post_model import Post
+from blueprints.post.models.post_model import Post
 
 class Rating:
     def __init__(self):

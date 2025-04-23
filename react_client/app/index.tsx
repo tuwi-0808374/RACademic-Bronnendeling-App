@@ -18,6 +18,9 @@ export default function Index() {
             <Link href={'/login'}> 
                 Login
             </Link>
+            <Link href={'/profile'}> 
+                Profile
+            </Link>
 
             <Link href={'/CreatePost'}>
                 Create Post
