@@ -3,7 +3,6 @@ import { View, Text, Button } from 'react-native';
 import FavoriteButton from '../../components/posts/FavoriteButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 export default function Test() {
   const [posts, setPosts] = useState([]);
 
@@ -24,7 +23,12 @@ export default function Test() {
           'token': token?.toString() ?? '',
         },
       })
-      .then(res => res.json())
+      .then((response) => {
+        if (response.status === 401) {
+          console.log("Unauthorized access. Redirecting to login.");
+        } 
+        return response.json();
+      })
       .then(data => {
         setPosts(data.data);
         console.log("Fetched data:");
