@@ -14,7 +14,7 @@ export default function Test() {
       .then(res => res.json())
       .then(data => {
         setPosts(data.data);
-        console.log("Fetching:");
+        console.log("Fetched data:");
         console.log(data.data);
       })
       .catch(err => console.error("Error fetching favorite posts:", err));
@@ -31,21 +31,25 @@ export default function Test() {
 
   const undoDeleteFavorite = async () => {
     console.log("Before:", undoID);
-    while (undoID.length > 0) {
-      const id = undoID.pop();    
-      try {
-        //http://localhost:5000/posts/${post_id}/favorite
-        var url = "http://localhost:5000/posts/"+id+"/favorite";
-        const response = await fetch(url, {
-          method: 'POST',
-        });
-        const result = await response.json();
-
-      } catch (error) {
-        console.error('API request failed:', error);
+    // Bron voor het versturen van data naar de server met react.
+    // https://www.youtube.com/watch?v=0WyHHioebvY
+    
+    fetch("http://127.0.0.1:5000/posts/multiple_favorites",
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ post_ids: undoID }),
       }
-    }
-    refresh();
+    )
+    .then(res => res.json())
+    .then(data => {
+      console.log("Result of posting favs:");
+      console.log(data.data);
+      refresh();
+    })
+    .catch(err => console.error("Error posting favorite posts:", err));
   };
 
   // https://react.dev/learn/updating-arrays-in-state
