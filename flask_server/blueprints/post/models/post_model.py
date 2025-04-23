@@ -191,3 +191,15 @@ class Post:
         
         result_dicts = [dict(row) for row in result]
         return result_dicts
+    
+    def get_most_upvoted_posts(self, limit = 10):
+        query = """
+                SELECT *
+                FROM posts
+                ORDER BY total_rating DESC
+                LIMIT ?
+                """
+        self.cursor.execute(query, (limit,))
+        posts = self.cursor.fetchall()
+        result_dicts = [dict(row) for row in posts]
+        return result_dicts

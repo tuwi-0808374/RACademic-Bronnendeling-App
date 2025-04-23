@@ -109,3 +109,9 @@ def add_multiple_posts_as_favorite():
     if not result:
         return jsonify({'status': 'error', 'posts': 'Post not found'}), 404
     return jsonify({'status': 'success', 'posts': result}), 200
+
+@post_bp.route('/posts/most_upvoted', methods=['GET'])
+def get_most_upvoted_posts():
+    post = Post()
+    posts = post.get_most_upvoted_posts()
+    return jsonify({'status': 'success', 'posts': posts}), 200
