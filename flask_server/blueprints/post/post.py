@@ -1,6 +1,7 @@
 from flask import *
 
 from blueprints.post.models.post_model import Post
+from blueprints.account.models.account_model import Account
 
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
@@ -35,6 +36,11 @@ def get_posts():
 
 @post_bp.route('/posts/<int:id>', methods=['GET'])
 def get_posts_by_id(id):
+    account = Account()
+    id = account.get_id_from_token(request.headers['Authorization'])
+    print(id)
+    
+    
     post = Post()
     posts = post.get_post_by_id(id)
     if not posts:
@@ -91,7 +97,6 @@ def add_post_as_favorite(post_id):
 
 @post_bp.route('/posts/multiple_favorites', methods=['POST'])
 def add_multiple_posts_as_favorite():
-    print(request.args)
     data = request.get_json()
     
     if not data or 'post_ids' not in data:
