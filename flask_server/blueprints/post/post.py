@@ -19,10 +19,12 @@ def get_examples():
 
 @post_bp.route('/posts', methods=['GET'])
 def get_posts():
+    user_id = get_user_id_from_request()
+    
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
+    
     post = Post()
-    # For testing default to 1
-    # Will be replaced with user_id from token or session
-    user_id = request.args.get('user_id', default=1, type=int)
     search_query = request.args.get('search_query', default=None)
     tag_ids = request.args.getlist('tag_id')
     
@@ -69,16 +71,12 @@ def create_posts():
 
 @post_bp.route('/posts/favorite', methods=['GET'])
 def get_favorite_posts():
-    # For testing default to 1
-    # Will be replaced with user_id from token or session
-
     user_id = get_user_id_from_request()
     
     if not user_id:
         return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
     
     post = Post()
-    print(user_id)
     favorite_posts = post.get_favorite_posts(user_id)
     if not favorite_posts:
         return jsonify({'status': 'error', 'message': 'No favorite posts found'}), 404
@@ -87,9 +85,11 @@ def get_favorite_posts():
 
 @post_bp.route('/posts/<int:post_id>/favorite', methods=['POST'])
 def add_post_as_favorite(post_id):
-    # For testing default to 1
-    # Will be replaced with user_id from token or session
-    user_id = request.args.get('user_id', default=1, type=int)
+    user_id = get_user_id_from_request()
+    
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
+    
     post = Post()
     result = post.add_post_as_favorite(post_id, user_id)
     if not result:
@@ -106,7 +106,10 @@ def add_multiple_posts_as_favorite():
     if data['post_ids'] == []:
         return jsonify({'status': 'error', 'message': 'Empty post_ids list'}), 400
     
-    user_id = request.args.get('user_id', default=1, type=int)
+    user_id = get_user_id_from_request()
+    
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
 
     post = Post()
     result = post.add_multiple_posts_as_favorite(data['post_ids'], user_id)
