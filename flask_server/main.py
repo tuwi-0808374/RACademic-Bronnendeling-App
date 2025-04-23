@@ -7,17 +7,18 @@ from flask_jwt_extended import JWTManager
 from blueprints.post.post import post_bp
 from blueprints.tag.tag import tag_bp
 from blueprints.account.account import account_bp
+from blueprints.rating.rating import rating_bp
 
 app = Flask(__name__)
 CORS(app)
 
-app.config["JWT_SECRET_KEY"] = "geheim"  
+app.config["JWT_SECRET_KEY"] = "geheim"
 jwt = JWTManager(app)
 
 
 app.register_blueprint(post_bp)
 app.register_blueprint(tag_bp)
-
+app.register_blueprint(rating_bp)
 app.register_blueprint(account_bp)
 
 if __name__ == "__main__":
