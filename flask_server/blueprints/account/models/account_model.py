@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from flask_jwt_extended import *
 
 
 class Account:
@@ -40,3 +41,8 @@ class Account:
                 
             }
         return None
+    
+    def get_user_id_from_token(self, token):
+        decoded = decode_token(token)
+        user_id = decoded['user_id']
+        return user_id

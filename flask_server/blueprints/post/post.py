@@ -1,4 +1,5 @@
 from flask import *
+from flask_server.lib.utils import get_user_id_from_request
 
 from blueprints.post.models.post_model import Post
 from blueprints.account.models.account_model import Account
@@ -35,12 +36,7 @@ def get_posts():
 
 
 @post_bp.route('/posts/<int:id>', methods=['GET'])
-def get_posts_by_id(id):
-    account = Account()
-    id = account.get_id_from_token(request.headers['Authorization'])
-    print(id)
-    
-    
+def get_posts_by_id(id):    
     post = Post()
     posts = post.get_post_by_id(id)
     if not posts:
@@ -75,7 +71,12 @@ def create_posts():
 def get_favorite_posts():
     # For testing default to 1
     # Will be replaced with user_id from token or session
-    user_id = request.args.get('user_id', default=1, type=int)
+
+    user_id = get_user_id_from_request()
+    
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
+    
     post = Post()
     print(user_id)
     favorite_posts = post.get_favorite_posts(user_id)

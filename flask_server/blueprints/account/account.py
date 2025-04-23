@@ -31,8 +31,3 @@ def login_api():
         return jsonify({"access_token": access_token}), 200
 
     return jsonify({"message": "Foutieve login!"}), 401
-
-def get_id_from_token(token):
-    decoded = decode_token(token)
-    user_id = decoded['user_id']
-    return user_id
