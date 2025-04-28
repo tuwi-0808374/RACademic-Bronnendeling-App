@@ -30,7 +30,8 @@ interface UserData {
 
 export default function ProfileScreen() {
   const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
+  const [first_name, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -51,13 +52,12 @@ export default function ProfileScreen() {
           return;
      }
 
-     setUserId(currentUserId);
+        setUserId(currentUserId);
 
         const response = await fetch(`http://127.0.0.1:5000/profile/${currentUserId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
-
             'Content-Type': 'application/json',
           },
         });
@@ -65,7 +65,8 @@ export default function ProfileScreen() {
         if (response.ok) {
           const responseData = await response.json();
           const userData = responseData.data;
-          setName(userData.name || '');
+          setFirstName(userData.first_name || '');
+          setLastName(userData.last_name || '');
           setEmail(userData.email || '');
         } else {
           console.log('Kan profiel niet ophalen.');
@@ -85,10 +86,17 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Naam</Text>
+      <Text style={styles.label}>Voornaam</Text>
       <TextInput 
-        value={name} 
-        onChangeText={setName} 
+        value={first_name} 
+        onChangeText={setFirstName} 
+        style={styles.input} 
+      />
+
+      <Text style={styles.label}>Achternaam</Text>
+      <TextInput 
+        value={lastName} 
+        onChangeText={setLastName} 
         style={styles.input} 
       />
 
