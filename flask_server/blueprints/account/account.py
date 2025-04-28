@@ -2,10 +2,12 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import *
 from blueprints.account.models.account_model import Account
 import bcrypt
+from flask_cors import cross_origin
 
 account_bp = Blueprint('account', __name__)
 
 @account_bp.route('/api/login', methods=['POST'])
+@cross_origin()
 def login_api():
     data = request.json
     login_email = data.get('email')
@@ -32,20 +34,15 @@ def login_api():
 
     return jsonify({"message": "Foutieve login!"}), 401
 
-@account_bp.route('/profile/<int:id>', methods=['GET'])
-def get_profile_by_email(login_email):    
-    account_model = Account()
-    user = account_model.get_user_by_email(login_email)
-    if not user:
-        return jsonify({'status': 'error', 'message': 'Post not found'}), 404
-    return jsonify({'status': 'success', 'data': user}), 200
 
-@account_bp.route('/profile/<int:id>', methods=['GET'])
+
+@account_bp.route('/profile/<int:user_id>', methods=['GET'])
 @jwt_required()
-def get_profile_by_id(id):    
-    account_model = Account()
-    user = account_model.get_user_by_id(id)
+@cross_origin()
+def get_profile_by_id(user_id):
+    account_model = Account() 
+    user = account_model.get_user_by_id(user_id)
     if not user:
         return jsonify({'status': 'error', 'message': 'Gebruiker niet gevonden'}), 404
-    return jsonify({'status': 'success', 'data': user}), 200
 
+    return jsonify({'status': 'success', 'data': user}), 200

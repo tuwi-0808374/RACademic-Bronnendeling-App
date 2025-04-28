@@ -16,6 +16,7 @@ class Account:
         return cursor, con
 
     def get_user_by_email(self, email):
+        
         result = self.cursor.execute(
             """
             SELECT email, 
@@ -24,7 +25,7 @@ class Account:
             password,
             last_name,
             first_name || ' ' || last_name AS full_name
-         
+        
             FROM users
             WHERE email = ?
             """,
@@ -46,3 +47,27 @@ class Account:
         decoded = decode_token(token)
         user_id = decoded['user_id']
         return user_id
+    
+    def get_user_by_id(self, user_id):
+        cursor, con = self.connect_db()
+        try:
+            result = cursor.execute(
+                """
+                SELECT email,
+                first_name,
+                id,
+                last_name,
+                first_name || ' ' || last_name AS full_name
+
+                FROM users
+                WHERE id = ?
+                """,
+                (user_id,)
+            ).fetchone()
+
+            if result:
+                return dict(result) 
+            return None
+        finally:
+            if con:
+                con.close() 

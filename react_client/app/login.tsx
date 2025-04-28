@@ -50,7 +50,7 @@ const LoginScreen = () => {
         // https://medium.com/@paritasampa95/how-asyncstorage-stores-data-in-react-native-102498260af0
         await AsyncStorage.setItem('authToken', data['access_token']);
 
-        router.push('/test');
+        router.push('/profile');
       } else {
         const errorData = await response.json();
         console.log('Fout bij inloggen:', errorData.message);
