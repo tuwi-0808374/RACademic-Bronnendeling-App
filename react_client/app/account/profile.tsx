@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity, 
-    StyleSheet,
-    Image, 
-    SafeAreaView,
-    StatusBar, 
-    KeyboardAvoidingView, 
-    Platform 
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 
@@ -105,7 +94,7 @@ export default function ProfileScreen() {
       >
         <View style={styles.innerContainer}>
           <Image
-            source={require('../assets/images/hr-logo.png')} 
+            source={require('../../assets/images/hr-logo.png')} 
             style={styles.logo}
             resizeMode="contain"
           />
