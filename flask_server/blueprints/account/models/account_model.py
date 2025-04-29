@@ -71,12 +71,12 @@ class Account:
             if con:
                 con.close() 
                 
-    def update_profile(self, user_id, first_name=None, last_name=None, email=None, display_name=None):
+    def update_profile(self, user_id, first_name=None, last_name=None, email=None):
         cursor, con = self.connect_db()  
         try:
             cursor.execute(  
-                "UPDATE users SET first_name = ?, last_name = ?, display_name = ?, email = ? WHERE id = ?",
-                (first_name, last_name, display_name, email, user_id)
+                "UPDATE users SET first_name = ?, last_name = ?, email = ? WHERE id = ?",
+                (first_name, last_name, email, user_id)
             )
             con.commit()
             return True

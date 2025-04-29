@@ -58,14 +58,13 @@ def update_profile(user_id):
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     email = data.get('email')
-    display_name = data.get('display_name')
+    
     
     success = account_model.update_profile(
         user_id=user_id,
         first_name=first_name,
         last_name=last_name,
-        email=email,
-        display_name=display_name
+        email=email
     )
     if success:
         return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200

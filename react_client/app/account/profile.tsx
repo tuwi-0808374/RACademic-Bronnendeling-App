@@ -80,10 +80,53 @@ export default function ProfileScreen() {
   }, []);
 
 
+  
+  
   const saveProfile = async () => {
-    console.log('Profiel opslaan met:', { first_name, lastName, email });
+    console.log('Profiel opslaan met:', { first_name, lastName, email, });
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      if (!token) {
+        console.log('Geen token gevonden.');
+        return;
+      }
 
+      const decoded = jwt_decode<JwtPayload>(token);
+      const currentUserId = decoded.user_id; 
+
+      if (!currentUserId) {
+        console.error('User ID niet gevonden in token:', decoded);
+        return;
+      }
+
+      const response = await fetch(`http://127.0.0.1:5000/update_profile/${currentUserId}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name,
+          last_name: lastName,
+          email,
+        }),
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log('Profiel succesvol bijgewerkt:', responseData);        
+        } else {
+            
+        console.log(`Kan profiel niet updaten.`);
+        const errorData = await response.text(); 
+        console.log('Foutdetails:', errorData);
+      }
+    } catch (error) {
+      console.log('Fout bij opslaan profiel:', error);
+    }
   };
+
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
