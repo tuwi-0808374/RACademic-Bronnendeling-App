@@ -1,15 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    View, 
-    Text, 
-    TextInput, 
-    Button, 
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity, 
     StyleSheet,
+    Image, 
+    SafeAreaView,
+    StatusBar, 
+    KeyboardAvoidingView, 
+    Platform 
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 
+const COLORS = {
+  red: '#C80032',
+  background: '#F8F4EF',
+  text: '#333333',
+  textLight: '#FFFFFF',
+  inputLine: '#555555', 
+  placeholderText: '#666666', 
 
+};
 
 interface JwtPayload {
   sub: string; 
@@ -20,13 +33,6 @@ interface JwtPayload {
   jti: string; 
 }
 
-interface UserData {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  full_name: string;
-}
 
 export default function ProfileScreen() {
   const [email, setEmail] = useState('');
@@ -48,11 +54,10 @@ export default function ProfileScreen() {
 
         if (!currentUserId) {
           console.error('User ID niet gevonden in token:', decoded);
-          
           return;
-     }
+        }
 
-        setUserId(currentUserId);
+        setUserId(currentUserId); 
 
         const response = await fetch(`http://127.0.0.1:5000/profile/${currentUserId}`, {
           method: 'GET',
@@ -64,12 +69,18 @@ export default function ProfileScreen() {
 
         if (response.ok) {
           const responseData = await response.json();
-          const userData = responseData.data;
-          setFirstName(userData.first_name || '');
-          setLastName(userData.last_name || '');
-          setEmail(userData.email || '');
+          const userData = responseData.data; 
+          if (userData) {
+              setFirstName(userData.first_name || '');
+              setLastName(userData.last_name || '');
+              setEmail(userData.email || '');
+          } else {
+              
+          }
         } else {
-          console.log('Kan profiel niet ophalen.');
+          console.log(`Kan profiel niet ophalen.`);
+          const errorData = await response.text(); 
+          console.log('Foutdetails:', errorData);
         }
       } catch (error) {
         console.log('Fout bij ophalen profiel:', error);
@@ -79,53 +90,143 @@ export default function ProfileScreen() {
     fetchProfile();
   }, []);
 
+
   const saveProfile = async () => {
-  
-    console.log('Profiel opslaan is nog niet geïmplementeerd.');
+    console.log('Profiel opslaan met:', { first_name, lastName, email });
+
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Voornaam</Text>
-      <TextInput 
-        value={first_name} 
-        onChangeText={setFirstName} 
-        style={styles.input} 
-      />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidingContainer}
+      >
+        <View style={styles.innerContainer}>
+          <Image
+            source={require('../assets/images/hr-logo.png')} 
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.logoTitle}>MIJN PROFIEL</Text> 
 
-      <Text style={styles.label}>Achternaam</Text>
-      <TextInput 
-        value={lastName} 
-        onChangeText={setLastName} 
-        style={styles.input} 
-      />
 
-      <Text style={styles.label}>E-mail</Text>
-      <TextInput 
-        value={email} 
-        onChangeText={setEmail} 
-        style={styles.input} 
-      />
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Voornaam</Text>
+            <TextInput
+              value={first_name}
+              onChangeText={setFirstName}
+              style={[styles.input, styles.inputStyle]} 
+              selectionColor={COLORS.red} 
+              placeholderTextColor={COLORS.placeholderText} 
+            />
+          </View>
 
-      <Button title="Opslaan" onPress={saveProfile} />
-    </View>
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Achternaam</Text>
+            <TextInput
+              value={lastName}
+              onChangeText={setLastName}
+              style={[styles.input, styles.inputStyle]}
+              selectionColor={COLORS.red}
+              placeholderTextColor={COLORS.placeholderText}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>E-mail</Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail} 
+              style={[styles.input, styles.inputStyle]}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              selectionColor={COLORS.red}
+              placeholderTextColor={COLORS.placeholderText}
+            />
+          </View>
+
+          <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
+            <Text style={styles.actionButtonText}>Opslaan</Text>
+          </TouchableOpacity>
+
+
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    marginTop: 50,
+  safeArea: {
+    flex: 1,
+    backgroundColor: COLORS.background,
   },
-  label: {
+  keyboardAvoidingContainer: {
+    flex: 1,
+  },
+  innerContainer: {
+    flex: 1,
+    paddingHorizontal: 30,
+    paddingTop: 40, 
+    paddingBottom: 20,
+  },
+  logo: {
+    width: 120, 
+    height: 80,
+    marginBottom: 10,
+    alignSelf: 'center',
+  },
+  logoTitle: {
+    fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 10,
+    color: COLORS.text,
+    textAlign: 'center',
+    marginBottom: 40, 
+    textTransform: 'uppercase', 
+  },
+  inputGroup: {
+    width: '100%',
+    marginBottom: 25,
+  },
+  inputLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    marginBottom: 5,
+    textTransform: 'uppercase',
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    marginTop: 5,
-    borderRadius: 5,
+    width: '100%',
+    borderBottomWidth: 1.5,
+    height: 40,
+    fontSize: 16,
+    paddingBottom: 5,
+    color: COLORS.text,
+  },
+  inputStyle: { 
+    borderBottomColor: COLORS.inputLine,
+  },
+  
+  actionButton: {
+    backgroundColor: COLORS.red,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 30, 
+    marginBottom: 30, 
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  actionButtonText: {
+    color: COLORS.textLight,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
