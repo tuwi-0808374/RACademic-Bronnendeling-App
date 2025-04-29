@@ -46,3 +46,28 @@ def get_profile_by_id(user_id):
         return jsonify({'status': 'error', 'message': 'Gebruiker niet gevonden'}), 404
 
     return jsonify({'status': 'success', 'data': user}), 200
+
+
+@account_bp.route('/update_profile/<int:user_id>', methods=['PATCH'])
+@jwt_required()
+@cross_origin()
+def update_profile(user_id):
+    account_model = Account()
+    data = request.get_json()
+    
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    email = data.get('email')
+    display_name = data.get('display_name')
+    
+    success = account_model.update_profile(
+        user_id=user_id,
+        first_name=first_name,
+        last_name=last_name,
+        email=email,
+        display_name=display_name
+    )
+    if success:
+        return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200
+    else:
+        return jsonify({'status': 'error', 'message': f'Bijwerken mislukt: {success}'}), 500
