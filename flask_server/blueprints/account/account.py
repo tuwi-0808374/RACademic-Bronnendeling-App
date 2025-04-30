@@ -4,6 +4,7 @@ from blueprints.account.models.account_model import Account
 import bcrypt
 from flask_cors import cross_origin
 
+
 account_bp = Blueprint('account', __name__)
 
 @account_bp.route('/api/login', methods=['POST'])

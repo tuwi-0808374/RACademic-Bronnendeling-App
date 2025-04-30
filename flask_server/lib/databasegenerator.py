@@ -44,7 +44,8 @@ class DatabaseGenerator:
             password TEXT NOT NULL,
             is_admin BOOLEAN NOT NULL default false,
             is_public BOOLEAN NOT NULL default false,
-            is_banned BOOLEAN NOT NULL default false
+            is_banned BOOLEAN NOT NULL default false,
+            profile_image BLOB
         );
         """
         self.__execute_transaction_statement(create_statement)
@@ -196,6 +197,19 @@ class DatabaseGenerator:
                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
         print("✅ Initial users inserted")
+        
+    def insert_user_with_image(self, email, display_name, first_name, last_name, password, profile_image_path):
+        with open(profile_image_path, "rb") as image_file:
+            image_data = image_file.read()
+        
+        create_statement = """
+        INSERT INTO users (email, display_name, first_name, last_name, password, profile_image) 
+        VALUES (?, ?, ?, ?, ?, ?)
+        """
+        parameters = (email, display_name, first_name, last_name, password, image_data)
+        self.__execute_transaction_statement(create_statement, parameters)
+        print(f"✅ User {display_name} with image inserted")
+
 
     # Insert initial posts into the database
     def insert_initial_posts(self):
