@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, ScrollView } from 'react-native';
 import { Link, useRouter } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
 
 const COLORS = {
   red: '#C80032',
+  black: '#000000',
   background: '#F8F4EF',
   text: '#333333',
   textLight: '#FFFFFF',
@@ -11,6 +13,10 @@ const COLORS = {
   placeholderText: '#666666',
   languageBackground: '#E0E0E0',
 };
+
+
+
+
 
 const PrimaryButton = ({ onPress, title }: { onPress: () => void, title: string }) => (
   <TouchableOpacity style={styles.primaryButton} onPress={onPress}>
@@ -53,6 +59,21 @@ const RegisterScreen = () => {
       console.log('Error:', error);
     }
   };
+
+    const [image, setImage] = useState<string | null>(null);
+
+      const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+
+        if (!result.canceled) {
+          setImage(result.assets[0].uri);
+        }
+      };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -102,13 +123,26 @@ const RegisterScreen = () => {
                 />
                 <Text style={styles.logoTitle}>HOGESCHOOL {'\n'}ROTTERDAM</Text>
               </View>
-              <Image
-                source={require('../../assets/images/profile.png')} 
-                style={styles.profileImage}
-                resizeMode="contain"
-              />
-            </View>
+              <TouchableOpacity onPress={pickImage} style={styles.imagePickerButton}>
+                {image ? (
+                  <Image
+                    source={{ uri: image }}
+                    style={styles.profileImage}
+                    resizeMode="cover"
 
+                  />
+                ) : (
+                  <Image
+                    source={require('../../assets/images/profile.png')}
+                    style={styles.profileImage}
+                    resizeMode="cover"
+
+                  />
+                )}
+              </TouchableOpacity>
+
+            </View>
+            
             <View style={styles.nameInputRow}>
               <View style={styles.nameInputContainer}>
                 <Text style={styles.inputLabel}>VOORNAAM</Text>
@@ -209,6 +243,15 @@ const styles = StyleSheet.create({
   },
   keyboardAvoidingContainer: {
     flex: 1,
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  image: {
+    width: 200,
+    height: 200,
   },
   scrollContainer: {
      flexGrow: 1, 
@@ -348,7 +391,8 @@ const styles = StyleSheet.create({
   profileImage: {
     width: 160,
     height: 160,
-    borderRadius: 25, 
+    borderRadius: 80,
+    aspectRatio: 1,  
   },
   
   
