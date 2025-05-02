@@ -24,10 +24,13 @@ export default function Index() {
             <Link href={'account/register'}> 
                 Register
             </Link>
-
             <Link href={'/CreatePost'}>
                 Create Post
             </Link>
+            <Link href={'posts/edit_post'}>
+                edit Post
+            </Link>
+
 
         </View>
     );
