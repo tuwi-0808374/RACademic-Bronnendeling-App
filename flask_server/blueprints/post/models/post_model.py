@@ -119,7 +119,7 @@ class Post:
         return dict_result
 
 
-    def assign_post_tags(self, tag_ids, post_id):
+    def post_assign_post_tags(self, tag_ids, post_id):
         result = None
         for tag_id in tag_ids:
             query = "INSERT INTO post_tags (tag_id, post_id) VALUES (?,?)"
@@ -128,6 +128,16 @@ class Post:
         if result:
             return True
         return False
+
+
+    def patch_edit_post(self, id, data):
+        result = None
+        query = "UPDATE posts SET title = ? AND content = ? WHERE id = ?"
+
+        if result:
+            return True
+        return False
+
 
     def get_favorite_posts(self, user_id):
         query = """
