@@ -73,6 +73,11 @@ def create_posts():
 @post_bp.route('/edit_posts/<int:id>', methods=['PATCH'])
 def edit_posts(id):
     post = Post()
+    data = request.get_json()
+    edit_post = post.patch_edit_post(id, data)
+    if not edit_post:
+        return jsonify({'status': 'error', 'message': 'Post not Edited'}), 404
+    return jsonify({'status': 'success', 'data': edit_post}), 200
 
 
 

@@ -131,12 +131,13 @@ class Post:
 
 
     def patch_edit_post(self, id, data):
-        result = None
-        query = "UPDATE posts SET title = ? AND content = ? WHERE id = ?"
-
+        query = "UPDATE posts SET title = ?, content = ? WHERE id = ?"
+        result = self.cursor.execute(query, (data["title"], data["content"], id))
+        self.con.commit()
         if result:
             return True
         return False
+
 
 
     def get_favorite_posts(self, user_id):
