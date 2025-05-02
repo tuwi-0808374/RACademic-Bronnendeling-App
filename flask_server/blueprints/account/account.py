@@ -2,10 +2,13 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import *
 from blueprints.account.models.account_model import Account
 import bcrypt
+from flask_cors import cross_origin
+
 
 account_bp = Blueprint('account', __name__)
 
 @account_bp.route('/api/login', methods=['POST'])
+@cross_origin()
 def login_api():
     data = request.json
     login_email = data.get('email')
@@ -31,3 +34,40 @@ def login_api():
         return jsonify({"access_token": access_token}), 200
 
     return jsonify({"message": "Foutieve login!"}), 401
+
+
+
+@account_bp.route('/profile/<int:user_id>', methods=['GET'])
+@jwt_required()
+@cross_origin()
+def get_profile_by_id(user_id):
+    account_model = Account() 
+    user = account_model.get_user_by_id(user_id)
+    if not user:
+        return jsonify({'status': 'error', 'message': 'Gebruiker niet gevonden'}), 404
+
+    return jsonify({'status': 'success', 'data': user}), 200
+
+
+@account_bp.route('/update_profile/<int:user_id>', methods=['PATCH'])
+@jwt_required()
+@cross_origin()
+def update_profile(user_id):
+    account_model = Account()
+    data = request.get_json()
+    
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    email = data.get('email')
+    
+    
+    success = account_model.update_profile(
+        user_id=user_id,
+        first_name=first_name,
+        last_name=last_name,
+        email=email
+    )
+    if success:
+        return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200
+    else:
+        return jsonify({'status': 'error', 'message': f'Bijwerken mislukt: {success}'}), 500
