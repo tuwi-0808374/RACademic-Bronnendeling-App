@@ -5,9 +5,13 @@ meta {
 }
 
 post {
-  url: http://localhost:5000/posts/multiple_favorites
+  url: http://localhost:5000/posts/multiple_favorites/:user_id
   body: json
   auth: inherit
+}
+
+params:path {
+  user_id: 1
 }
 
 body:json {

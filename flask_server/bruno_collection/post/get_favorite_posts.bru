@@ -5,15 +5,13 @@ meta {
 }
 
 get {
-  url: http://localhost:5000/posts/favorite
+  url: http://localhost:5000/posts/favorite/:user_id
   body: none
-  auth: apikey
+  auth: none
 }
 
-auth:apikey {
-  key: token
-  value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0NTQyMTE0MSwianRpIjoiZjkyNDZmNmItYTU1My00ZmFiLTliN2YtNzZjOGRiODZlNzExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InN0dWRlbnRAaHIubmwiLCJuYmYiOjE3NDU0MjExNDEsImNzcmYiOiJjODBjYTc0MC04YzBlLTQyMDctYmUyNC1kYjA1YTkzZTdhMDEiLCJleHAiOjE3NDU0MjIwNDEsInVzZXJfaWQiOjF9.eB_luk2gx2H9oDNTv49zb5nTtmzirjcraZDkNAgBnIU
-  placement: header
+params:path {
+  user_id: 2
 }
 
 body:json {
