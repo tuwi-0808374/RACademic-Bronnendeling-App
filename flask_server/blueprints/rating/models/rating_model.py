@@ -15,17 +15,20 @@ class Rating:
 
     #!!! target is hier post of comment, niet posts of comments !!!
     def get_user_ratings(self,user_id,target,target_ids):
-        print(target_ids, 'target')
         if target_ids:
-            params =()
-            query = f'SELECT post_id, rating FROM ratings WHERE user_id={user_id} AND userRated = True '
+
+            params = (user_id,) + tuple(target_ids)
             total_params = ','.join(['?'] * len(target_ids))
-            query += f"OR {target}_id IN ({total_params}) "
-            params += tuple(target_ids)
+            query = f'''
+                SELECT {target}_id, rating
+                FROM ratings
+                WHERE user_id = ? AND userRated = True AND {target}_id IN ({total_params})
+            '''
         else:
             return False
+        print(query,params)
         if query:
-            self.cursor.execute(query, params,)
+            self.cursor.execute(query,params,)
             result = self.cursor.fetchall()
             if result:
                 result_dicts = [dict(row) for row in result]
