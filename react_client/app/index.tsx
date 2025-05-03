@@ -5,8 +5,6 @@ import { Link } from 'expo-router';
 
 export default function Index() {
     return (
-
-        
         <View
             style={{
                 flex: 1,
@@ -15,18 +13,21 @@ export default function Index() {
             }}
         >
             <SearchBar />
-            <Link href={'account/login'}> 
+            <Link href={'/account/login'}>
                 Login
             </Link>
-            <Link href={'account/profile'}> 
+            <Link href={'/account/profile'}>
                 Profile
             </Link>
-            <Link href={'account/register'}> 
+            <Link href={'/account/register'}>
                 Register
             </Link>
 
-            <Link href={'/CreatePost'}>
+            <Link href={'/posts/create_post'}>
                 Create Post
+            </Link>
+            <Link href={'/posts'}>
+                Posts
             </Link>
 
         </View>

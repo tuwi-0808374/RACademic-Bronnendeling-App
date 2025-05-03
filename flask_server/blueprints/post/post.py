@@ -25,9 +25,11 @@ def get_posts():
         return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
     
     post = Post()
-    search_query = request.args.get('search_query', default=None)
-    tag_ids = request.args.getlist('tag_id')
-    
+    data = request.get_json(silent=True) or {}
+
+    search_query = data.get('search_query', None)
+    tag_ids = data.get('tags', None)
+
     if search_query or tag_ids:
         posts = post.search_posts(search_query, tag_ids)
     else:

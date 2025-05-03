@@ -15,15 +15,18 @@ export default function Test() {
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts.map((post, i) => (
         <Text key={i}>
+          {'\n'}
+          {post['post_id']}
+          {'\n'}
           {post['title']}
           {'\n'}
           {post['content']}
           {'\n'}
           {post['total_rating']}
           {'\n'}
-
+          {'\n'}
         </Text>
-        
+
       ))}
     </View>
   );

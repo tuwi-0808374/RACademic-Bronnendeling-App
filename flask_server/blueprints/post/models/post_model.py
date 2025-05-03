@@ -30,6 +30,7 @@ class Post:
 
     def get_posts(self, user_id = None):
         if user_id:
+            # als het kan moet deze ook ORDER BY posted_date DESC hebben
             query = """
                     SELECT posts.*, ratings.is_favorite 
                     FROM posts
@@ -67,6 +68,7 @@ class Post:
                 # checked voor content en title
                 query += "AND (LOWER(content) LIKE ? or LOWER(title) LIKE ?) "
                 params += (str('%' + word.lower() + '%'),str('%' + word.lower() + '%'),)
+        query += (str("ORDER BY posted_date DESC"))
         self.cursor.execute(query, params,)
         posts = self.cursor.fetchall()
 
@@ -102,7 +104,7 @@ class Post:
 
     #bron https://docs.python.org/3/library/datetime.html
     def post_create_post(self, user_id, data):
-        posted_date = datetime.now().strftime("%Y-%m-%d %H:%M")
+        posted_date = int(datetime.now().timestamp())
         query = "INSERT INTO posts (title, content, user_id, posted_date) VALUES (?,?,?,?)"
         result = self.cursor.execute(query, (data["title"], data["content"], user_id, posted_date))
         self.con.commit()

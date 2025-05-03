@@ -6,7 +6,7 @@ meta {
 
 get {
   url: http://localhost:5000/posts
-  body: none
+  body: json
   auth: inherit
 }
 
@@ -16,7 +16,7 @@ params:query {
 
 body:json {
   {
-    "search_terms": "dit",
-    "tags": 1
+    "search_query": "dit",
+    "tags": [1,2]
   }
 }
