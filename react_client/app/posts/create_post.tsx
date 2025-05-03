@@ -18,7 +18,7 @@ const COLORS = {
 // https://docs.expo.dev/versions/latest/sdk/checkbox/
 // https://www.youtube.com/watch?v=C-PVg6HhMNk
 
-export default function CreatePost() {
+export default function Create_post() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tagid, setTagid] = useState([]);
