@@ -4,11 +4,16 @@ import RateButtons from "@/components/posts/RateButtons";
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
+  const [ratings, setRatings] = useState([]);
 
   useEffect(() => {
     fetch("http://127.0.0.1:5000/posts")
       .then(res => res.json())
-      .then(data => setPosts(data.data));
+      .then(data => {
+        setPosts(data.data.posts);
+        setRatings(data.data.ratings);
+      })
+
   }, []);
 
   return (
@@ -28,10 +33,10 @@ export default function Test() {
           <RateButtons
               Post_id={post['post_id']}
               Total_Rating={ post['total_rating']}
+              Ratings={ratings}
           />
           {'\n'}
         </Text>
-
       ))}
     </View>
   );
