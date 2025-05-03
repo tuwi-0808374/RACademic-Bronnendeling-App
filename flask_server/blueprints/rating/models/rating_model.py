@@ -13,6 +13,28 @@ class Rating:
         cursor = con.cursor()
         return cursor, con
 
+    #!!! target is hier post of comment, niet posts of comments !!!
+    def get_user_ratings(self,user_id,target,target_ids):
+        print(target_ids, 'target')
+        if target_ids:
+            params =()
+            query = f'SELECT * FROM ratings WHERE user_id={user_id} '
+            total_params = ','.join(['?'] * len(target_ids))
+            query += f"AND {target}_id IN ({total_params}) "
+            params += tuple(target_ids)
+        else:
+            return False
+        print(query)
+        if query:
+            self.cursor.execute(query, params,)
+            result = self.cursor.fetchall()
+            print(result)
+
+            if result:
+                print('in here')
+            else:
+                return False
+
     # kan niet alleen post maar ook comment een rating geven
     def rate(self, user_id, target_id, rating, target,user_rated):
         # checkt of de comment/post bestaat

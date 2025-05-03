@@ -2,8 +2,7 @@ from flask import *
 from lib.utils import get_user_id_from_request
 
 from blueprints.post.models.post_model import Post
-from blueprints.account.models.account_model import Account
-
+from blueprints.rating.models.rating_model import Rating
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
 
@@ -25,6 +24,7 @@ def get_posts():
         return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
     
     post = Post()
+    rating = Rating()
     data = request.get_json(silent=True) or {}
 
     search_query = data.get('search_query', None)
@@ -32,6 +32,9 @@ def get_posts():
 
     if search_query or tag_ids:
         posts = post.search_posts(search_query, tag_ids)
+
+        post_ids = [post['id'] for post in posts]
+        ratings = rating.get_user_ratings(user_id, "post",post_ids)
     else:
         posts = post.get_posts(user_id)
     if not posts:

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
+import RateButtons from "@/components/posts/RateButtons";
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
@@ -24,6 +25,10 @@ export default function Test() {
           {'\n'}
           {post['total_rating']}
           {'\n'}
+          <RateButtons
+              Post_id={post['post_id']}
+              Total_Rating={ post['total_rating']}
+          />
           {'\n'}
         </Text>
 
