@@ -18,20 +18,18 @@ class Rating:
         print(target_ids, 'target')
         if target_ids:
             params =()
-            query = f'SELECT * FROM ratings WHERE user_id={user_id} '
+            query = f'SELECT post_id, rating FROM ratings WHERE user_id={user_id} AND userRated = True '
             total_params = ','.join(['?'] * len(target_ids))
-            query += f"AND {target}_id IN ({total_params}) "
+            query += f"OR {target}_id IN ({total_params}) "
             params += tuple(target_ids)
         else:
             return False
-        print(query)
         if query:
             self.cursor.execute(query, params,)
             result = self.cursor.fetchall()
-            print(result)
-
             if result:
-                print('in here')
+                result_dicts = [dict(row) for row in result]
+                return result_dicts
             else:
                 return False
 
