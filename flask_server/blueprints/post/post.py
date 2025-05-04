@@ -129,6 +129,6 @@ def get_most_upvoted_posts(user_id = None):
 
 @post_bp.route('/posts/most_upvoted/<int:user_id>', methods=['GET'])
 def get_most_upvoted_posts_of_user(user_id):
-    if not user_id:
-        return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
-    get_most_upvoted_posts(user_id)
+    post = Post()
+    posts = post.get_most_upvoted_posts(user_id)
+    return jsonify({'status': 'success', 'posts': posts}), 200

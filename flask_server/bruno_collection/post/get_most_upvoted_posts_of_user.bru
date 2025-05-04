@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:5000/posts
+  url: http://localhost:5000/posts/most_upvoted/:user_id
   body: none
-  auth: inherit
+  auth: none
+}
+
+params:path {
+  user_id: 1
 }
