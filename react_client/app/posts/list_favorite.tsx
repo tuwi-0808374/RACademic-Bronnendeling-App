@@ -107,7 +107,7 @@ export default function Test() {
       </>
        : null }
       
-      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Edit fav list:</Text>
       {posts === undefined ? (
         <Text>No favorite posts found.</Text>
       ) : posts.map((post, i) => (

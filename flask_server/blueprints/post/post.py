@@ -122,7 +122,13 @@ def add_multiple_posts_as_favorite(user_id):
     return jsonify({'status': 'success', 'posts': result}), 200
 
 @post_bp.route('/posts/most_upvoted', methods=['GET'])
-def get_most_upvoted_posts():
+def get_most_upvoted_posts(user_id = None):
     post = Post()
-    posts = post.get_most_upvoted_posts()
+    posts = post.get_most_upvoted_posts(user_id)
     return jsonify({'status': 'success', 'posts': posts}), 200
+
+@post_bp.route('/posts/most_upvoted/<int:user_id>', methods=['GET'])
+def get_most_upvoted_posts_of_user(user_id):
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
+    get_most_upvoted_posts(user_id)

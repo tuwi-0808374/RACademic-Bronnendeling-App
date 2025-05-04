@@ -28,17 +28,26 @@ class Post:
             return True
         return False
 
-    def get_posts(self, user_id = None):
+    # If user_id is given it will also returns if each post is a favorite for that user
+    def get_posts(self, user_id = None, limit = None):
+        params = []
         if user_id:
             query = """
                     SELECT posts.*, ratings.is_favorite 
                     FROM posts
                     LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
                     """
-            self.cursor.execute(query, (user_id,))
+            params.append(user_id)
         else:
             query = "SELECT * FROM posts"
-            self.cursor.execute(query)
+            
+        if limit:
+            query += " LIMIT ?"
+            params.append(limit)
+            
+        query += " ORDER BY posted_date DESC"
+        
+        self.cursor.execute(query, params)
 
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
@@ -192,14 +201,21 @@ class Post:
         result_dicts = [dict(row) for row in result]
         return result_dicts
     
-    def get_most_upvoted_posts(self, limit = 10):
+    def get_most_upvoted_posts(self, user_id = None, limit = 10):
+        params = []
         query = """
                 SELECT *
                 FROM posts
-                ORDER BY total_rating DESC
-                LIMIT ?
                 """
-        self.cursor.execute(query, (limit,))
+        if user_id:
+            query += """
+                    WHERE user_id = ?
+                    """
+            params.append(user_id)
+        
+        query += " ORDER BY total_rating DESC LIMIT ?"
+        params.append(limit)
+        self.cursor.execute(query, params)
         posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in posts]
         return result_dicts

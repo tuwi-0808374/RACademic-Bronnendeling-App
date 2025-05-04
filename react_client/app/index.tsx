@@ -30,10 +30,10 @@ export default function Index() {
             </Link>
 
             <Link href={'/posts/list_favorite'}>
-                List favorited of logged in user
+                List of favorited posts of logged user
             </Link>
             <Link href={'/posts/set_favorite'}>
-                List of post with favorite button
+                List of posts with favorite button
             </Link>
         </View>
     );
