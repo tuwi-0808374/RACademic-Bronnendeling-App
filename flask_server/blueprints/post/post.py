@@ -1,5 +1,4 @@
 from flask import *
-from lib.utils import get_user_id_from_request
 
 from blueprints.post.models.post_model import Post
 from blueprints.account.models.account_model import Account

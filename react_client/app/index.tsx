@@ -29,6 +29,12 @@ export default function Index() {
                 Create Post
             </Link>
 
+            <Link href={'/posts/list_favorite'}>
+                List favorited of logged in user
+            </Link>
+            <Link href={'/posts/set_favorite'}>
+                List of post with favorite button
+            </Link>
         </View>
     );
 }
