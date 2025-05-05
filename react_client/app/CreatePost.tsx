@@ -87,6 +87,7 @@ export default function CreatePost() {
                                     {label: tag['title'], value: tag['id']},
                                     ]}
                                     CheckedValues={tagid}
+                                    key={tag['id']}
                                     onChange={setTagid}
                                     /> ))}
                     </View>

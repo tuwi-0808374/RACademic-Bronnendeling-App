@@ -22,6 +22,7 @@ const CheckBox = ({options, CheckedValues, onChange}) => {
 
             return (
                 <TouchableOpacity style={active ? [styles.CheckBox, styles.activeCheckBox] : styles.CheckBox}
+                                  key={option.value}
                     onPress={() => {
                     if (active) {
                     updatedCheckValues = updatedCheckValues.filter(
