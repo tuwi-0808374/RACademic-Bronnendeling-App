@@ -77,6 +77,16 @@ def edit_posts(id):
     edit_post = post.patch_edit_post(id, data)
     if not edit_post:
         return jsonify({'status': 'error', 'message': 'Post not Edited'}), 404
+
+    recent_post_id = id
+    tag_ids = data['tag_ids']
+    if not recent_post_id or not tag_ids:
+        return jsonify({'status': 'error', 'message': 'No post_id or tag_ids found'}), 404
+
+    created_post_tags = post.post_assign_post_tags(tag_ids, recent_post_id)
+    if not created_post_tags:
+        return jsonify({'status': 'error', 'message': 'Post_tags not found'}), 404
+
     return jsonify({'status': 'success', 'data': edit_post}), 200
 
 

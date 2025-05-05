@@ -139,7 +139,6 @@ class Post:
         return False
 
 
-
     def get_favorite_posts(self, user_id):
         query = """
                 SELECT posts.*, ratings.is_favorite FROM posts

@@ -22,8 +22,8 @@ export default function CreatePost() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tagid, setTagid] = useState([]);
-
     const [data, setData] = useState([]);
+
     useEffect(() => {
         fetch("http://localhost:5000/tags")
             .then(res => res.json())

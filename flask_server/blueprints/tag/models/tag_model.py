@@ -19,6 +19,15 @@ class Tag:
         result_dicts = [dict(row) for row in tags]
         return result_dicts
 
+    def get_tags_by_post_id(self, post_id):
+        query = "SELECT tag_id FROM post_tags WHERE post_id = ?"
+        self.cursor.execute(query, (post_id,))
+        tags = self.cursor.fetchall()
+        result_dicts = [dict(row) for row in tags]
+        if result_dicts:
+            return result_dicts
+        return False
+
     def get_post_by_tags(self, tag_ids):
         query = "SELECT post_id FROM post_tags WHERE 1=1 "
         total_params = ','.join(['?'] * len(tag_ids))

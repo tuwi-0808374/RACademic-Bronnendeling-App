@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import {CheckBox} from "@/components/input";
 
 const COLORS = {
     red: '#C80032',
@@ -10,12 +11,34 @@ const COLORS = {
     placeholderText: '#666666',
 };
 
+// bronnen
+// https://www.youtube.com/watch?v=37vxWr0WgQk
+
 
 export default function editpost() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [tagid, setTagid] = useState([]);
     const postid = 1
-    const [data, setData] = useState([]);
+    const [tagData, setTagData] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:5000/tags")
+            .then(res => res.json())
+            .then(data => {
+                setTagData(data.data);
+                console.log(data.data);
+            })
+    }, []);
+
+    // useEffect(() => {
+    //     fetch(`http://localhost:5000/tags_by_post_id/${postid}`)
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             setTagid(data.data);
+    //             console.log(data.data);
+    //         })
+    // }, []);
 
     useEffect(() => {
     const fetchPost = async () => {
@@ -40,12 +63,12 @@ export default function editpost() {
     }, []);
 
     const EditPost = async () => {
-        console.warn(title, content);
+        console.warn(title, content,tagid);
         const url = `http://localhost:5000/edit_posts/${postid}`;
         let result = await fetch(url, {
             method: 'PATCH',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({title:title,content:content}),
+            body: JSON.stringify({title:title,content:content,tag_ids:tagid}),
         });
         result = await  result.json();
         if(result){
@@ -81,6 +104,18 @@ export default function editpost() {
                             value={content}
                             onChangeText={(text)=> setContent(text)}
                         />
+                    </View>
+
+
+                    <View style={styles.input}>
+                        <Text style={styles.inputlabel}>Tags</Text>
+                            {tagData.map((tag) => (
+                                <CheckBox options={[
+                                    {label: tag['title'], value: tag['id']},
+                                    ]}
+                                    CheckedValues={tagid}
+                                    onChange={setTagid}
+                                    /> ))}
                     </View>
 
                     <View style={styles.create}>
