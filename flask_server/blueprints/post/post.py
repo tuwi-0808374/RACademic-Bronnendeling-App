@@ -29,7 +29,7 @@ def get_posts():
 
     search_query = data.get('search_query', None)
     tag_ids = data.get('tags', None)
-
+    user_rating = None
     if search_query or tag_ids:
         posts = post.search_posts(search_query, tag_ids)
 
@@ -39,6 +39,7 @@ def get_posts():
     if posts:
         post_ids = [post['id'] for post in posts]
         user_rating = rating.get_user_ratings(user_id, "post",post_ids)
+
     elif not posts:
         return jsonify({'status': 'error', 'message': 'No posts found'}), 404
 
@@ -46,6 +47,7 @@ def get_posts():
         "posts": posts,
         "user_rating": user_rating
     }
+    print(data)
     return jsonify({'status': 'success', 'data': data}), 200
 
 

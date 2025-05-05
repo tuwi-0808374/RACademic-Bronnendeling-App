@@ -11,7 +11,7 @@ export default function Test() {
       .then(res => res.json())
       .then(data => {
         setPosts(data.data.posts);
-        setRatings(data.data.ratings);
+        setRatings(data.data.user_rating);
       })
 
   }, []);

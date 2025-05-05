@@ -26,7 +26,6 @@ class Rating:
             '''
         else:
             return False
-        print(query,params)
         if query:
             self.cursor.execute(query,params,)
             result = self.cursor.fetchall()
