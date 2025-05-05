@@ -12,12 +12,86 @@ const COLORS = {
 
 
 export default function editpost() {
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const postid = 1
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+    const fetchPost = async () => {
+    try{
+        const response = await fetch(`http://localhost:5000/posts/${postid}`);
+
+        if(!response.ok){
+            throw new Error('Failed to fetch posts.');
+        }
+
+        const data = await response.json();
+        const postData = data.data
+        console.log(postData);
+        setTitle(postData.title || '');
+        setContent(postData.content || '');
+
+    }
+    catch(error){
+        console.log(error);
+    }}
+    fetchPost();
+    }, []);
+
+    const EditPost = async () => {
+        console.warn(title, content);
+        const url = `http://localhost:5000/edit_posts/${postid}`;
+        let result = await fetch(url, {
+            method: 'PATCH',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({title:title,content:content}),
+        });
+        result = await  result.json();
+        if(result){
+            console.warn("Post is Edited successfully.")
+        }
+
+    }
 
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
             <View style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.title}>Edit Post</Text>
+                </View>
 
+                <View style={styles.form}>
+                    <View style={styles.input}>
+                        <Text style={styles.inputlabel}>Titel</Text>
+                            <TextInput
+                                style={styles.inputcontroltitel}
+                                placeholderTextColor={COLORS.placeholderText}
+                                value={title}
+                                onChangeText={(text)=> setTitle(text)}
+                            />
+                    </View>
+
+                    <View style={styles.input}>
+                        <Text style={styles.inputlabel}>Content</Text>
+                        <TextInput
+                            style={styles.inputcontroltitel}
+                            placeholderTextColor={COLORS.placeholderText}
+                            value={content}
+                            onChangeText={(text)=> setContent(text)}
+                        />
+                    </View>
+
+                    <View style={styles.create}>
+                        <TouchableOpacity onPress={EditPost}>
+                            <View style={styles.button}>
+                                <Text style={styles.buttontext}>Save post</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
             </View>
         </SafeAreaView>
     )

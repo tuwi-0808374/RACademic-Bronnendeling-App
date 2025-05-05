@@ -15,19 +15,19 @@ export default function Index() {
             }}
         >
             <SearchBar />
-            <Link href={'account/login'}> 
+            <Link href={'/account/login'}>
                 Login
             </Link>
-            <Link href={'account/profile'}> 
+            <Link href={'/account/profile'}>
                 Profile
             </Link>
-            <Link href={'account/register'}> 
+            <Link href={'/account/register'}>
                 Register
             </Link>
             <Link href={'/CreatePost'}>
                 Create Post
             </Link>
-            <Link href={'posts/edit_post'}>
+            <Link href={'/posts/edit_post'}>
                 edit Post
             </Link>
 
