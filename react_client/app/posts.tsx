@@ -22,7 +22,7 @@ export default function Test() {
       {posts.map((post, i) => (
         <Text key={i}>
           {'\n'}
-          {post['post_id']}
+          {post['id']}
           {'\n'}
           {post['title']}
           {'\n'}
@@ -31,7 +31,7 @@ export default function Test() {
           {post['total_rating']}
           {'\n'}
           <RateButtons
-              Post_id={post['post_id']}
+              Post_id={post['id']}
               Total_Rating={ post['total_rating']}
               Ratings={ratings}
           />
