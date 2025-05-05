@@ -4,12 +4,10 @@ import {Ionicons} from '@expo/vector-icons';
 
 function Set_Rated_posts(Ratings, Post_id) {
     const [Rated, setRated] = useState(false);
-
     useEffect(() => {
         const match = Ratings.find(rate => rate.post_id === Post_id);
         if (match) {
             setRated(match.rating);
-
         } else {
             setRated(false);
         }
@@ -19,8 +17,9 @@ function Set_Rated_posts(Ratings, Post_id) {
 }
 
 
-export default function RateButtons({Post_id,Total_Rating, Ratings}) {
-    const Rated = Set_Rated_posts(Ratings, Post_id)
+export default function RateButtons({Post_id,Total_Rating, Ratings, updateRatings}) {
+
+    const Rated = Ratings? Set_Rated_posts(Ratings, Post_id): null;
 
     let pos_button_color = '#000000'
     let neg_button_color = '#000000'
@@ -47,7 +46,7 @@ export default function RateButtons({Post_id,Total_Rating, Ratings}) {
             });
             result = await result.json();
             if(result){
-                return result;
+                updateRatings(Post_id,result);
             }
         }
         if (method==="PATCH"){
@@ -58,7 +57,7 @@ export default function RateButtons({Post_id,Total_Rating, Ratings}) {
             });
             result = await result.json();
             if(result){
-                return result;
+                updateRatings(Post_id,result);
             }
         }
 

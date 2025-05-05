@@ -59,7 +59,6 @@ class DatabaseGenerator:
             post_id INTEGER,
             comment_id INTEGER,
             rating INTEGER CHECK (rating IN (1, -1) OR rating IS NULL),
-            userRated BOOLEAN NOT NULL default false,
             is_favorite BOOLEAN DEFAULT false,
             is_reported BOOLEAN DEFAULT false,
             report_reason TEXT,
@@ -256,19 +255,19 @@ Markdown is cool""", "user_id": 6,
     def insert_initial_ratings(self):
         ratings = [
             {"user_id": 1, "post_id": 1, "comment_id": None, "rating": 1, "is_favorite": True, "is_reported": False,
-             "report_reason": None, "userRated": False},
+             "report_reason": None},
             {"user_id": 2, "post_id": None, "comment_id": 2, "rating": -1, "is_favorite": False, "is_reported": True,
-             "report_reason": "Ongepaste inhoud", "userRated": False},
+             "report_reason": "Ongepaste inhoud"},
             {"user_id": 3, "post_id": None, "comment_id": 1, "rating": -1, "is_favorite": False, "is_reported": False,
-             "report_reason": None, "userRated": False},
+             "report_reason": None},
             {"user_id": 4, "post_id": None, "comment_id": 3, "rating": 1, "is_favorite": False, "is_reported": False,
-             "report_reason": None, "userRated": False}
+             "report_reason": None}
         ]
         list_of_parameters = [(rating["user_id"], rating["post_id"], rating["comment_id"], rating["is_favorite"],
-                               rating["is_reported"], rating["report_reason"], rating["userRated"]) for rating in
+                               rating["is_reported"], rating["report_reason"]) for rating in
                               ratings]
-        create_statement = """INSERT INTO ratings (user_id, post_id, comment_id, is_favorite, is_reported, report_reason, userRated) 
-                              VALUES (?, ?, ?, ?, ?, ?, ?)"""
+        create_statement = """INSERT INTO ratings (user_id, post_id, comment_id, is_favorite, is_reported, report_reason) 
+                              VALUES (?, ?, ?, ?, ?,?)"""
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
         print("✅ Initial ratings inserted")
 

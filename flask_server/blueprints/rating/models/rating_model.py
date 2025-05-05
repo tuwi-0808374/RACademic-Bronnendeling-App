@@ -22,7 +22,7 @@ class Rating:
             query = f'''
                 SELECT {target}_id, rating
                 FROM ratings
-                WHERE user_id = ? AND userRated = True AND {target}_id IN ({total_params})
+                WHERE user_id = ? AND {target}_id IN ({total_params})
             '''
         else:
             return False
@@ -31,6 +31,7 @@ class Rating:
             result = self.cursor.fetchall()
             if result:
                 result_dicts = [dict(row) for row in result]
+                print(result_dicts)
                 return result_dicts
             else:
                 return False
@@ -53,14 +54,13 @@ class Rating:
         if query:
             self.cursor.execute(query, (user_id, target_id))
             result = self.cursor.fetchone()
-
             # checkt of de rating bestaat en of de rating value niet gelijk zijn
-            if result and result['rating'] and result['rating'] != rating and user_rated:
+            if result and result['rating'] != rating:
                 result = self.update_rating(user_id, target_id, rating, target)
                 return result
 
             # checkt of de rating niet bestaat
-            elif (not result or not result['rating']) and not user_rated:
+            elif not result:
                 result = self.create_rating(user_id, target_id, rating, target)
                 return result
             else:
@@ -72,7 +72,7 @@ class Rating:
         post = Post()
 
         if target == "posts":
-            query = 'INSERT INTO ratings (user_id,post_id, rating, userRated) VALUES (?,?, ?, 1)'
+            query = 'INSERT INTO ratings (user_id,post_id, rating) VALUES (?,?, ?)'
             result = self.cursor.execute(query, (user_id, target_id, rating))
             self.con.commit()
 
