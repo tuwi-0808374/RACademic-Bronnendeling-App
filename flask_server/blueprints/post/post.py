@@ -122,13 +122,15 @@ def add_multiple_posts_as_favorite(user_id):
     return jsonify({'status': 'success', 'posts': result}), 200
 
 @post_bp.route('/posts/most_upvoted', methods=['GET'])
-def get_most_upvoted_posts(user_id = None):
+def get_most_upvoted_posts(user_id = None):  
+    limit = request.args.get('limit', default=10, type=int)   
     post = Post()
-    posts = post.get_most_upvoted_posts(user_id)
+    posts = post.get_most_upvoted_posts(user_id, limit=limit)
     return jsonify({'status': 'success', 'posts': posts}), 200
 
 @post_bp.route('/posts/most_upvoted/<int:user_id>', methods=['GET'])
 def get_most_upvoted_posts_of_user(user_id):
+    limit = request.args.get('limit', default=10, type=int)
     post = Post()
-    posts = post.get_most_upvoted_posts(user_id)
+    posts = post.get_most_upvoted_posts(user_id, limit=limit)
     return jsonify({'status': 'success', 'posts': posts}), 200
