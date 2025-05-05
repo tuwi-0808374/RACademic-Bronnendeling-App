@@ -20,7 +20,7 @@ function Set_Rated_posts(Ratings, Post_id) {
 export default function RateButtons({Post_id,Total_Rating, Ratings, updateRatings}) {
 
     const Rated = Ratings? Set_Rated_posts(Ratings, Post_id): null;
-
+    console.log(Ratings);
     let pos_button_color = '#000000'
     let neg_button_color = '#000000'
     let pos_button_icon = 'chevron-up-circle-outline'

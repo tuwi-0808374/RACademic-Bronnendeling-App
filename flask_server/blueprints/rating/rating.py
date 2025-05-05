@@ -33,20 +33,17 @@ def handle_rating_process(data, user_rated=None):
     rating_value = data.get("rating")
     target = data.get("target")
 
-    result = rating.rate(user_id, target_id, rating_value, target, user_rated)
+    result = rating.rate(user_id, target_id, rating_value, target)
     # kijkt of het een update is of een create en geeft de juiste error codes
-    print('this',result)
     if user_rated is None:
         if result is None:
             return jsonify({'status': 'error', 'message': f'{target} not found'}), 404
         elif result is False:
             return jsonify({'status': 'error', 'message': f'Already rated this {target}'}), 400
-        print(data)
         return jsonify({'status': 'success', 'data': result}), 201
     else:
         if result is None:
             return jsonify({'status': 'error', 'message': f'{target} not found'}), 404
         elif result is False:
             return jsonify({'status': 'error', 'message': f'No change in rating for {target}'}), 400
-        print(data)
         return jsonify({'status': 'success', 'data': result}), 200

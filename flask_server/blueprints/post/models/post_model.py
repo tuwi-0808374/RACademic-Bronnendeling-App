@@ -15,10 +15,22 @@ class Post:
         cursor = con.cursor()
         return cursor, con
 
-    def calculate_post_rating(self,post_id, new_rating):
+    def calculate_post_rating(self,post_id, new_rating,old_rating):
+
         self.cursor.execute('SELECT total_rating FROM posts WHERE id = ?', (post_id,))
         total_rating = self.cursor.fetchone()
-        calculated_rating = total_rating['total_rating'] + new_rating
+        print('oldrating and new rating', old_rating, new_rating)
+        # create
+        if not old_rating:
+            calculated_rating = total_rating['total_rating'] + new_rating
+        # update remove rating
+        elif not new_rating:
+            calculated_rating = total_rating['total_rating'] - old_rating
+        # update switch rating
+        elif old_rating != new_rating:
+            calculated_rating = total_rating['total_rating'] + (new_rating*2)
+        elif old_rating == new_rating:
+            calculated_rating = total_rating['total_rating'] - old_rating
         result = self.cursor.execute('''
             UPDATE posts 
             SET total_rating = ? 
