@@ -58,14 +58,16 @@ class Rating:
             result = self.cursor.fetchone()
 
             # checkt of de rating bestaat en of de rating value niet gelijk zijn
-            # print(result['post_id'])
             if result:
                 result = self.update_rating(user_id, target_id, rating, target, result['rating'])
+
+                self.con.commit()
                 return result
 
             # checkt of de rating niet bestaat
             elif not result:
                 result = self.create_rating(user_id, target_id, rating, target)
+                self.con.commit()
                 return result
             else:
                 return False

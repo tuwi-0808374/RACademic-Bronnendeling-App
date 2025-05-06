@@ -16,9 +16,6 @@ export default function Test() {
 
   }, []);
 
-  const updateRatings = (Post_id, newRating) => {
-    // console.log(Post_id,"post id", newRating);
-  };
 
   return (
     <View style={{ padding: 20 }}>
@@ -32,13 +29,10 @@ export default function Test() {
           {'\n'}
           {post['content']}
           {'\n'}
-          {post['total_rating']}
-          {'\n'}
           <RateButtons
               Post_id={post['id']}
               Total_Rating={ post['total_rating']}
               Ratings={ratings}
-              updateRatings={updateRatings}
           />
           {'\n'}
         </Text>

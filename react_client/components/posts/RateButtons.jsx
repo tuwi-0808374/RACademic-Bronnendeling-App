@@ -2,39 +2,25 @@ import React, { useEffect,useState } from 'react';
 import { TouchableOpacity,Text ,StyleSheet } from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 
-function Set_Rated_posts(Ratings, Post_id) {
+export default function RateButtons(props) {
+    const [totalRating, setTotalRating] = useState(props.Total_Rating);
     const [Rated, setRated] = useState(false);
+    // checked of het all een rating heeft
     useEffect(() => {
-        const match = Ratings.find(rate => rate.post_id === Post_id);
-        if (match) {
-            setRated(match.rating);
-        } else {
-            setRated(false);
-        }
-    }, [Ratings, Post_id]);
+        const matches = props.Ratings.find(rate => rate.post_id === props.Post_id)?.rating || false;
+        setRated(matches || false);
+    }, [props.Ratings, props.Post_id]);
 
-    return Rated;
-}
+    console.log(Rated)
+    // maakt de styling aan van de up/downvotes
+    const isPositive = Rated === 1;
+    const isNegative = Rated === -1;
+    const pos_button_color = isPositive ? '#0000FF' : '#000000';
+    const neg_button_color = isNegative ? '#ff0000' : '#000000';
+    const pos_button_icon = isPositive ? 'chevron-up-circle' : 'chevron-up-circle-outline';
+    const neg_button_icon = isNegative ? 'chevron-down-circle' : 'chevron-down-circle-outline';
 
 
-export default function RateButtons({Post_id,Total_Rating, Ratings, updateRatings}) {
-
-    const Rated = Ratings? Set_Rated_posts(Ratings, Post_id): null;
-    console.log(Ratings);
-    let pos_button_color = '#000000'
-    let neg_button_color = '#000000'
-    let pos_button_icon = 'chevron-up-circle-outline'
-    let neg_button_icon = 'chevron-down-circle-outline'
-    if (Rated === 1){
-        pos_button_color = '#0000FF'
-        pos_button_icon = 'chevron-up-circle'
-        neg_button_color = '#000000'
-    }
-    else if (Rated === -1){
-        pos_button_color = '#000000'
-        neg_button_icon = 'chevron-down-circle'
-        neg_button_color = '#ff0000'
-    }
     const Rate = async (rating) => {
         const method= Rated? "PATCH" : "POST";
         const url = method==="PATCH"?  `http://localhost:5000/rating/1` : `http://localhost:5000/rating`;
@@ -42,26 +28,33 @@ export default function RateButtons({Post_id,Total_Rating, Ratings, updateRating
             let result = await fetch(url, {
                 method: method,
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({target_id:Post_id, rating:rating, target:"posts"}),
+                body: JSON.stringify({target_id:props.Post_id, rating:rating, target:"posts"}),
             });
             result = await result.json();
             if(result){
-                updateRatings(Post_id,result);
+                updateRatings(rating,props.Total_Rating);
             }
         }
         if (method==="PATCH"){
             let result = await fetch(url, {
                 method: method,
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({target_id:Post_id, rating:rating, target:"posts"}),
+                body: JSON.stringify({target_id:props.Post_id, rating:rating, target:"posts"}),
             });
             result = await result.json();
             if(result){
-                updateRatings(Post_id,result);
+                updateRatings(rating,props.Total_Rating);
             }
         }
 
     };
+
+    const updateRatings = (new_rating,prevTotal) => {
+        // console.log(prevTotal,new_rating);
+        setTotalRating(prevTotal + new_rating);
+
+    };
+
     return (
         <>
             <TouchableOpacity style={[styles.button, {color: pos_button_color}]} onPress={() => Rate(1)}>
@@ -70,7 +63,7 @@ export default function RateButtons({Post_id,Total_Rating, Ratings, updateRating
                 size={24}
                 color={pos_button_color}/>
             </TouchableOpacity>
-            <Text>{Total_Rating}</Text>
+            <Text>{totalRating}</Text>
             <TouchableOpacity style={[styles.button, {color: neg_button_color}]} onPress={() => Rate(-1)}>
             <Ionicons
                 name={neg_button_icon}
