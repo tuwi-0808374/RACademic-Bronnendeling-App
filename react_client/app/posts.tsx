@@ -18,7 +18,6 @@ export default function Test() {
 
   }, []);
 
-
   return (
     <View style={{ padding: 20 }}>
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>

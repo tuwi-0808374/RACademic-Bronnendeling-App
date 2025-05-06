@@ -5,22 +5,21 @@ import {Ionicons} from '@expo/vector-icons';
 export default function RateButtons(props) {
     const [totalRating, setRating] = useState(props.Total_Rating);
     const [Rated, setRated] = useState(false);
+
     // checked of het all een rating heeft
     useEffect(() => {
         const matches = props.Ratings.find(rate => rate.post_id === props.Post_id)?.rating || false;
         setRated(matches || false);
     }, [props.Ratings, props.Post_id]);
 
-    console.log(Rated)
-
-
     // maakt de styling aan van de up/downvotes
-    const isPositive = Rated === 1;
-    const isNegative = Rated === -1;
-    const pos_button_color = isPositive ? '#0000FF' : '#000000';
-    const neg_button_color = isNegative ? '#ff0000' : '#000000';
-    const pos_button_icon = isPositive ? 'chevron-up-circle' : 'chevron-up-circle-outline';
-    const neg_button_icon = isNegative ? 'chevron-down-circle' : 'chevron-down-circle-outline';
+    const buttonSettings ={
+        'pos_color':Rated === 1?'#0000FF': '#000000',
+        'pos_icon': Rated === 1?'chevron-up-circle': 'chevron-up-circle-outline',
+        'neg_color': Rated === -1?'#ff0000': '#000000',
+        'neg_icon': Rated === -1? 'chevron-down-circle': 'chevron-down-circle-outline'
+    };
+    console.log(Rated);
 
 
     const Rate = async (rating) => {
@@ -51,27 +50,34 @@ export default function RateButtons(props) {
 
     };
 
-    const updateRatings = (new_rating,prevTotal) => {
-        // console.log(prevTotal,new_rating);
-        setRating(prevTotal + new_rating);
-        setRated(new_rating);
-
+    const updateRatings = (new_rating) => {
+        const diff = new_rating - (Rated || 0);
+        if (diff === 0){
+            setRating(prev => prev - new_rating);
+            setRated(false);
+            console.log('undo t',props.Total_Rating, "n",new_rating, 'd', diff);
+        }
+        else {
+            setRating(prev => prev + diff);
+            setRated(new_rating);
+            console.log('commit t',props.Total_Rating, "n",new_rating, 'd', diff);
+        }
     };
 
     return (
         <>
-            <TouchableOpacity style={[styles.button, {color: pos_button_color}]} onPress={() => Rate(1)}>
+            <TouchableOpacity style={[styles.button]} onPress={() => Rate(1)}>
             <Ionicons
-                name={pos_button_icon}
+                name={buttonSettings.pos_icon}
                 size={24}
-                color={pos_button_color}/>
+                color={buttonSettings.pos_color}/>
             </TouchableOpacity>
             <Text>{totalRating}</Text>
-            <TouchableOpacity style={[styles.button, {color: neg_button_color}]} onPress={() => Rate(-1)}>
+            <TouchableOpacity style={[styles.button]} onPress={() => Rate(-1)}>
             <Ionicons
-                name={neg_button_icon}
+                name={buttonSettings.neg_icon}
                 size={24}
-                color={neg_button_color}/>
+                color={buttonSettings.neg_color}/>
         </TouchableOpacity></>
     )
 }
