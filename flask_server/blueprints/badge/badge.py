@@ -8,8 +8,8 @@ base = Blueprint('base', __name__)
 
 @badge_bp.route('/badge/<int:user_id>', methods=['GET'])
 def get_badges_of_user(user_id):
-    data = [
-        {'id': 1, 'name': 'Voorbeeld 1'},
-        {'id': 2, 'name': 'Voorbeeld 2'}
-    ]
-    return jsonify({'status': 'success', 'data': data})
+    badge = Badge()
+    badges = badge.get_bages_of_user(user_id)
+    if not badges:
+        return jsonify({'status': 'error', 'message': 'No badges found'}), 404
+    return jsonify({'status': 'success', 'data': badges}), 200
