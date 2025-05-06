@@ -5,9 +5,14 @@ meta {
 }
 
 post {
-  url: http://localhost:5000/posts/2/favorite
-  body: json
+  url: http://localhost:5000/posts/:post_id/favorite/:user_id
+  body: none
   auth: none
+}
+
+params:path {
+  post_id: 4
+  user_id: 2
 }
 
 body:json {

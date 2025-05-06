@@ -1,0 +1,15 @@
+meta {
+  name: get_most_upvoted_posts_of_user
+  type: http
+  seq: 9
+}
+
+get {
+  url: http://localhost:5000/posts/most_upvoted/:user_id
+  body: none
+  auth: none
+}
+
+params:path {
+  user_id: 1
+}

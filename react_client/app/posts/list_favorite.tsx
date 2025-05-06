@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, Button } from 'react-native';
 import FavoriteButton from '../../components/posts/FavoriteButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwt_decode from 'jwt-decode';
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
@@ -14,15 +15,14 @@ export default function Test() {
     try {
       // https://medium.com/better-programming/how-to-authentication-users-with-token-in-a-react-application-f99997c2ee9d
       const token = await AsyncStorage.getItem('authToken');
-      console.log('Token:', token ?? 'No token');
+      if (!token) {
+        console.log('Geen token gevonden.');
+        return;
+      }
 
-      fetch("http://127.0.0.1:5000/posts/favorite",{
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'token': token?.toString() ?? '',
-        },
-      })
+      const decoded_user: any = jwt_decode(token);
+
+      fetch(`http://127.0.0.1:5000/posts/favorite/${decoded_user.user_id}`)
       .then((response) => {
         if (response.status === 401) {
           console.log("Unauthorized access. Redirecting to login.");
@@ -51,10 +51,18 @@ export default function Test() {
 
   const undoDeleteFavorite = async () => {
     console.log("Before:", undoID);
+    const token = await AsyncStorage.getItem('authToken');
+    if (!token) {
+      console.log('Geen token gevonden.');
+      return;
+    }
+
+    const decoded_user: any = jwt_decode(token);
+
     // Bron voor het versturen van data naar de server met react.
     // https://www.youtube.com/watch?v=0WyHHioebvY
     
-    fetch("http://127.0.0.1:5000/posts/multiple_favorites",
+    fetch(`http://127.0.0.1:5000/posts/multiple_favorites/${decoded_user.user_id}`,
       {
         method: 'POST',
         headers: {
@@ -99,7 +107,7 @@ export default function Test() {
       </>
        : null }
       
-      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Edit fav list:</Text>
       {posts === undefined ? (
         <Text>No favorite posts found.</Text>
       ) : posts.map((post, i) => (
@@ -111,7 +119,7 @@ export default function Test() {
           {'\n'}
           Fav: {post['is_favorite']}
           {'\n'}
-          <FavoriteButton id = {post['id']} is_favorited = {post['is_favorite']} onPress={() => showUndoDeleteFavorite(post['id'])} />
+          <FavoriteButton post_id = {post['id']} is_favorited = {post['is_favorite']} onPress={() => showUndoDeleteFavorite(post['id'])} />
           <hr></hr>
         </Text>  
         
