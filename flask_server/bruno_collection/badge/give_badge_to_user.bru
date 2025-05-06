@@ -4,8 +4,13 @@ meta {
   seq: 2
 }
 
-get {
-  url: 
+post {
+  url: http://localhost:5000/badge/:user_id/:badge_id
   body: none
   auth: inherit
+}
+
+params:path {
+  badge_id: 2
+  user_id: 2
 }

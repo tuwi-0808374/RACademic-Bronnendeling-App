@@ -38,7 +38,7 @@ export default function Badges() {
   }, []);
   return (
     <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Dit zijn jouw badges!:</Text>
       {badges.length === 0 ? (
         <Text>Je hebt nog geen badges.</Text>
       ) : (
