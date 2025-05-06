@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Button } from 'react-native';
-import FavoriteButton from '../../components/posts/FavoriteButton';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 
 export default function Badges() {
   const [badges, setBadges] = useState([]);
+  const badgeImages = {
+    'default_badge.png': require('../../assets/images/badges/default_badge.png'),
+    '5posts_badge.png': require('../../assets/images/badges/5posts_badge.png'),
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -47,6 +50,11 @@ export default function Badges() {
             {badge['title']}
             {'\n'}
             {badge['requirement']}
+            <Image
+                source={badgeImages[badge['image_url']]}
+                style={styles.badge}
+                resizeMode="contain"
+              />
             <hr />
           </Text>
         ))
@@ -54,3 +62,11 @@ export default function Badges() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  badge: {
+    width: 50,
+    height: 50,
+    margin: 10,
+  },
+});
