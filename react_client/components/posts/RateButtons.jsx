@@ -3,7 +3,7 @@ import { TouchableOpacity,Text ,StyleSheet } from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 
 export default function RateButtons(props) {
-    const [totalRating, setTotalRating] = useState(props.Total_Rating);
+    const [totalRating, setRating] = useState(props.Total_Rating);
     const [Rated, setRated] = useState(false);
     // checked of het all een rating heeft
     useEffect(() => {
@@ -12,6 +12,8 @@ export default function RateButtons(props) {
     }, [props.Ratings, props.Post_id]);
 
     console.log(Rated)
+
+
     // maakt de styling aan van de up/downvotes
     const isPositive = Rated === 1;
     const isNegative = Rated === -1;
@@ -51,7 +53,8 @@ export default function RateButtons(props) {
 
     const updateRatings = (new_rating,prevTotal) => {
         // console.log(prevTotal,new_rating);
-        setTotalRating(prevTotal + new_rating);
+        setRating(prevTotal + new_rating);
+        setRated(new_rating);
 
     };
 

@@ -1,5 +1,4 @@
 from flask import *
-from lib.utils import get_user_id_from_request
 
 from blueprints.rating.models.rating_model import Rating
 rating_bp = Blueprint('rating', __name__)
@@ -22,7 +21,7 @@ def update_rating(user_rated):
 
 
 def handle_rating_process(data, user_rated=None):
-    user_id = get_user_id_from_request()
+    user_id = 1
     rating = Rating()
     required_fields = ['target_id', 'rating', 'target']
     for field in required_fields:

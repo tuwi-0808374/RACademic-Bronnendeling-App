@@ -23,6 +23,7 @@ def get_posts():
     
     if search_query or tag_ids:
         posts = post.search_posts(search_query, tag_ids)
+
     else:
         posts = post.get_posts()
     if not posts:

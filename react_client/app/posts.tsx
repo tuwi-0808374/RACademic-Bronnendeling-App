@@ -7,11 +7,13 @@ export default function Test() {
   const [ratings, setRatings] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/posts")
+    fetch("http://127.0.0.1:5000/posts/1")
       .then(res => res.json())
       .then(data => {
+        console.log("this is data",data)
         setPosts(data.data.posts);
         setRatings(data.data.user_rating);
+
       })
 
   }, []);
