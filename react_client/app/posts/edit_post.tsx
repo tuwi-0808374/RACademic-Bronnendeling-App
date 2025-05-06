@@ -18,27 +18,21 @@ const COLORS = {
 export default function editpost() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [tagid, setTagid] = useState([]);
     const postid = 1
     const [tagData, setTagData] = useState([]);
+    const [selected_tags, setTagId] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/tags")
+        fetch(`http://localhost:5000/tags_by_post_id/${postid}`)
             .then(res => res.json())
             .then(data => {
-                setTagData(data.data);
-                console.log(data.data);
+                setTagData(data.data.tags);
+                setTagId(data.data.tag_ids);
             })
     }, []);
 
-    // useEffect(() => {
-    //     fetch(`http://localhost:5000/tags_by_post_id/${postid}`)
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             setTagid(data.data);
-    //             console.log(data.data);
-    //         })
-    // }, []);
+    useEffect(() => {
+    }, [selected_tags]);
 
     useEffect(() => {
     const fetchPost = async () => {
@@ -51,7 +45,6 @@ export default function editpost() {
 
         const data = await response.json();
         const postData = data.data
-        console.log(postData);
         setTitle(postData.title || '');
         setContent(postData.content || '');
 
@@ -63,12 +56,12 @@ export default function editpost() {
     }, []);
 
     const EditPost = async () => {
-        console.warn(title, content,tagid);
+        console.warn(title, content,selected_tags);
         const url = `http://localhost:5000/edit_posts/${postid}`;
         let result = await fetch(url, {
             method: 'PATCH',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({title:title,content:content,tag_ids:tagid}),
+            body: JSON.stringify({title:title,content:content,selected_tags:selected_tags}),
         });
         result = await  result.json();
         if(result){
@@ -76,6 +69,7 @@ export default function editpost() {
         }
 
     }
+
 
 
     return (
@@ -109,14 +103,11 @@ export default function editpost() {
 
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Tags</Text>
-                            {tagData.map((tag) => (
-                                <CheckBox options={[
-                                    {label: tag['title'], value: tag['id']},
-                                    ]}
-                                    CheckedValues={tagid}
-                                    key={tag['id']}
-                                    onChange={setTagid}
-                                    /> ))}
+                        <CheckBox
+                            options={tagData}
+                            CheckedValues={selected_tags}
+                            onChange={setTagId}
+                            />
                     </View>
 
                     <View style={styles.create}>
