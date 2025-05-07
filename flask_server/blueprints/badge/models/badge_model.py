@@ -34,7 +34,6 @@ class Badge:
         if result:
             return True
         return False
-
     
     def give_badge_to_user(self, user_id, badge_id):
         message = "Badge already given to user"
@@ -48,11 +47,6 @@ class Badge:
         
         message = "Badge given to user"
         return True, message
-    
-    def is_user_eligible_for_badge(self, user_id, badge_id):
-        requirement_of_badge = self.get_badge_requirements(badge_id)
-        print("Requirement of badge: ", requirement_of_badge)
-        return False
     
     def get_badge_requirements(self, badge_id):
         self.cursor.execute('''
@@ -71,15 +65,16 @@ class Badge:
             WHERE id NOT IN (SELECT badge_id FROM user_badges WHERE user_id = ?)''', (user_id,))
         badges = self.cursor.fetchall()
         
+        # Requirtement is een dict met requirements als key en de method als value
+        # De method moet true zijn om de badge te krijgen
         requirements_method = {
-            "Eerste bericht geplaatst": self.count_user_badges(user_id) > 0,
-            "Minimaal 5 berichten geplaatst": self.count_user_badges(user_id) > 5,
-            "Minimaal 10 berichten geplaatst": self.count_user_badges(user_id) > 10,        
+            "Eerste bericht geplaatst": self.count_user_posts(user_id) > 0,
+            "Minimaal 5 berichten geplaatst": self.count_user_posts(user_id) > 5,
+            "Minimaal 10 berichten geplaatst": self.count_user_posts(user_id) > 10,        
         }
         
         # Ga na of de gebruiker in aanmerking komt voor de badges die hij nog niet heeft
-        # Als de gebruiker in aanmerking komt voor een badge, print dan de badge id
-        badges_that_where_gives = []
+        # Als de gebruiker in aanmerking komt voor een badge, geef deze dan aan de gebruiker
         for badge in badges:    
             if requirements_method[badge['requirement']]:
                 print("User is eligible for badge: ", badge['id'])
@@ -89,9 +84,9 @@ class Badge:
                 else:
                     print("Badge already given to user: ", badge['id'])
         
-    def count_user_badges(self, user_id):
+    def count_user_posts(self, user_id):
         self.cursor.execute('''
-            SELECT COUNT(*) FROM user_badges 
+            SELECT COUNT(*) FROM posts 
             WHERE user_id = ?''', (user_id,))
         result = self.cursor.fetchone()
         if result:
