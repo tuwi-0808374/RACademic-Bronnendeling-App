@@ -20,7 +20,7 @@ class Rating:
             params = (user_id,) + tuple(target_ids)
             total_params = ','.join(['?'] * len(target_ids))
             query = f'''
-                SELECT {target}_id, rating
+                SELECT {target}_id, rating, is_favorite
                 FROM ratings
                 WHERE user_id = ? AND {target}_id IN ({total_params})
             '''
@@ -28,6 +28,7 @@ class Rating:
             return False
         if query:
             self.cursor.execute(query,params,)
+            print('query in get_user_ratings', query, params)
             result = self.cursor.fetchall()
             if result:
                 result_dicts = [dict(row) for row in result]
