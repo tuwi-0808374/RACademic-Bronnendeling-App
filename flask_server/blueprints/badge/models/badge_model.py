@@ -13,6 +13,10 @@ class Badge:
         return cursor, con
     
     def get_bages_of_user(self, user_id):
+        requirement = self.get_badge_requirements(1)
+        print("Requirements: ", requirement)
+        self.check_if_user_is_eligible_for_badges(user_id)
+        
         self.cursor.execute('''
             SELECT badges.*, user_badges.user_id
             FROM badges 
@@ -46,7 +50,19 @@ class Badge:
         return True, message
     
     def is_user_eligible_for_badge(self, user_id, badge_id):
+        requirement_of_badge = self.get_badge_requirements(badge_id)
+        print("Requirement of badge: ", requirement_of_badge)
         return False
+    
+    def get_badge_requirements(self, badge_id):
+        self.cursor.execute('''
+            SELECT requirement FROM badges
+            WHERE id = ?''', (badge_id,))
+        result = self.cursor.fetchone()
+        if result:
+            return result[0]
+        return None
+
     
     def check_if_user_is_eligible_for_badges(self, user_id):
         # Geeft alleen de badges terug die de gebruiker nog niet heeft
@@ -55,7 +71,31 @@ class Badge:
             WHERE id NOT IN (SELECT badge_id FROM user_badges WHERE user_id = ?)''', (user_id,))
         badges = self.cursor.fetchall()
         
-        # todo ga na of de gebruiker in aanmerking komt voor de badges die hij nog niet heeft
+        requirements_method = {
+            "Eerste bericht geplaatst": self.count_user_badges(user_id) > 0,
+            "Minimaal 5 berichten geplaatst": self.count_user_badges(user_id) > 5,
+            "Minimaal 10 berichten geplaatst": self.count_user_badges(user_id) > 10,        
+        }
         
-        # result_dicts = [dict(row) for row in badges]
-        # return result_dicts
+        # Ga na of de gebruiker in aanmerking komt voor de badges die hij nog niet heeft
+        # Als de gebruiker in aanmerking komt voor een badge, print dan de badge id
+        badges_that_where_gives = []
+        for badge in badges:    
+            if requirements_method[badge['requirement']]:
+                print("User is eligible for badge: ", badge['id'])
+                result = self.give_badge_to_user(user_id, badge['id'])
+                if result[0]:
+                    print("Badge given to user: ", badge['id'])
+                else:
+                    print("Badge already given to user: ", badge['id'])
+        
+    def count_user_badges(self, user_id):
+        self.cursor.execute('''
+            SELECT COUNT(*) FROM user_badges 
+            WHERE user_id = ?''', (user_id,))
+        result = self.cursor.fetchone()
+        if result:
+            return result[0]
+        return 0    
+        
+    
