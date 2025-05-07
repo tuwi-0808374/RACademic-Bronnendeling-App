@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import RateButtons from "@/components/posts/RateButtons";
+import FavoriteButton from '../components/posts/FavoriteButton';
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
   const [ratings, setRatings] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/posts/1")
+    fetch("http://127.0.0.1:5000/posts/2")
       .then(res => res.json())
       .then(data => {
         console.log("this is data",data)
@@ -36,6 +37,7 @@ export default function Test() {
               Ratings={ratings}
           />
           {'\n'}
+          <FavoriteButton post_id = {post['id']} is_favorited = {post['is_favorite']} onPress={undefined}/>
         </Text>
       ))}
     </View>

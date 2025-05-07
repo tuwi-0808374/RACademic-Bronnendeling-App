@@ -24,7 +24,7 @@ export default function RateButtons(props) {
 
     const Rate = async (rating) => {
         const method= Rated? "PATCH" : "POST";
-        const url = method==="PATCH"?  `http://localhost:5000/rating/1` : `http://localhost:5000/rating`;
+        const url = method==="PATCH"?  `http://localhost:5000/rating/2` : `http://localhost:5000/rating`;
         if (method==="POST"){
             let result = await fetch(url, {
                 method: method,
