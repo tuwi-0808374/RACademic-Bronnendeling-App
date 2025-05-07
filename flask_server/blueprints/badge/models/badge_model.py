@@ -44,3 +44,18 @@ class Badge:
         
         message = "Badge given to user"
         return True, message
+    
+    def is_user_eligible_for_badge(self, user_id, badge_id):
+        return False
+    
+    def check_if_user_is_eligible_for_badges(self, user_id):
+        # Geeft alleen de badges terug die de gebruiker nog niet heeft
+        self.cursor.execute('''
+            SELECT * FROM badges 
+            WHERE id NOT IN (SELECT badge_id FROM user_badges WHERE user_id = ?)''', (user_id,))
+        badges = self.cursor.fetchall()
+        
+        # todo ga na of de gebruiker in aanmerking komt voor de badges die hij nog niet heeft
+        
+        # result_dicts = [dict(row) for row in badges]
+        # return result_dicts
