@@ -18,9 +18,9 @@ export default function Test() {
         const decoded_user: any = jwt_decode(token);
         const response = await fetch(`http://127.0.0.1:5000/posts/${decoded_user.user_id}`)
         .then(response => response.json())
-        .then(data => {
-          setPosts(data.data);
-          console.log(data.data);
+        .then(response => {
+          setPosts(response.data.posts);
+          console.log(response.data.posts);
         })
       } catch (error) {
         console.error('Error fetching posts:', error);
