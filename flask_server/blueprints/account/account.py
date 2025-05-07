@@ -71,3 +71,37 @@ def update_profile(user_id):
         return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200
     else:
         return jsonify({'status': 'error', 'message': f'Bijwerken mislukt: {success}'}), 500
+
+@account_bp.route('/register', methods=['POST'])
+def register():
+    if request.method == 'POST':
+        try:
+            email = request.form.get("email")
+            password = request.form.get("password")
+
+            if not email or not password:
+                return jsonify({"error": "Email and password are required"}), 400
+
+            user_data = {
+                "email": email,
+                "display_name": request.form.get("display_name", ""),
+                "first_name": request.form.get("first_name", ""),
+                "username": request.form.get("username", ""),
+                "last_name": request.form.get("last_name", ""),
+                "password": password,
+                "is_public": request.form.get("is_public", "false").lower() == "true",
+            }
+
+            print("Received registration data:", user_data) 
+
+            account_model = Account()
+            account_id = account_model.register_user(user_data)
+
+            if not account_id:
+                return jsonify({"error": "Failed to add user"}), 500
+            
+            return jsonify({"message": "User successfully added", "id": account_id}), 201
+
+        except Exception as e:
+            print(f"Registration error: {str(e)}")
+            return jsonify({"error": "Registration failed", "details": str(e)}), 500

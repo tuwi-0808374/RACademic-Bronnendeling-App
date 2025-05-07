@@ -14,10 +14,6 @@ const COLORS = {
   languageBackground: '#E0E0E0',
 };
 
-
-
-
-
 const PrimaryButton = ({ onPress, title }: { onPress: () => void, title: string }) => (
   <TouchableOpacity style={styles.primaryButton} onPress={onPress}>
     <Text style={styles.primaryButtonText}>{title}</Text>
@@ -43,18 +39,37 @@ const RegisterScreen = () => {
       console.log('Wachtwoorden komen niet overeen.');
       return;
     }
-
-    console.log('Registratie:', {
-      firstName,
-      lastName,
-      username,
-      email,
-      password, 
-    });
-
+  
     try {
-     router.push('/'); // hier homepage 
-
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('display_name', `${firstName} ${lastName}`);
+      formData.append('first_name', firstName);
+      formData.append('username', username);
+      formData.append('last_name', lastName);
+      formData.append('password', password);
+      formData.append('is_public', 'true'); 
+      
+      if (image) {
+        formData.append('profile_image', {
+          uri: image,
+          type: 'image/jpeg',
+          name: 'profile.jpg',
+        } as any);
+      }
+  
+      const response = await fetch('http://127.0.0.1:5000/register', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      const data = await response.json();
+      
+      if (response.ok) {
+        router.push('/');
+      } else {
+        console.log('Registration failed:', data.error);
+      }
     } catch (error) {
       console.log('Error:', error);
     }

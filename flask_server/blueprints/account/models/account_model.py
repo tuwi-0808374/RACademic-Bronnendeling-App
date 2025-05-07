@@ -1,6 +1,7 @@
 import sqlite3
 import os
 from flask_jwt_extended import *
+import bcrypt
 
 
 class Account:
@@ -87,5 +88,36 @@ class Account:
             if con:
                 con.close()
                 
-    
+    def register_user(self, user_data):
+        try:
+            hashed_password = bcrypt.hashpw(user_data["password"].encode('utf-8'), bcrypt.gensalt())
+            
+            self.cursor.execute(
+                """
+                INSERT INTO users (
+                    email, 
+                    display_name, 
+                    first_name, 
+                    username, 
+                    last_name, 
+                    password, 
+                    is_public
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    user_data["email"],
+                    user_data["display_name"],
+                    user_data["first_name"],
+                    user_data["username"],
+                    user_data["last_name"],
+                    hashed_password,
+                    user_data["is_public"]
+                )
+            )
+            self.con.commit()
+            return self.cursor.lastrowid
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return None
+        
 
