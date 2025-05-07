@@ -2,6 +2,7 @@ from flask import *
 
 from blueprints.post.models.post_model import Post
 from blueprints.rating.models.rating_model import Rating
+
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
 
@@ -15,49 +16,37 @@ def get_examples():
     return jsonify({'status': 'success', 'data': data})
 
 
-@post_bp.route('/posts', methods=['GET'])
-def get_posts():
-    post = Post()
-    search_query = request.args.get('search_query', default=None)
-    tag_ids = request.args.getlist('tag_id')
-    
-    if search_query or tag_ids:
-        posts = post.search_posts(search_query, tag_ids)
-
-    else:
-        posts = post.get_posts()
-    if not posts:
-        return jsonify({'status': 'error', 'message': 'No posts found'}), 404
-    return jsonify({'status': 'success', 'data': posts}), 200
-
 @post_bp.route('/posts/<int:user_id>', methods=['GET'])
-def get_posts_by_user(user_id):
+def get_posts_with_user(user_id):
     post = Post()
     rating = Rating()
     data = request.get_json(silent=True) or {}
 
     search_query = data.get('search_query', None)
     tag_ids = data.get('tags', None)
-    user_rating = None
+    # user_rating = None
+
+    if not user_id:
+        return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
+
     if search_query or tag_ids:
-        posts = post.search_posts(search_query, tag_ids)
+        result = post.search_posts(search_query, tag_ids)
 
     else:
-        posts = post.get_posts(user_id)
+        result = post.get_posts(user_id)
 
-    if posts:
-        post_ids = [post['id'] for post in posts]
-        user_rating = rating.get_user_ratings(user_id, "post",post_ids)
+    # if result:
+    #     post_ids = [post['id'] for post in result]
+    #     user_rating = rating.get_user_ratings(user_id, "post",post_ids)
 
-    elif not posts:
+    if not result:
         return jsonify({'status': 'error', 'message': 'No posts found'}), 404
 
-    data = {
-        "posts": posts,
-        "user_rating": user_rating
-    }
-    print(data)
-    return jsonify({'status': 'success', 'data': data}), 200
+    # data = {
+    #     "posts": posts,
+    #     "user_rating": user_rating
+    # }
+    return jsonify({'status': 'success', 'data': result}), 200
 
 
 

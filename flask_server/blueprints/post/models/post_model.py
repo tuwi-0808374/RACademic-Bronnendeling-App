@@ -44,9 +44,8 @@ class Post:
     def get_posts(self, user_id = None, limit = None):
         params = []
         if user_id:
-            # als het kan moet deze ook ORDER BY posted_date DESC hebben
             query = """
-                    SELECT posts.*, ratings.is_favorite 
+                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating
                     FROM posts
                     LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
                     """

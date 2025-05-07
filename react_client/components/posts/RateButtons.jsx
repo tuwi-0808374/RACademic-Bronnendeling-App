@@ -1,16 +1,19 @@
 import React, { useEffect,useState } from 'react';
 import { TouchableOpacity,Text ,StyleSheet } from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwt_decode from "jwt-decode";
 
 export default function RateButtons(props) {
     const [totalRating, setRating] = useState(props.Total_Rating);
     const [Rated, setRated] = useState(false);
-
+    console.log(props)
     // checked of het all een rating heeft
     useEffect(() => {
-        const matches = props.Ratings.find(rate => rate.post_id === props.Post_id)?.rating || false;
-        setRated(matches || false);
-    }, [props.Ratings, props.Post_id]);
+        if (props.Rating.userRated === true) {
+            setRated(matches || false);
+        }
+    }, [props.Rating]);
 
     // maakt de styling aan van de up/downvotes
     const buttonSettings ={
@@ -19,35 +22,33 @@ export default function RateButtons(props) {
         'neg_color': Rated === -1?'#ff0000': '#000000',
         'neg_icon': Rated === -1? 'chevron-down-circle': 'chevron-down-circle-outline'
     };
-    console.log(Rated);
-
 
     const Rate = async (rating) => {
-        const method= Rated? "PATCH" : "POST";
-        const url = method==="PATCH"?  `http://localhost:5000/rating/2` : `http://localhost:5000/rating`;
-        if (method==="POST"){
-            let result = await fetch(url, {
-                method: method,
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({target_id:props.Post_id, rating:rating, target:"posts"}),
-            });
-            result = await result.json();
-            if(result){
-                updateRatings(rating,props.Total_Rating);
-            }
-        }
-        if (method==="PATCH"){
-            let result = await fetch(url, {
-                method: method,
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({target_id:props.Post_id, rating:rating, target:"posts"}),
-            });
-            result = await result.json();
-            if(result){
-                updateRatings(rating,props.Total_Rating);
-            }
-        }
 
+            const method = Rated ? "PATCH" : "POST";
+            const url = method === "PATCH" ? `http://localhost:5000/rating/${user_id}` : `http://localhost:5000/rating/${user_id}`;
+            if (method === "POST") {
+                let result = await fetch(url, {
+                    method: method,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({target_id: props.Post_id, rating: rating, target: "posts"}),
+                });
+                result = await result.json();
+                if (result) {
+                    updateRatings(rating, props.Total_Rating);
+                }
+            }
+            if (method === "PATCH") {
+                let result = await fetch(url, {
+                    method: method,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({target_id: props.Post_id, rating: rating, target: "posts"}),
+                });
+                result = await result.json();
+                if (result) {
+                    updateRatings(rating, props.Total_Rating);
+                }
+            }
     };
 
     const updateRatings = (new_rating) => {

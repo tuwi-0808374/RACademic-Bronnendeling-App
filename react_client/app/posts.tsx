@@ -2,22 +2,63 @@ import { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import RateButtons from "@/components/posts/RateButtons";
 import FavoriteButton from '../components/posts/FavoriteButton';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwt_decode from "jwt-decode";
+
+const get_user_id = async () => {
+  try {
+    const token = await AsyncStorage.getItem('authToken');
+    if (!token) {
+      console.log('Geen token gevonden.');
+      return null;
+    }
+
+    const decoded_user = jwt_decode(token);
+    // @ts-ignore
+    return decoded_user.user_id;
+
+  } catch (error) {
+    console.error('API request failed:', error);
+  }
+}
+
+
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
   const [ratings, setRatings] = useState([]);
+  const [user_id, setUserId] = useState(null)
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/posts/2")
-      .then(res => res.json())
-      .then(data => {
-        console.log("this is data",data)
-        setPosts(data.data.posts);
-        setRatings(data.data.user_rating);
+    const fetchUserId = async () => {
+      const id = await get_user_id();
+      if (id) {
+        setUserId(id);
+      }
+    };
 
-      })
-
+    fetchUserId();
   }, []);
+
+
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (user_id) {
+        try {
+          const res = await fetch(`http://127.0.0.1:5000/posts/${user_id}`);
+          const data = await res.json();
+          setPosts(data.data);
+        } catch (error) {
+          console.error('API request failed:', error);
+        }
+      }
+    };
+
+    if (user_id) {
+      fetchPosts();
+    }
+  }, [user_id]);
 
   return (
     <View style={{ padding: 20 }}>
@@ -34,10 +75,16 @@ export default function Test() {
           <RateButtons
               Post_id={post['id']}
               Total_Rating={ post['total_rating']}
-              Ratings={ratings}
+              Rating={[post['userRated'],post['rating']]}
+              User_id={user_id}
           />
           {'\n'}
-          <FavoriteButton post_id = {post['id']} is_favorited = {post['is_favorite']} onPress={undefined}/>
+          <FavoriteButton
+              post_id = {post['id']}
+              is_favorited = {post['is_favorite']}
+              onPress={undefined}
+              user_id={user_id}
+          />
         </Text>
       ))}
     </View>
