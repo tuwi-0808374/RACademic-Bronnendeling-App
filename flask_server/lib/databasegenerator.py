@@ -125,7 +125,8 @@ class DatabaseGenerator:
         CREATE TABLE IF NOT EXISTS badges (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
-            requirement TEXT NOT NULL
+            requirement TEXT NOT NULL,
+            image_url TEXT NOT NULL DEFAULT 'default_badge.png'
         );
         """
         self.__execute_transaction_statement(create_statement)
