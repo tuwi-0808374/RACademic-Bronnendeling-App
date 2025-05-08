@@ -56,12 +56,11 @@ def get_posts_by_user(user_id):
         "posts": posts,
         "user_rating": user_rating
     }
-    print(data)
     return jsonify({'status': 'success', 'data': data}), 200
 
 
 
-@post_bp.route('/posts/<int:id>', methods=['GET'])
+@post_bp.route('/post_by_post_id/<int:id>', methods=['GET'])
 def get_posts_by_id(id):    
     post = Post()
     posts = post.get_post_by_id(id)
@@ -87,11 +86,45 @@ def create_posts():
         if not recent_post_id or not tag_ids:
             return jsonify({'status': 'error', 'message': 'No post_id or tag_ids found'}), 404
 
-        created_post_tags = post.assign_post_tags(tag_ids, recent_post_id)
+        created_post_tags = post.post_assign_post_tags(tag_ids, recent_post_id)
         if not created_post_tags:
             return jsonify({'status': 'error', 'message': 'Post_tags not found'}), 404
 
         return jsonify({'status': 'success', 'data': created_posts}), 200
+
+
+@post_bp.route('/edit_posts/<int:id>', methods=['PATCH'])
+def edit_posts(id):
+    post = Post()
+    data = request.get_json()
+    edit_post = post.patch_edit_post(id, data)
+    if not edit_post:
+        return jsonify({'status': 'error', 'message': 'Post not Edited'}), 404
+
+    post_id = id
+    tag_ids = data['tag_ids']
+    if not post_id or not tag_ids:
+        return jsonify({'status': 'error', 'message': 'No post_id or tag_ids found'}), 404
+
+    delete_post_tags = post.delete_assigned_post_tags(post_id)
+    if not delete_post_tags:
+        return jsonify({'status': 'error', 'message': 'failed to delete post_tags'}), 404
+
+    created_post_tags = post.post_assign_post_tags(tag_ids, post_id)
+    if not created_post_tags:
+        return jsonify({'status': 'error', 'message': 'Post_tags not found'}), 404
+
+    return jsonify({'status': 'success', 'data': edit_post}), 200
+
+
+@post_bp.route('/delete_post/<int:id>', methods=['DELETE'])
+def delete_post(id):
+    post = Post()
+    delete_post = post.delete_post(id)
+    if not delete_post:
+        return jsonify({'status': 'error', 'message': 'Post not found'}), 404
+    return jsonify({'status': 'success', 'data': delete_post}), 200
+
 
 @post_bp.route('/posts/favorite/<int:user_id>', methods=['GET'])
 def get_favorite_posts(user_id):
@@ -106,7 +139,7 @@ def get_favorite_posts(user_id):
 
 
 @post_bp.route('/posts/<int:post_id>/favorite/<int:user_id>', methods=['POST'])
-def add_post_as_favorite(post_id, user_id):    
+def add_post_as_favorite(post_id, user_id):
     if not user_id:
         return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
     
@@ -125,20 +158,20 @@ def add_multiple_posts_as_favorite(user_id):
     
     if data['post_ids'] == []:
         return jsonify({'status': 'error', 'message': 'Empty post_ids list'}), 400
-    
+
     if not user_id:
         return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
 
     post = Post()
-    result = post.add_multiple_posts_as_favorite(data['post_ids'], user_id)    
-    
+    result = post.add_multiple_posts_as_favorite(data['post_ids'], user_id)
+
     if not result:
         return jsonify({'status': 'error', 'posts': 'Post not found'}), 404
     return jsonify({'status': 'success', 'posts': result}), 200
 
 @post_bp.route('/posts/most_upvoted', methods=['GET'])
-def get_most_upvoted_posts(user_id = None):  
-    limit = request.args.get('limit', default=10, type=int)   
+def get_most_upvoted_posts(user_id = None):
+    limit = request.args.get('limit', default=10, type=int)
     post = Post()
     posts = post.get_most_upvoted_posts(user_id, limit=limit)
     return jsonify({'status': 'success', 'posts': posts}), 200
