@@ -1,0 +1,22 @@
+meta {
+  name: get_posts search
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:5000/posts
+  body: json
+  auth: inherit
+}
+
+params:query {
+  ~tag_id: 2
+}
+
+body:json {
+  {
+    "search_query": "markdown test",
+    "tags": [4]
+  }
+}

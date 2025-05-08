@@ -1,0 +1,18 @@
+meta {
+  name: post_login
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/api/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "student@hr.nl",
+    "password": "1"
+  }
+}

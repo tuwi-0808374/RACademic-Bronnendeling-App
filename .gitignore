@@ -1,0 +1,71 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# React Native / Expo
+node_modules/
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro bundler (React Native)
+.metro-health-check*
+
+# Debug logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS system files
+.DS_Store
+*.pem
+
+# Local environment files
+.env*.local
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Flask-specific
+instance/
+*.sqlite
+*.db
+*.log
+
+# Virtual environment (Python)
+venv/
+env/
+ENV/
+.venv/
+webstorm-venv/
+.flask_server/venv  # Specific to your project structure
+
+# Python distribution / packaging
+build/
+dist/
+__pycache__/
+*.egg-info/
+
+# IDE-specific files (PyCharm, VSCode, etc.)
+.idea/
+.vscode/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Test-related files (coverage, pytest, etc.)
+.coverage
+*.cover
+*.hypothesis/
+nosetests.xml
+coverage.xml
+
+# Unnecessary files
+Thumbs.db

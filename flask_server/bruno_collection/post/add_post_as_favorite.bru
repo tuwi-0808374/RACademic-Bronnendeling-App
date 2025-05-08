@@ -1,0 +1,22 @@
+meta {
+  name: add_post_as_favorite
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:5000/posts/:post_id/favorite/:user_id
+  body: none
+  auth: none
+}
+
+params:path {
+  post_id: 4
+  user_id: 2
+}
+
+body:json {
+  {
+    "user_id": 1
+  }
+}

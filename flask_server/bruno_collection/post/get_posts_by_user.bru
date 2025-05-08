@@ -1,0 +1,11 @@
+meta {
+  name: get_posts_by_user
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:5000/posts
+  body: json
+  auth: inherit
+}

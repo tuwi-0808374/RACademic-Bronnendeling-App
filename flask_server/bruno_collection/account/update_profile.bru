@@ -1,0 +1,11 @@
+meta {
+  name: update_profile
+  type: http
+  seq: 1
+}
+
+patch {
+  url: http://localhost:5000/update_profile/2
+  body: none
+  auth: inherit
+}
