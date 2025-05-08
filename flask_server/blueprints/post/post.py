@@ -56,12 +56,11 @@ def get_posts_by_user(user_id):
         "posts": posts,
         "user_rating": user_rating
     }
-    print(data)
     return jsonify({'status': 'success', 'data': data}), 200
 
 
 
-@post_bp.route('/posts/<int:id>', methods=['GET'])
+@post_bp.route('/post_by_post_id/<int:id>', methods=['GET'])
 def get_posts_by_id(id):    
     post = Post()
     posts = post.get_post_by_id(id)

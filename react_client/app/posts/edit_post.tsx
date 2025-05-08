@@ -37,8 +37,7 @@ export default function editpost() {
     useEffect(() => {
     const fetchPost = async () => {
     try{
-        const response = await fetch(`http://localhost:5000/posts/${postid}`);
-
+        const response = await fetch(`http://localhost:5000/post_by_post_id/${postid}`);
         if(!response.ok){
             throw new Error('Failed to fetch posts.');
         }
