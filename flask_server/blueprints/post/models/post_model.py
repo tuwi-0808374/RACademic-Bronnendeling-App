@@ -129,6 +129,14 @@ class Post:
             return True
         return False
 
+    def delete_assigned_post_tags(self, post_id):
+        query = "DELETE FROM post_tags WHERE post_id = ?"
+        result = self.cursor.execute(query, (post_id,))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
 
     def patch_edit_post(self, id, data):
         query = "UPDATE posts SET title = ?, content = ? WHERE id = ?"

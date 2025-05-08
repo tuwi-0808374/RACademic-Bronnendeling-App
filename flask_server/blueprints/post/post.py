@@ -83,6 +83,9 @@ def edit_posts(id):
     if not recent_post_id or not tag_ids:
         return jsonify({'status': 'error', 'message': 'No post_id or tag_ids found'}), 404
 
+    delete_post_tags = post.delete_assigned_post_tags(recent_post_id)
+    if not delete_post_tags:
+        return jsonify({'status': 'error', 'message': 'failed to delete post_tags'}), 404
     created_post_tags = post.post_assign_post_tags(tag_ids, recent_post_id)
     if not created_post_tags:
         return jsonify({'status': 'error', 'message': 'Post_tags not found'}), 404

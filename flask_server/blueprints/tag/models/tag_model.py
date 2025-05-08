@@ -23,7 +23,7 @@ class Tag:
         query = "SELECT tag_id FROM post_tags WHERE post_id = ?"
         self.cursor.execute(query, (post_id,))
         tags = self.cursor.fetchall()
-        result_dicts = [dict(row) for row in tags]
+        result_dicts = [row[0] for row in tags]
         if result_dicts:
             return result_dicts
         return False

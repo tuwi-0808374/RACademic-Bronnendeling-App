@@ -18,16 +18,16 @@ const COLORS = {
 export default function editpost() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const postid = 1
+    const postid = 5
     const [tagData, setTagData] = useState([]);
-    const [selected_tags, setTagId] = useState([]);
+    const [selected_tags, setSelectedTagId] = useState([]);
 
     useEffect(() => {
         fetch(`http://localhost:5000/tags_by_post_id/${postid}`)
             .then(res => res.json())
             .then(data => {
                 setTagData(data.data.tags);
-                setTagId(data.data.tag_ids);
+                setSelectedTagId(data.data.tag_ids);
             })
     }, []);
 
@@ -61,7 +61,7 @@ export default function editpost() {
         let result = await fetch(url, {
             method: 'PATCH',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({title:title,content:content,selected_tags:selected_tags}),
+            body: JSON.stringify({title:title,content:content,tag_ids:selected_tags}),
         });
         result = await  result.json();
         if(result){
@@ -106,7 +106,7 @@ export default function editpost() {
                         <CheckBox
                             options={tagData}
                             CheckedValues={selected_tags}
-                            onChange={setTagId}
+                            onChange={setSelectedTagId}
                             />
                     </View>
 

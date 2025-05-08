@@ -82,14 +82,11 @@ export default function CreatePost() {
 
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Tags</Text>
-                            {data.map((tag) => (
-                                <CheckBox options={[
-                                    {label: tag['title'], value: tag['id']},
-                                    ]}
-                                    CheckedValues={tagid}
-                                    key={tag['id']}
-                                    onChange={setTagid}
-                                    /> ))}
+                            <CheckBox
+                                options={data}
+                                CheckedValues={tagid}
+                                onChange={setTagid}
+                                />
                     </View>
 
                     <View style={styles.create}>

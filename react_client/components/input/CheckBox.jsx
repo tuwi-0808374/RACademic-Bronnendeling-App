@@ -18,19 +18,14 @@ const CheckBox = ({options, CheckedValues, onChange}) => {
 
     return (<View style={styles.container}>
         {options.map((option) => {
-            //pas dit aan naar een find of iets
             let active = updatedCheckValues.includes(option.id);
-            console.log("active",active);
             return (
                 <TouchableOpacity style={active ? [styles.CheckBox, styles.activeCheckBox] : styles.CheckBox}
                                   key={option.id}
                     onPress={() => {
                     if (active) {
-
                     updatedCheckValues = updatedCheckValues.filter(
-
                     (checkedValue) => checkedValue !== option.id);
-
                     return onChange(updatedCheckValues);
                     }
                     updatedCheckValues.push(option.id);
