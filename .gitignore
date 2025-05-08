@@ -44,6 +44,7 @@ venv/
 env/
 ENV/
 .venv/
+webstorm-venv/
 .flask_server/venv  # Specific to your project structure
 
 # Python distribution / packaging

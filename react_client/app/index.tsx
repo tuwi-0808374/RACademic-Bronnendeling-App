@@ -5,8 +5,6 @@ import { Link } from 'expo-router';
 
 export default function Index() {
     return (
-
-        
         <View
             style={{
                 flex: 1,
@@ -24,14 +22,22 @@ export default function Index() {
             <Link href={'/account/register'}>
                 Register
             </Link>
-            <Link href={'/CreatePost'}>
+            <Link href={'/posts/create_post'}>
                 Create Post
             </Link>
             <Link href={'/posts/edit_post'}>
                 edit Post
             </Link>
+            <Link href={'/posts'}>
+                Posts
+            </Link>
 
-
+            <Link href={'/posts/list_favorite'}>
+                List of favorited posts of logged user
+            </Link>
+            <Link href={'/posts/set_favorite'}>
+                List of posts with favorite button
+            </Link>
         </View>
     );
 }

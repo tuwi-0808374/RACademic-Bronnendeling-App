@@ -1,0 +1,16 @@
+meta {
+  name: give_badge_to_user
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:5000/badge/:user_id/:badge_id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  badge_id: 2
+  user_id: 2
+}
