@@ -18,7 +18,7 @@ const COLORS = {
 export default function editpost() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const postid = 5
+    const postid = 1
     const [tagData, setTagData] = useState([]);
     const [selected_tags, setSelectedTagId] = useState([]);
 
@@ -56,7 +56,6 @@ export default function editpost() {
     }, []);
 
     const EditPost = async () => {
-        console.warn(title, content,selected_tags);
         const url = `http://localhost:5000/edit_posts/${postid}`;
         let result = await fetch(url, {
             method: 'PATCH',
@@ -67,7 +66,18 @@ export default function editpost() {
         if(result){
             console.warn("Post is Edited successfully.")
         }
+    }
 
+    const DeletePost = async () => {
+        const url = `http://localhost:5000/delete_post/${postid}`;
+        let result = await fetch(url, {
+            method: 'DELETE',
+            headers: {"Content-Type": "application/json"},
+        });
+        result = await result.json();
+        if(result){
+            console.warn("Post is Deleted successfully.")
+        }
     }
 
 
@@ -114,6 +124,14 @@ export default function editpost() {
                         <TouchableOpacity onPress={EditPost}>
                             <View style={styles.button}>
                                 <Text style={styles.buttontext}>Save post</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.create}>
+                        <TouchableOpacity onPress={DeletePost}>
+                            <View style={styles.button}>
+                                <Text style={styles.buttontext}>Delete post</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -178,6 +196,7 @@ const styles = StyleSheet.create({
         borderColor: COLORS.text,
         flexDirection: "row",
         justifyContent: "center",
+        marginTop: 20,
         paddingVertical: 10,
         paddingHorizontal: 20,
     },

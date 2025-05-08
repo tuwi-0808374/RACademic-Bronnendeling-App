@@ -137,6 +137,14 @@ class Post:
             return True
         return False
 
+    def delete_post(self, post_id):
+        query = "DELETE FROM posts WHERE id = ?"
+        result = self.cursor.execute(query, (post_id,))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
 
     def patch_edit_post(self, id, data):
         query = "UPDATE posts SET title = ?, content = ? WHERE id = ?"

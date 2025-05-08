@@ -78,19 +78,30 @@ def edit_posts(id):
     if not edit_post:
         return jsonify({'status': 'error', 'message': 'Post not Edited'}), 404
 
-    recent_post_id = id
+    post_id = id
     tag_ids = data['tag_ids']
-    if not recent_post_id or not tag_ids:
+    if not post_id or not tag_ids:
         return jsonify({'status': 'error', 'message': 'No post_id or tag_ids found'}), 404
 
-    delete_post_tags = post.delete_assigned_post_tags(recent_post_id)
+    delete_post_tags = post.delete_assigned_post_tags(post_id)
     if not delete_post_tags:
         return jsonify({'status': 'error', 'message': 'failed to delete post_tags'}), 404
-    created_post_tags = post.post_assign_post_tags(tag_ids, recent_post_id)
+
+    created_post_tags = post.post_assign_post_tags(tag_ids, post_id)
     if not created_post_tags:
         return jsonify({'status': 'error', 'message': 'Post_tags not found'}), 404
 
     return jsonify({'status': 'success', 'data': edit_post}), 200
+
+@post_bp.route('/delete_post/<int:id>', methods=['DELETE'])
+def delete_post(id):
+    post = Post()
+    delete_post = post.delete_post(id)
+    if not delete_post:
+        return jsonify({'status': 'error', 'message': 'Post not found'}), 404
+    return jsonify({'status': 'success', 'data': delete_post}), 200
+
+
 
 
 
