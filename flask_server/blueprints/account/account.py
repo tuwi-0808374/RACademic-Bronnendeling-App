@@ -3,6 +3,7 @@ from flask_jwt_extended import *
 from blueprints.account.models.account_model import Account
 import bcrypt
 from flask_cors import cross_origin
+import base64
 
 
 account_bp = Blueprint('account', __name__)
@@ -76,23 +77,24 @@ def update_profile(user_id):
 def register():
     if request.method == 'POST':
         try:
-            email = request.form.get("email")
-            password = request.form.get("password")
+            data = request.get_json()
+            
+            email = data.get("email")
+            password = data.get("password")
 
             if not email or not password:
                 return jsonify({"error": "Email and password are required"}), 400
 
             user_data = {
                 "email": email,
-                "display_name": request.form.get("display_name", ""),
-                "first_name": request.form.get("first_name", ""),
-                "username": request.form.get("username", ""),
-                "last_name": request.form.get("last_name", ""),
+                "display_name": data.get("display_name", ""),
+                "first_name": data.get("first_name", ""),
+                "username": data.get("username", ""),
+                "last_name": data.get("last_name", ""),
                 "password": password,
-                "is_public": request.form.get("is_public", "false").lower() == "true",
+                "is_public": data.get("is_public", False),
+                "profile_image": data.get("profile_image", None)  
             }
-
-            print("Received registration data:", user_data) 
 
             account_model = Account()
             account_id = account_model.register_user(user_data)

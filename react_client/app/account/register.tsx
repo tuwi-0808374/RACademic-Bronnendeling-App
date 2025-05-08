@@ -41,35 +41,38 @@ const RegisterScreen = () => {
     }
   
     try {
-      const formData = new FormData();
-      formData.append('email', email);
-      formData.append('display_name', `${firstName} ${lastName}`);
-      formData.append('first_name', firstName);
-      formData.append('username', username);
-      formData.append('last_name', lastName);
-      formData.append('password', password);
-      formData.append('is_public', 'true'); 
-      
+      let base64Image = null;
       if (image) {
-        formData.append('profile_image', {
-          uri: image,
-          type: 'image/jpeg',
-          name: 'profile.jpg',
-        } as any);
+        const response = await fetch(image);
+        const blob = await response.blob();
+        base64Image = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
       }
+  
+      const formData = {
+        email,
+        display_name: `${firstName} ${lastName}`,
+        first_name: firstName,
+        username,
+        last_name: lastName,
+        password,
+        is_public: true,
+        profile_image: base64Image, 
+      };
   
       const response = await fetch('http://127.0.0.1:5000/register', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
   
       const data = await response.json();
-      
-      if (response.ok) {
-        router.push('/');
-      } else {
-        console.log('Registration failed:', data.error);
-      }
+      if (response.ok) router.push('/');
+      else console.log('Registration failed:', data.error);
     } catch (error) {
       console.log('Error:', error);
     }
