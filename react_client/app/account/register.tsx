@@ -93,6 +93,10 @@ const RegisterScreen = () => {
         }
       };
 
+      const removeImage = () => {
+        setImage(null);
+      };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
@@ -154,13 +158,17 @@ const RegisterScreen = () => {
                     source={require('../../assets/images/profile.png')}
                     style={styles.profileImage}
                     resizeMode="cover"
-
                   />
+                  
                 )}
               </TouchableOpacity>
-
+              
             </View>
-            
+            {image && (
+              <TouchableOpacity onPress={removeImage} style={styles.removeImageButton}>
+                <Text style={styles.removeImageButtonText}>Verwijder foto</Text>
+              </TouchableOpacity>
+            )}
             <View style={styles.nameInputRow}>
               <View style={styles.nameInputContainer}>
                 <Text style={styles.inputLabel}>VOORNAAM</Text>
@@ -411,6 +419,20 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: 80,
     aspectRatio: 1,  
+  },
+  removeImageButton: {
+    marginTop: 10,
+    backgroundColor: '#ccc',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    alignSelf: 'flex-end',
+  },
+  
+  removeImageButtonText: {
+    color: COLORS.black,
+    fontWeight: 'bold',
+    fontSize: 12,
   },
   
   
