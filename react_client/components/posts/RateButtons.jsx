@@ -5,15 +5,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 
 export default function RateButtons(props) {
-    const [totalRating, setRating] = useState(props.Total_Rating);
+    const [totalRating, setRating] = useState(props.total_rating);
     const [Rated, setRated] = useState(false);
-    console.log(props)
-    // checked of het all een rating heeft
     useEffect(() => {
-        if (props.Rating.userRated === true) {
-            setRated(matches || false);
-        }
-    }, [props.Rating]);
+        setRated(props.user_rating? props.user_rating : false);
+    }, [props.user_rating]);
 
     // maakt de styling aan van de up/downvotes
     const buttonSettings ={
@@ -26,27 +22,39 @@ export default function RateButtons(props) {
     const Rate = async (rating) => {
 
             const method = Rated ? "PATCH" : "POST";
-            const url = method === "PATCH" ? `http://localhost:5000/rating/${user_id}` : `http://localhost:5000/rating/${user_id}`;
+            console.log(method)
+            const url = method === "PATCH" ? `http://localhost:5000/rating/${props.user_id}` : `http://localhost:5000/rating`;
             if (method === "POST") {
+                console.log({
+                    url,
+                    method: method,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        user_id: props.user_id,
+                        target_id: props.post_id,
+                        rating: rating,
+                        target: "posts"
+                    })
+                })
                 let result = await fetch(url, {
                     method: method,
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({target_id: props.Post_id, rating: rating, target: "posts"}),
+                    body: JSON.stringify({user_id:props.user_id,target_id: props.post_id, rating: rating, target: "posts"}),
                 });
                 result = await result.json();
                 if (result) {
-                    updateRatings(rating, props.Total_Rating);
+                    updateRatings(rating, props.total_rating);
                 }
             }
             if (method === "PATCH") {
                 let result = await fetch(url, {
                     method: method,
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({target_id: props.Post_id, rating: rating, target: "posts"}),
+                    body: JSON.stringify({user_id:props.user_id,target_id: props.post_id, rating: rating, target: "posts"}),
                 });
                 result = await result.json();
                 if (result) {
-                    updateRatings(rating, props.Total_Rating);
+                    updateRatings(rating, props.total_rating);
                 }
             }
     };
@@ -56,12 +64,10 @@ export default function RateButtons(props) {
         if (diff === 0){
             setRating(prev => prev - new_rating);
             setRated(false);
-            console.log('undo t',props.Total_Rating, "n",new_rating, 'd', diff);
         }
         else {
             setRating(prev => prev + diff);
             setRated(new_rating);
-            console.log('commit t',props.Total_Rating, "n",new_rating, 'd', diff);
         }
     };
 

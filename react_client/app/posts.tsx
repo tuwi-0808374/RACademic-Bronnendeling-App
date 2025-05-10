@@ -73,10 +73,10 @@ export default function Test() {
           {post['content']}
           {'\n'}
           <RateButtons
-              Post_id={post['id']}
-              Total_Rating={ post['total_rating']}
-              Rating={[post['userRated'],post['rating']]}
-              User_id={user_id}
+              post_id={post['id']}
+              total_rating={ post['total_rating']}
+              user_rating={post['rating']}
+              user_id={user_id}
           />
           {'\n'}
           <FavoriteButton

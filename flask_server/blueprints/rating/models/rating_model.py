@@ -52,16 +52,15 @@ class Rating:
             query = "SELECT post_id, rating, userRated FROM ratings WHERE user_id = ? AND post_id = ?"
         elif target == "comments":
             query = "SELECT rating , userRated FROM ratings WHERE user_id = ? AND comment_id = ?"
-            print('query a target check, ', query, (user_id, target_id))
 
         if query:
             self.cursor.execute(query, (user_id, target_id))
             result = self.cursor.fetchone()
-
+            print('bestaat',result)
+            self.con.commit()
             # checkt of de rating bestaat en of de rating value niet gelijk zijn
             if result:
                 result = self.update_rating(user_id, target_id, rating, target, result['rating'])
-
                 self.con.commit()
                 return result
 
@@ -92,26 +91,41 @@ class Rating:
         # elif target == "comments":
 
 
+
+
     def update_rating(self, user_id, target_id, rating, target, old_rating):
         post = Post()
         if target == "posts":
             query = 'UPDATE ratings SET rating = ? WHERE user_id = ? and post_id = ?'
             if old_rating != rating:
-                result = self.cursor.execute(query, (rating, user_id, target_id))
+                updated_rating = self.cursor.execute(query, (rating, user_id, target_id))
                 self.con.commit()
-                if result:
+                if updated_rating:
                     result = post.calculate_post_rating(target_id, rating, old_rating)
                     if result:
                         return True
                     return False
 
             else:
-                result = self.cursor.execute(query, (None, user_id, target_id))
+                print('undo')
+                updated_rating = self.cursor.execute(query, (None, user_id, target_id))
                 self.con.commit()
-                if result:
-                    result = post.calculate_post_rating(target_id, rating, old_rating)
-                    if result:
-                        return True
+                select_updated_rating = self.cursor.execute("SELECT is_favorite, is_reported, userRated FROM ratings WHERE user_id = ? AND post_id = ?", (user_id, target_id))
+                self.con.commit()
+                print(select_updated_rating.fetchone())
+                if updated_rating:
+                    changed_total = post.calculate_post_rating(target_id, rating, old_rating)
+
+                    if select_updated_rating.fetchone():
+                        if changed_total:
+                            return True
                     return False
+
+                    # else:
+                    #     self.delete_user_rating(user_id, target_id)
         # comment model aanmaken
         # elif target == "comments":
+    # def delete_user_rating(self,user_id, target_id):
+    #     # query = "SELECT is_favorite, is_reported, userRated FROM ratings WHERE user_id = ? AND post_id = ?"
+    #     query = 'DELETE FROM ratings WHERE user_id = ? AND post_id = ?'
+    #     print(query)
