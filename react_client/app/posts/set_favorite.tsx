@@ -48,7 +48,7 @@ export default function Test() {
           {post['total_rating']}
           {'\n'}
           
-          <FavoriteButton post_id = {post['id']} is_favorited = {post['is_favorite']} onPress={undefined}/>
+          <FavoriteButton post_id = {post['id']}  onPress={undefined}/>
           <hr></hr>
         </Text>       
         
