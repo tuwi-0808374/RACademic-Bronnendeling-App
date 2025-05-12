@@ -6,6 +6,8 @@ import jwt_decode from 'jwt-decode';
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
+  const [user_id, setUserId] = useState(0);
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -16,11 +18,13 @@ export default function Test() {
         }
   
         const decoded_user: any = jwt_decode(token);
+        setUserId(decoded_user.user_id);
+
         const response = await fetch(`http://127.0.0.1:5000/posts/${decoded_user.user_id}`)
         .then(response => response.json())
         .then(response => {
-          setPosts(response.data.posts);
-          console.log(response.data.posts);
+          setPosts(response.data);
+          console.log(response.data);
         })
       } catch (error) {
         console.error('Error fetching posts:', error);
@@ -48,7 +52,8 @@ export default function Test() {
           {post['total_rating']}
           {'\n'}
           
-          <FavoriteButton post_id = {post['id']}  onPress={undefined}/>
+          <FavoriteButton user_id={user_id} post_id = {post['id']} is_favorited = {post['is_favorite']} onPress={undefined} />
+
           <hr></hr>
         </Text>       
         

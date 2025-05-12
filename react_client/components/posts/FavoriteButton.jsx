@@ -20,6 +20,7 @@ const FavoriteButton = ({ post_id, is_favorited, onPress, user_id}) => {
     if (onPress) {
       onPress(post_id);
     }
+    console.log(user_id);
   };
 
   return (
