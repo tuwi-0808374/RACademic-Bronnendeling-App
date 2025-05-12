@@ -19,30 +19,26 @@ class Post:
         self.cursor.execute('SELECT total_rating FROM posts WHERE id = ?', (post_id,))
         calculated_rating = None
         total_rating = self.cursor.fetchone()
-        print('post id new rating and old rating',post_id, new_rating,old_rating)
-        var = None
+
         # create
         if not old_rating:
-            var = 'create'
             calculated_rating = total_rating['total_rating'] + new_rating
+
         # update remove rating
         elif not new_rating:
-            var = 'remove rating'
             calculated_rating = total_rating['total_rating'] - old_rating
 
         # update switch rating
         elif old_rating != new_rating:
-            var = 'switch'
             calculated_rating = total_rating['total_rating'] + (new_rating*2)
+
         elif old_rating == new_rating:
-            var = 'undo rating'
             calculated_rating = total_rating['total_rating'] - old_rating
 
-        print(var)
         query = 'UPDATE posts SET total_rating = ? WHERE id = ?'
-        print(query, (calculated_rating,post_id))
+
         result = self.cursor.execute(query, (calculated_rating, post_id))
-        print(result)
+
         self.con.commit()
         if result:
             return True

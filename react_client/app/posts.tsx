@@ -26,7 +26,6 @@ const get_user_id = async () => {
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
-  const [ratings, setRatings] = useState([]);
   const [user_id, setUserId] = useState(null)
 
   useEffect(() => {

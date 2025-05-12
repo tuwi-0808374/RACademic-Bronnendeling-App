@@ -28,7 +28,7 @@ class Rating:
             return False
         if query:
             self.cursor.execute(query,params,)
-            print('query in get_user_ratings', query, params)
+
             result = self.cursor.fetchall()
             if result:
                 result_dicts = [dict(row) for row in result]
@@ -44,7 +44,7 @@ class Rating:
         result = target_exists.fetchone()
 
         if result is None:
-            print('target bestaat niet ', result)
+
             return None
 
         # haalt op basis id van post of comment de rating op
@@ -56,7 +56,7 @@ class Rating:
         if query:
             self.cursor.execute(query, (user_id, target_id))
             result = self.cursor.fetchone()
-            print('bestaat',result)
+
             self.con.commit()
             # checkt of de rating bestaat en of de rating value niet gelijk zijn
             if result:
@@ -112,7 +112,6 @@ class Rating:
                 self.con.commit()
                 select_updated_rating = self.cursor.execute("SELECT is_favorite, is_reported, userRated FROM ratings WHERE user_id = ? AND post_id = ?", (user_id, target_id))
                 self.con.commit()
-                print(select_updated_rating.fetchone())
                 if updated_rating:
                     changed_total = post.calculate_post_rating(target_id, rating, old_rating)
 

@@ -8,7 +8,7 @@ base = Blueprint('base', __name__)
 @rating_bp.route('/rating', methods=['POST'])
 def create_rating():
     data = request.get_json()
-    print(data)
+
     return handle_rating_process(data, None, 'POST')
 
 
@@ -16,7 +16,7 @@ def create_rating():
 @rating_bp.route('/rating/<int:user_id>', methods=['PATCH'])
 def update_rating(user_id):
     data = request.get_json()
-    print(data,'update')
+
     return handle_rating_process(data , user_id, 'PATCH')
 
 def handle_rating_process(data ,user_id=None, method=None):
