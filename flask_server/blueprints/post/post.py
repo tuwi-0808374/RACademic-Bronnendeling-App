@@ -30,6 +30,7 @@ def get_posts():
         return jsonify({'status': 'error', 'message': 'No posts found'}), 404
     return jsonify({'status': 'success', 'data': posts}), 200
 
+
 @post_bp.route('/posts/<int:user_id>', methods=['GET'])
 def get_posts_by_user(user_id):
     post = Post()
@@ -124,6 +125,17 @@ def delete_post(id):
     if not delete_post:
         return jsonify({'status': 'error', 'message': 'Post not found'}), 404
     return jsonify({'status': 'success', 'data': delete_post}), 200
+
+
+@post_bp.route('/posts_by_user_id/<int:user_id>', methods=['GET'])
+def get_posts_by_user_id(user_id):
+    print(user_id)
+    post = Post()
+    posts = post.get_posts_by_user_id(user_id)
+    if not posts:
+        return jsonify({'status': 'error', 'message': 'Post not found'}), 404
+    return jsonify({'status': 'success', 'data': posts}), 200
+
 
 
 @post_bp.route('/posts/favorite/<int:user_id>', methods=['GET'])

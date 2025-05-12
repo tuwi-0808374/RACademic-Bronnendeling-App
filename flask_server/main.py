@@ -23,5 +23,6 @@ app.register_blueprint(rating_bp)
 app.register_blueprint(account_bp)
 app.register_blueprint(badge_bp)
 
+
 if __name__ == "__main__":
     app.run(debug=True)

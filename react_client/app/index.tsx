@@ -23,15 +23,17 @@ export default function Index() {
                 Register
             </Link>
             <Link href={'/posts/create_post'}>
-                Create Post
+                Create post
             </Link>
             <Link href={'/posts/edit_post'}>
-                edit Post
+                Edit post
             </Link>
             <Link href={'/posts'}>
                 Posts
             </Link>
-
+            <Link href={'/posts/user_posts'}>
+                  User posts
+            </Link>
             <Link href={'/posts/list_favorite'}>
                 List of favorited posts of logged user
             </Link>
