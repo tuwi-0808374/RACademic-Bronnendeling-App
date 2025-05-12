@@ -14,6 +14,6 @@ const COLORS = {
 export default function UserPosts () {
 
     useEffect(() => {
-        fetch("`http://localhost:5000/")
+        fetch(`http://localhost:5000/posts_by_user_id/${user_id}`);
     }, []);
 }
