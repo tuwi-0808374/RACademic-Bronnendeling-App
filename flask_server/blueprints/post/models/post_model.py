@@ -15,38 +15,12 @@ class Post:
         cursor = con.cursor()
         return cursor, con
 
-    def calculate_post_rating(self,post_id, new_rating,old_rating):
-
-        self.cursor.execute('SELECT total_rating FROM posts WHERE id = ?', (post_id,))
-        total_rating = self.cursor.fetchone()
-        print('oldrating and new rating', old_rating, new_rating)
-        # create
-        if not old_rating:
-            calculated_rating = total_rating['total_rating'] + new_rating
-        # update remove rating
-        elif not new_rating:
-            calculated_rating = total_rating['total_rating'] - old_rating
-        # update switch rating
-        elif old_rating != new_rating:
-            calculated_rating = total_rating['total_rating'] + (new_rating*2)
-        elif old_rating == new_rating:
-            calculated_rating = total_rating['total_rating'] - old_rating
-        result = self.cursor.execute('''
-            UPDATE posts 
-            SET total_rating = ? 
-            WHERE id = ?''', (calculated_rating, post_id))
-        self.con.commit()
-        if result:
-            return True
-        return False
-
     # If user_id is given it will also returns if each post is a favorite for that user
     def get_posts(self, user_id = None, limit = None):
         params = []
         if user_id:
-            # als het kan moet deze ook ORDER BY posted_date DESC hebben
             query = """
-                    SELECT posts.*, ratings.is_favorite 
+                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating
                     FROM posts
                     LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
                     """
@@ -142,7 +116,7 @@ class Post:
         return dict_result
 
 
-    def assign_post_tags(self, tag_ids, post_id):
+    def post_assign_post_tags(self, tag_ids, post_id):
         result = None
         for tag_id in tag_ids:
             query = "INSERT INTO post_tags (tag_id, post_id) VALUES (?,?)"
@@ -151,6 +125,32 @@ class Post:
         if result:
             return True
         return False
+
+    def delete_assigned_post_tags(self, post_id):
+        query = "DELETE FROM post_tags WHERE post_id = ?"
+        result = self.cursor.execute(query, (post_id,))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
+    def delete_post(self, post_id):
+        query = "DELETE FROM posts WHERE id = ?"
+        result = self.cursor.execute(query, (post_id,))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
+
+    def patch_edit_post(self, id, data):
+        query = "UPDATE posts SET title = ?, content = ? WHERE id = ?"
+        result = self.cursor.execute(query, (data["title"], data["content"], id))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
 
     def get_favorite_posts(self, user_id):
         query = """
@@ -162,15 +162,21 @@ class Post:
         favorite_posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in favorite_posts]
         return result_dicts
-
-    def add_post_as_favorite(self, post_id, user_id):
-        # Check if the post is already marked as favorite by the user
+    
+    def is_post_favorite(self, post_id, user_id):
         query = """
                 SELECT * FROM ratings
                 WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
                 """
         self.cursor.execute(query, (user_id, post_id))
         is_favorite = self.cursor.fetchone()
+        if is_favorite:
+            return dict(is_favorite)
+        return None
+
+    def add_post_as_favorite(self, post_id, user_id):
+        # Check if the post is already marked as favorite by the user
+        is_favorite = self.is_post_favorite(post_id, user_id)
 
         if is_favorite:
             query = """

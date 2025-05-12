@@ -8,6 +8,22 @@ base = Blueprint('base', __name__)
 def get_tags():
     tag = Tag()
     tags = tag.get_tags()
+    print(tags)
     if not tags:
-        return jsonify({'status': 'error', 'message': 'No posts found'}), 404
+        return jsonify({'status': 'error', 'message': 'No tags found'}), 404
     return jsonify({'status': 'success', 'data': tags}), 200
+
+
+@tag_bp.route('/tags_by_post_id/<int:post_id>', methods=['GET'])
+def get_tags_by_post_id(post_id):
+    tag = Tag()
+    tags = tag.get_tags()
+    tag_ids= tag.get_tags_by_post_id(post_id)
+    data = {
+        'tags':tags,
+        'tag_ids': tag_ids
+    }
+    print(data)
+    if not tags:
+        return jsonify({'status': 'error', 'message': 'No tags found'}), 404
+    return jsonify({'status': 'success', 'data': data}), 200

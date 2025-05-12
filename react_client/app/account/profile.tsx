@@ -141,6 +141,7 @@ export default function ProfileScreen() {
             style={styles.logo}
             resizeMode="contain"
           />
+          
           <Text style={styles.logoTitle}>MIJN PROFIEL</Text> 
 
 
