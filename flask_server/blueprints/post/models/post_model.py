@@ -15,35 +15,6 @@ class Post:
         cursor = con.cursor()
         return cursor, con
 
-    def calculate_post_rating(self,post_id, new_rating,old_rating):
-        self.cursor.execute('SELECT total_rating FROM posts WHERE id = ?', (post_id,))
-        calculated_rating = None
-        total_rating = self.cursor.fetchone()
-
-        # create
-        if not old_rating:
-            calculated_rating = total_rating['total_rating'] + new_rating
-
-        # update remove rating
-        elif not new_rating:
-            calculated_rating = total_rating['total_rating'] - old_rating
-
-        # update switch rating
-        elif old_rating != new_rating:
-            calculated_rating = total_rating['total_rating'] + (new_rating*2)
-
-        elif old_rating == new_rating:
-            calculated_rating = total_rating['total_rating'] - old_rating
-
-        query = 'UPDATE posts SET total_rating = ? WHERE id = ?'
-
-        result = self.cursor.execute(query, (calculated_rating, post_id))
-
-        self.con.commit()
-        if result:
-            return True
-        return False
-
     # If user_id is given it will also returns if each post is a favorite for that user
     def get_posts(self, user_id = None, limit = None):
         params = []
