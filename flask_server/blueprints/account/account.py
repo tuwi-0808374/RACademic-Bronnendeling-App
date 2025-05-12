@@ -1,9 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import *
 from blueprints.account.models.account_model import Account
 import bcrypt
 from flask_cors import cross_origin
-import base64
+import base64, os
+from flask import send_from_directory
 
 
 account_bp = Blueprint('account', __name__)
@@ -30,13 +31,10 @@ def login_api():
             additional_claims={
                 "user_id": user["id"]
             }
-        )
-        
+        )  
         return jsonify({"access_token": access_token}), 200
 
     return jsonify({"message": "Foutieve login!"}), 401
-
-
 
 @account_bp.route('/profile/<int:user_id>', methods=['GET'])
 @jwt_required()
@@ -46,6 +44,9 @@ def get_profile_by_id(user_id):
     user = account_model.get_user_by_id(user_id)
     if not user:
         return jsonify({'status': 'error', 'message': 'Gebruiker niet gevonden'}), 404
+    
+    if user.get('profile_image'):
+        user['profile_image_url'] = f"http://127.0.0.1:5000/uploads/{user['profile_image']}"
 
     return jsonify({'status': 'success', 'data': user}), 200
 
@@ -74,6 +75,11 @@ def update_profile(user_id):
         return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200
     else:
         return jsonify({'status': 'error', 'message': f'Bijwerken mislukt: {success}'}), 500
+
+
+@account_bp.route('/uploads/<filename>')
+def serve_uploaded_file(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
 
 @account_bp.route('/register', methods=['POST'])
 def register():

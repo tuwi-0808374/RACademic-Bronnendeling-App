@@ -28,6 +28,7 @@ export default function ProfileScreen() {
   const [first_name, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUserName] = useState('');
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -65,7 +66,11 @@ export default function ProfileScreen() {
               setLastName(userData.last_name || '');
               setEmail(userData.email || '');
               setUserName(userData.username || '');
-          } else {
+
+              if (userData.profile_image_url) {
+                setProfileImage(userData.profile_image_url);
+                console.log('Profiel foto URL:', userData.profile_image_url);
+              }
               
           }
         } else {
@@ -81,8 +86,6 @@ export default function ProfileScreen() {
     fetchProfile();
   }, []);
 
-
-  
   
   const saveProfile = async () => {
     console.log('Profiel opslaan met:', { first_name, lastName, email, username });
@@ -139,11 +142,25 @@ export default function ProfileScreen() {
         style={styles.keyboardAvoidingContainer}
       >
         <View style={styles.innerContainer}>
-          <Image
-            source={require('../../assets/images/hr-logo.png')} 
-            style={styles.logo}
-            resizeMode="contain"
-          />
+        <View style={styles.profileImageContainer}>
+          {profileImage ? (
+            <Image
+              source={{ uri: profileImage }}
+              style={styles.profileImage}
+            />
+          ) : (
+            <Image
+              source={require('../../assets/images/profile.png')}
+              style={styles.profileImage}
+            />
+          )}
+        </View>
+        
+        <Image
+          source={require('../../assets/images/hr-logo.png')} 
+          style={styles.logo}
+          resizeMode="contain"
+        />
           
           <Text style={styles.logoTitle}>MIJN PROFIEL</Text> 
 
@@ -276,5 +293,16 @@ const styles = StyleSheet.create({
     color: COLORS.textLight,
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  profileImageContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  profileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 2,
+    borderColor: COLORS.red,
   },
 });
