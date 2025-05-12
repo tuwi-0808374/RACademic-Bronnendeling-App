@@ -26,7 +26,8 @@ class Account:
             id,
             password,
             last_name,
-            first_name || ' ' || last_name AS full_name
+            first_name || ' ' || last_name AS full_name,
+            username
         
             FROM users
             WHERE email = ?
@@ -41,6 +42,8 @@ class Account:
                 "id": result[2],
                 "hashed_password": result[3],
                 "full_name": result[5],
+                "username": result[6],
+                
                 
             }
         return None
@@ -59,7 +62,8 @@ class Account:
                 first_name,
                 id,
                 last_name,
-                first_name 
+                first_name,
+                username
                 FROM users
                 WHERE id = ?
                 """,
@@ -73,12 +77,12 @@ class Account:
             if con:
                 con.close() 
                 
-    def update_profile(self, user_id, first_name=None, last_name=None, email=None):
+    def update_profile(self, user_id, first_name=None, last_name=None, email=None, username=None):
         cursor, con = self.connect_db()  
         try:
             cursor.execute(  
-                "UPDATE users SET first_name = ?, last_name = ?, email = ? WHERE id = ?",
-                (first_name, last_name, email, user_id)
+                "UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ? WHERE id = ?",
+                (first_name, last_name, email, username, user_id)
             )
             con.commit()
             return True

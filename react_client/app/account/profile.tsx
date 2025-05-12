@@ -27,6 +27,7 @@ export default function ProfileScreen() {
   const [email, setEmail] = useState('');
   const [first_name, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [username, setUserName] = useState('');
   const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -63,6 +64,7 @@ export default function ProfileScreen() {
               setFirstName(userData.first_name || '');
               setLastName(userData.last_name || '');
               setEmail(userData.email || '');
+              setUserName(userData.username || '');
           } else {
               
           }
@@ -83,7 +85,7 @@ export default function ProfileScreen() {
   
   
   const saveProfile = async () => {
-    console.log('Profiel opslaan met:', { first_name, lastName, email, });
+    console.log('Profiel opslaan met:', { first_name, lastName, email, username });
     try {
       const token = await AsyncStorage.getItem('authToken');
       if (!token) {
@@ -109,6 +111,7 @@ export default function ProfileScreen() {
           first_name,
           last_name: lastName,
           email,
+          username,
         }),
       });
 
@@ -174,6 +177,18 @@ export default function ProfileScreen() {
               onChangeText={setEmail} 
               style={[styles.input, styles.inputStyle]}
               keyboardType="email-address"
+              autoCapitalize="none"
+              selectionColor={COLORS.red}
+              placeholderTextColor={COLORS.placeholderText}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>Gebruikersnaam</Text>
+            <TextInput
+              value={username}
+              onChangeText={setUserName} 
+              style={[styles.input, styles.inputStyle]}
               autoCapitalize="none"
               selectionColor={COLORS.red}
               placeholderTextColor={COLORS.placeholderText}
