@@ -22,9 +22,11 @@ export default function Index() {
             <Link href={'/account/register'}>
                 Register
             </Link>
-
             <Link href={'/posts/create_post'}>
                 Create Post
+            </Link>
+            <Link href={'/posts/edit_post'}>
+                edit Post
             </Link>
             <Link href={'/posts'}>
                 Posts

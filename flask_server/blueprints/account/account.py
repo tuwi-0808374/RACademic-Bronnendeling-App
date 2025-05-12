@@ -3,6 +3,7 @@ from flask_jwt_extended import *
 from blueprints.account.models.account_model import Account
 import bcrypt
 from flask_cors import cross_origin
+import base64
 
 
 account_bp = Blueprint('account', __name__)
@@ -71,3 +72,38 @@ def update_profile(user_id):
         return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200
     else:
         return jsonify({'status': 'error', 'message': f'Bijwerken mislukt: {success}'}), 500
+
+@account_bp.route('/register', methods=['POST'])
+def register():
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            
+            email = data.get("email")
+            password = data.get("password")
+
+            if not email or not password:
+                return jsonify({"error": "Email and password are required"}), 400
+
+            user_data = {
+                "email": email,
+                "display_name": data.get("display_name", ""),
+                "first_name": data.get("first_name", ""),
+                "username": data.get("username", ""),
+                "last_name": data.get("last_name", ""),
+                "password": password,
+                "is_public": data.get("is_public", False),
+                "profile_image": data.get("profile_image", None)  
+            }
+
+            account_model = Account()
+            account_id = account_model.register_user(user_data)
+
+            if not account_id:
+                return jsonify({"error": "Failed to add user"}), 500
+            
+            return jsonify({"message": "User successfully added", "id": account_id}), 201
+
+        except Exception as e:
+            print(f"Registration error: {str(e)}")
+            return jsonify({"error": "Registration failed", "details": str(e)}), 500

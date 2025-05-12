@@ -22,8 +22,8 @@ export default function Create_post() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tagid, setTagid] = useState([]);
-
     const [data, setData] = useState([]);
+
     useEffect(() => {
         fetch("http://localhost:5000/tags")
             .then(res => res.json())
@@ -82,13 +82,11 @@ export default function Create_post() {
 
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Tags</Text>
-                            {data.map((tag) => (
-                                <CheckBox options={[
-                                    {label: tag['title'], value: tag['id']},
-                                    ]}
-                                    CheckedValues={tagid}
-                                    onChange={setTagid}
-                                    /> ))}
+                            <CheckBox
+                                options={data}
+                                CheckedValues={tagid}
+                                onChange={setTagid}
+                                />
                     </View>
 
                     <View style={styles.create}>

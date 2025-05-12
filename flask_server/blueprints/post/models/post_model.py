@@ -145,7 +145,7 @@ class Post:
         return dict_result
 
 
-    def assign_post_tags(self, tag_ids, post_id):
+    def post_assign_post_tags(self, tag_ids, post_id):
         result = None
         for tag_id in tag_ids:
             query = "INSERT INTO post_tags (tag_id, post_id) VALUES (?,?)"
@@ -154,6 +154,32 @@ class Post:
         if result:
             return True
         return False
+
+    def delete_assigned_post_tags(self, post_id):
+        query = "DELETE FROM post_tags WHERE post_id = ?"
+        result = self.cursor.execute(query, (post_id,))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
+    def delete_post(self, post_id):
+        query = "DELETE FROM posts WHERE id = ?"
+        result = self.cursor.execute(query, (post_id,))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
+
+    def patch_edit_post(self, id, data):
+        query = "UPDATE posts SET title = ?, content = ? WHERE id = ?"
+        result = self.cursor.execute(query, (data["title"], data["content"], id))
+        self.con.commit()
+        if result:
+            return True
+        return False
+
 
     def get_favorite_posts(self, user_id):
         query = """
@@ -165,15 +191,21 @@ class Post:
         favorite_posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in favorite_posts]
         return result_dicts
-
-    def add_post_as_favorite(self, post_id, user_id):
-        # Check if the post is already marked as favorite by the user
+    
+    def is_post_favorite(self, post_id, user_id):
         query = """
                 SELECT * FROM ratings
                 WHERE user_id = ? AND post_id = ? AND comment_id IS NULL
                 """
         self.cursor.execute(query, (user_id, post_id))
         is_favorite = self.cursor.fetchone()
+        if is_favorite:
+            return dict(is_favorite)
+        return None
+
+    def add_post_as_favorite(self, post_id, user_id):
+        # Check if the post is already marked as favorite by the user
+        is_favorite = self.is_post_favorite(post_id, user_id)
 
         if is_favorite:
             query = """

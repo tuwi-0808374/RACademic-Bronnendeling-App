@@ -1,6 +1,8 @@
 import sqlite3
 import os
 from flask_jwt_extended import *
+import bcrypt
+import base64
 
 
 class Account:
@@ -87,5 +89,45 @@ class Account:
             if con:
                 con.close()
                 
-    
+    def register_user(self, user_data):
+        try:
+            hashed_password = bcrypt.hashpw(user_data["password"].encode('utf-8'), bcrypt.gensalt())
+
+            image_base64 = user_data.get("profile_image")
+            image_data = None
+            
+            if image_base64:
+                if ',' in image_base64:
+                    image_base64 = image_base64.split(',')[1]
+                image_data = base64.b64decode(image_base64)
+
+            self.cursor.execute(
+                """
+                INSERT INTO users (
+                    email, 
+                    display_name, 
+                    first_name, 
+                    username, 
+                    last_name, 
+                    password, 
+                    is_public,  
+                    profile_image
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    user_data["email"],
+                    user_data["display_name"],
+                    user_data["first_name"],
+                    user_data["username"],
+                    user_data["last_name"],
+                    hashed_password,
+                    user_data["is_public"],
+                    image_data  
+                )
+            )
+            self.con.commit()
+            return self.cursor.lastrowid
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            return None
 
