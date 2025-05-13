@@ -1,10 +1,10 @@
 import React from 'react';
-import { TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { TouchableOpacity, Image, StyleSheet, View, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 interface Props {
   image: string | null;
-  onImageSelected: (uri: string) => void;
+  onImageSelected: (uri: string | null) => void;
 }
 
 const ImageUploader: React.FC<Props> = ({ image, onImageSelected }) => {
@@ -21,13 +21,24 @@ const ImageUploader: React.FC<Props> = ({ image, onImageSelected }) => {
     }
   };
 
+  const removeImage = () => {
+    onImageSelected(null);
+  };
+
   return (
-    <TouchableOpacity onPress={pickImage}>
-      <Image
-        source={image ? { uri: image } : require('../../assets/images/profile.png')}
-        style={styles.image}
-      />
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={pickImage}>
+        <Image
+          source={image ? { uri: image } : require('../../assets/images/profile.png')}
+          style={styles.image}
+        />
+      </TouchableOpacity>
+      {image && (
+          <TouchableOpacity onPress={removeImage} style={styles.removeButton}>
+            <Text style={styles.removeButtonText}>Verwijder</Text>
+          </TouchableOpacity>
+        )}
+    </View>
   );
 };
 
@@ -38,6 +49,16 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     borderWidth: 2,
     borderColor: '#C80032',
+  },
+  removeButton: {
+    marginTop: 10,
+    padding: 5,
+    backgroundColor: '#C80032',
+    borderRadius: 5,
+  },
+  removeButtonText: {
+    color: 'white',
+    fontSize: 14,
   },
 });
 

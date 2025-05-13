@@ -118,8 +118,14 @@ class Account:
             
             current_image = current_user['profile_image'] if current_user else None
             
-            if profile_image and current_image:
+            if profile_image is None and current_image:
                 self.delete_old_image(current_image)
+                profile_image = None
+            elif isinstance(profile_image, str) and profile_image.startswith('data:image'):
+                if current_image:
+                    self.delete_old_image(current_image)
+                profile_image = self.save_base64_image(profile_image) 
+
             
             cursor.execute(  
                 "UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ?, profile_image = ? WHERE id = ?",
