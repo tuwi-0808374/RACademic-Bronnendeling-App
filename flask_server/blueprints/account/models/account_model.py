@@ -107,12 +107,13 @@ class Account:
             print(f"Fout bij opslaan afbeelding: {e}")
             return None
                 
-    def update_profile(self, user_id, first_name=None, last_name=None, email=None, username=None):
+    def update_profile(self, user_id, first_name=None, last_name=None, email=None, username=None, profile_image=None):
+        
         cursor, con = self.connect_db()  
         try:
             cursor.execute(  
-                "UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ? WHERE id = ?",
-                (first_name, last_name, email, username, user_id)
+                "UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ?, profile_image = ? WHERE id = ?",
+                (first_name, last_name, email, username, profile_image, user_id)
             )
             con.commit()
             return True

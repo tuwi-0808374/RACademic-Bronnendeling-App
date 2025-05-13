@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
+import ImageUploader from '../../components/account/ImageUploader';
 
 const COLORS = {
   red: '#C80032',
@@ -93,9 +94,20 @@ export default function ProfileScreen() {
       const token = await AsyncStorage.getItem('authToken');
       if (!token) {
         console.log('Geen token gevonden.');
+        
         return;
+        
       }
-
+      let base64Image = null;
+      if (profileImage && !profileImage.startsWith('http')) {
+        const response = await fetch(profileImage);
+        const blob = await response.blob();
+        base64Image = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(blob);
+          });
+        }
       const decoded = jwt_decode<JwtPayload>(token);
       const currentUserId = decoded.user_id; 
 
@@ -115,6 +127,7 @@ export default function ProfileScreen() {
           last_name: lastName,
           email,
           username,
+          profile_image: base64Image
         }),
       });
 
@@ -143,19 +156,12 @@ export default function ProfileScreen() {
       >
         <View style={styles.innerContainer}>
         <View style={styles.profileImageContainer}>
-          {profileImage ? (
-            <Image
-              source={{ uri: profileImage }}
-              style={styles.profileImage}
-            />
-          ) : (
-            <Image
-              source={require('../../assets/images/profile.png')}
-              style={styles.profileImage}
-            />
-          )}
-        </View>
-        
+        <ImageUploader
+          image={profileImage} 
+          onImageSelected={setProfileImage} 
+        />
+      </View>
+              
         <Image
           source={require('../../assets/images/hr-logo.png')} 
           style={styles.logo}

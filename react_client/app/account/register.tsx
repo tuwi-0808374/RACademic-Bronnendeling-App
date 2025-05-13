@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, ScrollView } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
+import ImageUploader from '../../components/account/ImageUploader';
 
 const COLORS = {
   red: '#C80032',
@@ -27,6 +27,7 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [image, setImage] = useState<string | null>(null);
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
 
@@ -78,21 +79,6 @@ const RegisterScreen = () => {
     }
   };
 
-    const [image, setImage] = useState<string | null>(null);
-
-      const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-
-        if (!result.canceled) {
-          setImage(result.assets[0].uri);
-        }
-      };
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
@@ -141,23 +127,11 @@ const RegisterScreen = () => {
                 />
                 <Text style={styles.logoTitle}>HOGESCHOOL {'\n'}ROTTERDAM</Text>
               </View>
-              <TouchableOpacity onPress={pickImage} style={styles.imagePickerButton}>
-                {image ? (
-                  <Image
-                    source={{ uri: image }}
-                    style={styles.profileImage}
-                    resizeMode="cover"
-
-                  />
-                ) : (
-                  <Image
-                    source={require('../../assets/images/profile.png')}
-                    style={styles.profileImage}
-                    resizeMode="cover"
-
-                  />
-                )}
-              </TouchableOpacity>
+              
+              <ImageUploader
+                image={image} 
+                onImageSelected={setImage} 
+              />
 
             </View>
             
