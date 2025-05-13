@@ -111,6 +111,16 @@ class Account:
         
         cursor, con = self.connect_db()  
         try:
+            current_user = cursor.execute(
+            "SELECT profile_image FROM users WHERE id = ?", 
+            (user_id,)
+        ).fetchone()
+            
+            current_image = current_user['profile_image'] if current_user else None
+            
+            if profile_image and current_image:
+                self.delete_old_image(current_image)
+            
             cursor.execute(  
                 "UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ?, profile_image = ? WHERE id = ?",
                 (first_name, last_name, email, username, profile_image, user_id)
@@ -123,6 +133,17 @@ class Account:
         finally:
             if con:
                 con.close()
+                
+    def delete_old_image(self, filename):
+        if filename:
+            filepath = os.path.join(self.upload_folder, filename)
+            try:
+                if os.path.exists(filepath):
+                    os.remove(filepath)
+                    return True
+            except Exception as e:
+                print(f"Fout bij verwijderen oude afbeelding: {e}")
+        return False
                 
     def register_user(self, user_data):
         try:

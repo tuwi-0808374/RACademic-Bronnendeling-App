@@ -65,7 +65,8 @@ def update_profile(user_id):
     
     profile_image = data.get('profile_image')
     image_filename = None
-    if profile_image and isinstance(profile_image, str):
+    
+    if profile_image and isinstance(profile_image, str) and profile_image.startswith('data:image'):
         image_filename = account_model.save_base64_image(profile_image)
         if not image_filename:
             return jsonify({'status': 'error', 'message': 'Fout bij opslaan profielfoto'}), 400
