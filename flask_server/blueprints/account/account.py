@@ -156,3 +156,20 @@ def register():
         except Exception as e:
             print(f"Registration error: {str(e)}")
             return jsonify({"error": "Registration failed", "details": str(e)}), 500
+        
+@account_bp.route('/check_username', methods=['POST'])
+@cross_origin()
+def check_username():
+    data = request.json
+    username = data.get('username')
+    
+    if not username:
+        return jsonify({"available": False, "message": "Gebruikersnaam is verplicht"}), 400
+    
+    account_model = Account()
+    existing_user = account_model.get_user_by_username(username)
+    
+    if existing_user:
+        return jsonify({"available": False, "message": "Gebruikersnaam al in gebruik"}), 200
+    else:
+        return jsonify({"available": True, "message": "Gebruikersnaam is beschikbaar"}), 200

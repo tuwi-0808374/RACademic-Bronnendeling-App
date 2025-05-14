@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import ImageUploader from '../../components/account/ImageUploader';
 
+
 const COLORS = {
   red: '#C80032',
   background: '#F8F4EF',

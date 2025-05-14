@@ -13,7 +13,6 @@ class Account:
         self.path = os.path.join(base_dir, '../../../databases/database.db')
         self.upload_folder = os.path.join(base_dir, '../../../uploads')
         os.makedirs(self.upload_folder, exist_ok=True)
-        self.cursor, self.con = self.connect_db()
 
     def connect_db(self):
         con = sqlite3.connect(self.path)
@@ -22,35 +21,39 @@ class Account:
         return cursor, con
 
     def get_user_by_email(self, email):
-        
-        result = self.cursor.execute(
-            """
-            SELECT email, 
-            first_name,
-            id,
-            password,
-            last_name,
-            first_name || ' ' || last_name AS full_name,
-            username
-        
-            FROM users
-            WHERE email = ?
-            """,
-            (email,)
-        ).fetchone()
+        cursor, con = self.connect_db()
+        try:
+            result = cursor.execute(
+                """
+                SELECT email, 
+                first_name,
+                id,
+                password,
+                last_name,
+                first_name || ' ' || last_name AS full_name,
+                username
+            
+                FROM users
+                WHERE email = ?
+                """,
+                (email,)
+            ).fetchone()
 
-        if result:
-            return {
-                "email": result[0],
-                "first_name": result[1],
-                "id": result[2],
-                "hashed_password": result[3],
-                "full_name": result[5],
-                "username": result[6],
-                
-                
-            }
-        return None
+            if result:
+                return {
+                    "email": result[0],
+                    "first_name": result[1],
+                    "id": result[2],
+                    "hashed_password": result[3],
+                    "full_name": result[5],
+                    "username": result[6],
+                    
+                    
+                }
+            return None
+        finally:
+            if con:
+                con.close()
     
     def get_user_id_from_token(self, token):
         decoded = decode_token(token)
@@ -183,13 +186,14 @@ class Account:
         return False
                 
     def register_user(self, user_data):
+        cursor, con = self.connect_db()
         try:
             hashed_password = bcrypt.hashpw(user_data["password"].encode('utf-8'), bcrypt.gensalt())
 
             image_filename = self.save_base64_image(user_data.get("profile_image"))
             
            
-            self.cursor.execute(
+            cursor.execute(
                 """
                 INSERT INTO users (
                     email, 
@@ -213,9 +217,23 @@ class Account:
                     image_filename  
                 )
             )
-            self.con.commit()
-            return self.cursor.lastrowid
+            con.commit()
+            return cursor.lastrowid
         except Exception as e:
             print(f"Unexpected error: {e}")
             return None
+        finally:
+            if con:
+                con.close()
 
+    def get_user_by_username(self, username):
+        cursor, con = self.connect_db()
+        try:
+            result = cursor.execute(
+                "SELECT id FROM users WHERE username = ?",
+                (username,)
+            ).fetchone()
+            return result is not None
+        finally:
+            if con:
+                con.close()
