@@ -106,6 +106,37 @@ class Account:
         except Exception as e:
             print(f"Fout bij opslaan afbeelding: {e}")
             return None
+        
+    def change_password(self, user_id, old_password, new_password):
+        cursor, con = self.connect_db()
+        try:
+            user_query_result = cursor.execute(
+                "SELECT password FROM users WHERE id = ?",
+                (user_id,)
+            ).fetchone()
+
+            if not user_query_result:
+                return False, "Gebruiker niet gevonden."
+
+            stored_hashed_password = user_query_result['password']
+
+            if not bcrypt.checkpw(old_password.encode('utf-8'), stored_hashed_password):
+                return False, "Huidige wachtwoord is incorrect."
+
+
+            new_hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            cursor.execute(
+                "UPDATE users SET password = ? WHERE id = ?",
+                (new_hashed_password, user_id)
+            )
+            con.commit()
+            return True, "Wachtwoord succesvol gewijzigd."
+        except Exception as e:
+            print(f"Fout bij wijzigen wachtwoord {user_id}: {e}")
+            return False
+        finally:
+            if con:
+                con.close()
                 
     def update_profile(self, user_id, first_name=None, last_name=None, email=None, username=None, profile_image=None):
         

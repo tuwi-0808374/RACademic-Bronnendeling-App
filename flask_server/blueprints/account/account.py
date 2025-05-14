@@ -50,6 +50,36 @@ def get_profile_by_id(user_id):
 
     return jsonify({'status': 'success', 'data': user}), 200
 
+@account_bp.route('/change_password/<int:user_id>', methods=['PATCH'])
+@jwt_required()
+@cross_origin()
+def change_password_route(user_id):
+    jwt_payload = get_jwt()
+    token_user_id = jwt_payload.get('user_id')
+
+    if token_user_id != user_id:
+        return jsonify({"message": "Je kunt alleen eigen wachtwoord wijzigen."}), 403
+
+    data = request.get_json()
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
+
+    if not old_password or not new_password:
+        return jsonify({"message": "Huidig wachtwoord en nieuw wachtwoord zijn vereist"}), 400
+
+    account_model = Account()
+    success, message = account_model.change_password(user_id, old_password, new_password)
+
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        status_code = 400 
+        if "Serverfout" in message:
+            status_code = 500
+        elif "Gebruiker niet gevonden" in message: 
+            status_code = 404
+        return jsonify({'status': 'error', 'message': message}), status_code
+
 
 @account_bp.route('/update_profile/<int:user_id>', methods=['PATCH'])
 @jwt_required()
