@@ -291,7 +291,13 @@ Markdown is cool""", "user_id": 6,
         badges = [
             {"title": "First Post!", "requirement": "Eerste bericht geplaatst"},
             {"title": "5 Posts", "requirement": "Minimaal 5 berichten geplaatst"},
-            {"title": "10 Posts", "requirement": "Minimaal 10 berichten geplaatst"}
+            {"title": "10 Posts", "requirement": "Minimaal 10 berichten geplaatst"},
+            {"title": "First Favorite", "requirement": "Eerste favoriet toegevoegd"},
+            {"title": "5 Favorites", "requirement": "Minimaal 5 favorieten toegevoegd"},
+            {"title": "10 Favorites", "requirement": "Minimaal 10 favorieten toegevoegd"},
+            {"title": "First Comment", "requirement": "Eerste reactie geplaatst"},
+            {"title": "5 Comments", "requirement": "Minimaal 5 reacties geplaatst"},
+            {"title": "10 Comments", "requirement": "Minimaal 10 reacties geplaatst"}
         ]
         list_of_parameters = [(badge["title"], badge["requirement"]) for badge in badges]
         create_statement = """INSERT INTO badges (title, requirement) VALUES (?, ?)"""
