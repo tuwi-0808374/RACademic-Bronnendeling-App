@@ -24,6 +24,7 @@ export default function UserPosts () {
         fetch(`http://localhost:5000/posts_by_user_id/${user_id}`)
             .then(res => res.json())
             .then(data => {
+                console.log(data);
                 setPostdata(data.data);
             })
     }, []);
@@ -39,10 +40,15 @@ export default function UserPosts () {
 
 
 
-                        <View style={styles.postbox}>
-                            <Text style={styles.title}>{postdata.title}</Text>
 
-                        </View>
+                    <View style={styles.postbox}>
+                        {postdata.map((post) => (
+                            <View key={post.id}>
+                                <Text style={styles.title}>{post.title}</Text>
+                                <Text style={styles.title}>{post.content}</Text>
+                            </View>
+                        ))}
+                    </View>
 
                     <View style={styles.postbox}>
                         <Text style={styles.title}>{postdata.title}</Text>
