@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, ScrollView } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
+import ImageUploader from '../../components/account/ImageUploader';
+import { useDebouncedCallback } from 'use-debounce';
 
 const COLORS = {
   red: '#C80032',
@@ -14,10 +15,6 @@ const COLORS = {
   languageBackground: '#E0E0E0',
 };
 
-
-
-
-
 const PrimaryButton = ({ onPress, title }: { onPress: () => void, title: string }) => (
   <TouchableOpacity style={styles.primaryButton} onPress={onPress}>
     <Text style={styles.primaryButtonText}>{title}</Text>
@@ -28,13 +25,60 @@ const RegisterScreen = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
+  const [usernameStatus, setUsernameStatus] = useState<{
+    checking: boolean;
+    available?: boolean;
+    message: string;
+  }>({ checking: false, message: '' });
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [image, setImage] = useState<string | null>(null);
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
 
+  const usernameStatusStyle = [
+    styles.usernameStatus,
+    usernameStatus.checking && styles.usernameChecking,
+    usernameStatus.available === true && styles.usernameAvailable,
+    usernameStatus.available === false && styles.usernameUnavailable,
+  ];
+  
+  const debouncedCheckUsername = useDebouncedCallback((username: string) => {
+    console.log('Checking username:', username);
+    if (!username) {
+      setUsernameStatus({ checking: false, message: '' });
+      return;
+    }
+    
+    setUsernameStatus({ checking: true, message: 'Checking...' });
+    
+    fetch('http://127.0.0.1:5000/check_username', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setUsernameStatus({
+        checking: false,
+        available: data.available,
+        message: data.message,
+      });
+    })
+    
+  }, 500); 
+  
+  const handleUsernameChange = (text: string) => {
+    setUsername(text);
+    debouncedCheckUsername(text);
+  };
+  
   const handleRegister = async () => {
+    if (!usernameStatus.available && username) {
+      console.log('Please choose an available username');
+      return;
+    }
     if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
       console.log('Vul alle velden in.');
       return;
@@ -43,38 +87,46 @@ const RegisterScreen = () => {
       console.log('Wachtwoorden komen niet overeen.');
       return;
     }
-
-    console.log('Registratie:', {
-      firstName,
-      lastName,
-      username,
-      email,
-      password, 
-    });
-
+  
     try {
-     router.push('/'); // hier homepage 
-
+      let base64Image = null;
+      if (image) {
+        const response = await fetch(image);
+        const blob = await response.blob();
+        base64Image = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      }
+  
+      const formData = {
+        email,
+        display_name: `${firstName} ${lastName}`,
+        first_name: firstName,
+        username,
+        last_name: lastName,
+        password,
+        is_public: true,
+        profile_image: base64Image, 
+      };
+  
+      const response = await fetch('http://127.0.0.1:5000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+  
+      const data = await response.json();
+      if (response.ok) router.push('/');
+      else console.log('Registration failed:', data.error);
     } catch (error) {
       console.log('Error:', error);
     }
-  };
-
-    const [image, setImage] = useState<string | null>(null);
-
-      const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-
-        if (!result.canceled) {
-          setImage(result.assets[0].uri);
-        }
-      };
-
+      
+    };
+      
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
@@ -123,23 +175,11 @@ const RegisterScreen = () => {
                 />
                 <Text style={styles.logoTitle}>HOGESCHOOL {'\n'}ROTTERDAM</Text>
               </View>
-              <TouchableOpacity onPress={pickImage} style={styles.imagePickerButton}>
-                {image ? (
-                  <Image
-                    source={{ uri: image }}
-                    style={styles.profileImage}
-                    resizeMode="cover"
-
-                  />
-                ) : (
-                  <Image
-                    source={require('../../assets/images/profile.png')}
-                    style={styles.profileImage}
-                    resizeMode="cover"
-
-                  />
-                )}
-              </TouchableOpacity>
+              
+              <ImageUploader
+                image={image} 
+                onImageSelected={setImage} 
+              />
 
             </View>
             
@@ -169,7 +209,7 @@ const RegisterScreen = () => {
                 />
               </View>
             </View>
-
+    
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>GEBRUIKERSNAAM</Text>
               <TextInput
@@ -177,9 +217,14 @@ const RegisterScreen = () => {
                 placeholder="test01"
                 placeholderTextColor={COLORS.placeholderText}
                 value={username}
-                onChangeText={setUsername}
+                onChangeText={handleUsernameChange}
                 selectionColor={COLORS.inputLine}
               />
+              {usernameStatus.checking ? (
+                <Text style={usernameStatusStyle}>Controleren op beschikbaarheid...</Text>
+              ) : usernameStatus.message ? (
+                <Text style={usernameStatusStyle}>{usernameStatus.message}</Text>
+              ) : null}
             </View>
 
             <View style={styles.inputGroup}>
@@ -394,7 +439,19 @@ const styles = StyleSheet.create({
     borderRadius: 80,
     aspectRatio: 1,  
   },
-  
+  usernameStatus: {
+  fontSize: 12,
+  marginTop: 4,
+  },
+  usernameAvailable: {
+    color: 'green',
+  },
+  usernameUnavailable: {
+    color: 'red',
+  },
+  usernameChecking: {
+    color: COLORS.placeholderText,
+  },
   
 });
 

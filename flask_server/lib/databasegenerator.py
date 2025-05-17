@@ -39,7 +39,7 @@ class DatabaseGenerator:
             email TEXT NOT NULL UNIQUE CHECK(email LIKE '%@hr.nl'),
             display_name TEXT NOT NULL,
             first_name TEXT NOT NULL,
-            prefix TEXT,
+            username TEXT,
             last_name TEXT NOT NULL,
             password TEXT NOT NULL,
             is_admin BOOLEAN NOT NULL default false,
@@ -162,26 +162,26 @@ class DatabaseGenerator:
     # Insert initial users into the database
     def insert_initial_users(self):
         users = [
-            {"email": "student@hr.nl", "display_name": "User1", "first_name": "John", "prefix": "",
+            {"email": "student@hr.nl", "display_name": "User1", "first_name": "John", "username": "",
              "last_name": "Doe", "password": "1", "is_admin": False, "is_public": True, "is_banned": False},
-            {"email": "1234567@hr.nl", "display_name": "User2", "first_name": "Jane", "prefix": "",
+            {"email": "1234567@hr.nl", "display_name": "User2", "first_name": "Jane", "username": "",
              "last_name": "Smith", "password": "password2", "is_admin": False, "is_public": True,
              "is_banned": False},
-            {"email": "1034367@hr.nl", "display_name": "User3", "first_name": "Alice", "prefix": "",
+            {"email": "1034367@hr.nl", "display_name": "User3", "first_name": "Alice", "username": "",
              "last_name": "Johnson", "password": "password3", "is_admin": False, "is_public": True,
              "is_banned": False},
-            {"email": "1230003@hr.nl", "display_name": "User4", "first_name": "Bob", "prefix": "",
+            {"email": "1230003@hr.nl", "display_name": "User4", "first_name": "Bob", "username": "",
              "last_name": "Brown", "password": "password4", "is_admin": False, "is_public": True,
              "is_banned": False},
-            {"email": "admin@hr.nl", "display_name": "Admin1", "first_name": "Admin", "prefix": "",
+            {"email": "admin@hr.nl", "display_name": "Admin1", "first_name": "Admin", "username": "",
              "last_name": "One", "password": "1", "is_admin": True, "is_public": True, "is_banned": False},
-            {"email": "1230008@hr.nl", "display_name": "User5", "first_name": "Charlie", "prefix": "",
+            {"email": "1230008@hr.nl", "display_name": "User5", "first_name": "Charlie", "username": "",
              "last_name": "Davis", "password": "password5", "is_admin": False, "is_public": True,
              "is_banned": False},
-            {"email": "1230001@hr.nl", "display_name": "Admin2", "first_name": "Admin", "prefix": "",
+            {"email": "1230001@hr.nl", "display_name": "Admin2", "first_name": "Admin", "username": "",
              "last_name": "Two", "password": "adminpassword2", "is_admin": True, "is_public": True,
              "is_banned": False},
-            {"email": "0000000@hr.nl", "display_name": "User6", "first_name": "David", "prefix": "",
+            {"email": "0000000@hr.nl", "display_name": "User6", "first_name": "David", "username": "",
              "last_name": "Wilson", "password": "password6", "is_admin": False, "is_public": True,
              "is_banned": False}
         ]
@@ -190,11 +190,11 @@ class DatabaseGenerator:
             user["password"] = bcrypt.hashpw(user["password"].encode('utf-8'), bcrypt.gensalt())
 
         list_of_parameters = [
-            (user["email"], user["display_name"], user["first_name"], user["prefix"], user["last_name"],
+            (user["email"], user["display_name"], user["first_name"], user["username"], user["last_name"],
              user["password"], user["is_admin"], user["is_public"], user["is_banned"])
             for user in users
         ]
-        create_statement = """INSERT INTO users (email, display_name, first_name, prefix, last_name, password, is_admin, is_public, is_banned) 
+        create_statement = """INSERT INTO users (email, display_name, first_name, username, last_name, password, is_admin, is_public, is_banned) 
                               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
         print("✅ Initial users inserted")

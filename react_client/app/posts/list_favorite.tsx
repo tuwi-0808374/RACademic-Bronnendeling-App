@@ -6,6 +6,7 @@ import jwt_decode from 'jwt-decode';
 
 export default function Test() {
   const [posts, setPosts] = useState([]);
+  const [user_id, setUserId] = useState(0);
 
   useEffect(() => {
     fetchPosts();
@@ -21,6 +22,7 @@ export default function Test() {
       }
 
       const decoded_user: any = jwt_decode(token);
+      setUserId(decoded_user.user_id);
 
       fetch(`http://127.0.0.1:5000/posts/favorite/${decoded_user.user_id}`)
       .then((response) => {
@@ -51,18 +53,11 @@ export default function Test() {
 
   const undoDeleteFavorite = async () => {
     console.log("Before:", undoID);
-    const token = await AsyncStorage.getItem('authToken');
-    if (!token) {
-      console.log('Geen token gevonden.');
-      return;
-    }
-
-    const decoded_user: any = jwt_decode(token);
 
     // Bron voor het versturen van data naar de server met react.
     // https://www.youtube.com/watch?v=0WyHHioebvY
     
-    fetch(`http://127.0.0.1:5000/posts/multiple_favorites/${decoded_user.user_id}`,
+    fetch(`http://127.0.0.1:5000/posts/multiple_favorites/${user_id}`,
       {
         method: 'POST',
         headers: {
@@ -119,7 +114,7 @@ export default function Test() {
           {'\n'}
           Fav: {post['is_favorite']}
           {'\n'}
-          <FavoriteButton post_id = {post['id']} is_favorited = {post['is_favorite']} onPress={() => showUndoDeleteFavorite(post['id'])} />
+          <FavoriteButton user_id={user_id} post_id = {post['id']} is_favorited = {post['is_favorite']} onPress={() => showUndoDeleteFavorite(post['id'])} />
           <hr></hr>
         </Text>  
         
