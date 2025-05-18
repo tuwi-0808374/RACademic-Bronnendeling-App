@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import {CheckBox} from "@/components/input";
 
 const COLORS = {
@@ -21,7 +21,7 @@ export default function UserPosts () {
 
 
     useEffect(() => {
-        fetch(`http://localhost:5000/posts_by_user_id/${user_id}`)
+        fetch(`http://localhost:5000/posts/${user_id}`)
             .then(res => res.json())
             .then(data => {
                 console.log(data);
@@ -34,27 +34,22 @@ export default function UserPosts () {
         return (
             <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
                 <View style={styles.container}>
+
                     <View style={styles.header}>
-                        <Text style={styles.title}>Youre post</Text>
+                        <Text style={styles.title}>Your posts</Text>
                     </View>
 
 
-
-
-                    <View style={styles.postbox}>
+                <ScrollView style={styles.scrollview} >
+                    <View style={styles.container}>
                         {postdata.map((post) => (
-                            <View key={post.id}>
-                                <Text style={styles.title}>{post.title}</Text>
-                                <Text style={styles.title}>{post.content}</Text>
+                            <View key={post.id} style={styles.postbox} >
+                                <Text style={styles.textTitle}>{post.title}</Text>
+                                <Text style={styles.textContent}>{post.content}</Text>
                             </View>
                         ))}
                     </View>
-
-                    <View style={styles.postbox}>
-                        <Text style={styles.title}>{postdata.title}</Text>
-
-                    </View>
-
+                </ScrollView>
 
                 </View>
             </SafeAreaView>
@@ -73,11 +68,25 @@ const styles = StyleSheet.create({
         marginVertical: 36,
     },
     title: {
-        fontSize: 30,
+        fontSize: 40,
         fontWeight: "bold",
         color: COLORS.text,
         marginBottom: 1,
         textAlign: "center",
+    },
+    textTitle:{
+        fontSize: 30,
+        fontWeight: "semibold",
+        color: COLORS.text,
+        marginBottom: 1,
+
+    },
+    textContent:{
+        fontSize: 22,
+        fontWeight: "semibold",
+        color: COLORS.text,
+        marginBottom: 1,
+
     },
     form:{},
     input:{},
@@ -125,18 +134,18 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: COLORS.textLight,
     },
-    checkbox:{
-        justifyContent: "center",
-        marginBottom: 15
+    postbox: {
+        width: "100%",
+        marginHorizontal: 1,
+        marginBottom: 10,
+        backgroundColor: COLORS.textLight,
+        padding: 20,
+        borderRadius: 15,
+        flexDirection: 'column',
     },
-    postbox:{
-        marginTop: 40,
-        marginBottom: 40,
-        width: 500,
+    scrollview:{
         flex: 1,
-        borderRadius: 8,
-        borderBottomWidth: 1,
-        borderColor: COLORS.text,
-        backgroundColor: COLORS.backgroundDark,
+        padding:60
     }
+
 })
