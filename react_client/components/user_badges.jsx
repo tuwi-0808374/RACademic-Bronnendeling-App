@@ -7,7 +7,7 @@ import jwt_decode from 'jwt-decode';
 const UserBadges = () => {
 
     const [badges, setBadges] = useState([]);
-    
+
     useEffect(() => {
         refreshBadges();
     }, []);
@@ -49,12 +49,9 @@ const UserBadges = () => {
             badges.map((badge, i) => (
               <Text >
                 <Image key={i} onClick={() => showBadgeInfo()}
-                    // source={badgeImages[badge['image_url']]}
                     source={`http://localhost:5000/static/badges/${badge['image_url']}`}
                     style={styles.badge}
                   />
-                  {/* <img src={`http://localhost:5000/static/badges/${badge['image_url']}`}>
-                  </img> */}
                   {showInfo && (
                     <Text>
                       {badge['requirement']}
