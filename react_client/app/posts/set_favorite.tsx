@@ -40,7 +40,7 @@ export default function Test() {
   // https://www.youtube.com/watch?v=EcRFYF4B3IQ
   
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: 20, overflowY: 'scroll', height: '100%' }}>
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts.map((post, i) => (
         <Text key={i}>
