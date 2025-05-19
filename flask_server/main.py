@@ -14,6 +14,9 @@ app = Flask(__name__)
 CORS(app)
 
 app.config["JWT_SECRET_KEY"] = "geheim"
+
+app.config['UPLOAD_FOLDER'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 jwt = JWTManager(app)
 
 
@@ -24,4 +27,4 @@ app.register_blueprint(account_bp)
 app.register_blueprint(badge_bp)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

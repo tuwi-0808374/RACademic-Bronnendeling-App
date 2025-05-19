@@ -1,9 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import *
 from blueprints.account.models.account_model import Account
 import bcrypt
 from flask_cors import cross_origin
-import base64
+import base64, os
+from flask import send_from_directory
 
 
 account_bp = Blueprint('account', __name__)
@@ -30,13 +31,10 @@ def login_api():
             additional_claims={
                 "user_id": user["id"]
             }
-        )
-        
+        )  
         return jsonify({"access_token": access_token}), 200
 
     return jsonify({"message": "Foutieve login!"}), 401
-
-
 
 @account_bp.route('/profile/<int:user_id>', methods=['GET'])
 @jwt_required()
@@ -46,8 +44,41 @@ def get_profile_by_id(user_id):
     user = account_model.get_user_by_id(user_id)
     if not user:
         return jsonify({'status': 'error', 'message': 'Gebruiker niet gevonden'}), 404
+    
+    if user.get('profile_image'):
+        user['profile_image_url'] = f"http://127.0.0.1:5000/uploads/{user['profile_image']}"
 
     return jsonify({'status': 'success', 'data': user}), 200
+
+@account_bp.route('/change_password/<int:user_id>', methods=['PATCH'])
+@jwt_required()
+@cross_origin()
+def change_password_route(user_id):
+    jwt_payload = get_jwt()
+    token_user_id = jwt_payload.get('user_id')
+
+    if token_user_id != user_id:
+        return jsonify({"message": "Je kunt alleen eigen wachtwoord wijzigen."}), 403
+
+    data = request.get_json()
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
+
+    if not old_password or not new_password:
+        return jsonify({"message": "Huidig wachtwoord en nieuw wachtwoord zijn vereist"}), 400
+
+    account_model = Account()
+    success, message = account_model.change_password(user_id, old_password, new_password)
+
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        status_code = 400 
+        if "Serverfout" in message:
+            status_code = 500
+        elif "Gebruiker niet gevonden" in message: 
+            status_code = 404
+        return jsonify({'status': 'error', 'message': message}), status_code
 
 
 @account_bp.route('/update_profile/<int:user_id>', methods=['PATCH'])
@@ -60,18 +91,36 @@ def update_profile(user_id):
     first_name = data.get('first_name')
     last_name = data.get('last_name')
     email = data.get('email')
+    username = data.get('username')
     
+    profile_image = data.get('profile_image')
+    image_filename = None
+    
+    if profile_image is None or (isinstance(profile_image, str) and profile_image.lower() == "null"):
+        profile_image = None
+    
+    if profile_image and isinstance(profile_image, str) and profile_image.startswith('data:image'):
+        image_filename = account_model.save_base64_image(profile_image)
+        if not image_filename:
+            return jsonify({'status': 'error', 'message': 'Fout bij opslaan profielfoto'}), 400
     
     success = account_model.update_profile(
         user_id=user_id,
         first_name=first_name,
         last_name=last_name,
-        email=email
+        email=email,
+        username=username,
+        profile_image=image_filename
     )
     if success:
         return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200
     else:
         return jsonify({'status': 'error', 'message': f'Bijwerken mislukt: {success}'}), 500
+
+
+@account_bp.route('/uploads/<filename>')
+def serve_uploaded_file(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
 
 @account_bp.route('/register', methods=['POST'])
 def register():
@@ -107,3 +156,20 @@ def register():
         except Exception as e:
             print(f"Registration error: {str(e)}")
             return jsonify({"error": "Registration failed", "details": str(e)}), 500
+        
+@account_bp.route('/check_username', methods=['POST'])
+@cross_origin()
+def check_username():
+    data = request.json
+    username = data.get('username')
+    
+    if not username:
+        return jsonify({"available": False, "message": "Gebruikersnaam is verplicht"}), 400
+    
+    account_model = Account()
+    existing_user = account_model.get_user_by_username(username)
+    
+    if existing_user:
+        return jsonify({"available": False, "message": "Gebruikersnaam al in gebruik"}), 200
+    else:
+        return jsonify({"available": True, "message": "Gebruikersnaam is beschikbaar"}), 200
