@@ -178,7 +178,8 @@ def check_username():
 @cross_origin()
 def get_users_with_overall_rating():
     account_model = Account()
-    users = account_model.get_users_with_overall_rating()
+    limit = request.args.get('limit', default=5, type=int)
+    users = account_model.get_users_with_overall_rating(limit)
     
     if not users:
         return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
@@ -189,7 +190,8 @@ def get_users_with_overall_rating():
 @cross_origin()
 def get_users_with_most_badges():
     account_model = Account()
-    users = account_model.get_users_with_most_badges()
+    limit = request.args.get('limit', default=5, type=int)
+    users = account_model.get_users_with_most_badges(limit=limit)
     
     if not users:
         return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
