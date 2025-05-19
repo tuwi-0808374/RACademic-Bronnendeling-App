@@ -164,7 +164,7 @@ export default function ProfileScreen() {
         
       }
       let base64Image = null;
-      if (profileImage && !profileImage.startsWith('http')) {
+      if (profileImage && profileImage.startsWith('file://')) {
         const response = await fetch(profileImage);
         const blob = await response.blob();
         base64Image = await new Promise((resolve) => {
