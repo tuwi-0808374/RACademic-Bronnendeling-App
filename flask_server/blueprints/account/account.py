@@ -5,6 +5,7 @@ import bcrypt
 from flask_cors import cross_origin
 import base64, os
 from flask import send_from_directory
+import re
 
 
 account_bp = Blueprint('account', __name__)
@@ -157,6 +158,7 @@ def register():
             print(f"Registration error: {str(e)}")
             return jsonify({"error": "Registration failed", "details": str(e)}), 500
         
+    
 @account_bp.route('/check_username', methods=['POST'])
 @cross_origin()
 def check_username():
@@ -173,3 +175,23 @@ def check_username():
         return jsonify({"available": False, "message": "Gebruikersnaam al in gebruik"}), 200
     else:
         return jsonify({"available": True, "message": "Gebruikersnaam is beschikbaar"}), 200
+
+@account_bp.route('/check_email', methods=['POST'])
+@cross_origin()
+def check_email():
+    data = request.json
+    email = data.get('email')
+    
+    if not email:
+        return jsonify({"available": False, "message": "Emailadres is verplicht"}), 400
+    
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify({"available": False, "message": "Ongeldig email formaat"}), 400
+    
+    account_model = Account()
+    existing_email = account_model.get_user_by_email(email)
+    
+    if existing_email:
+        return jsonify({"available": False, "message": "Email al in gebruik"}), 200
+    else:
+        return jsonify({"available": True, "message": "Email is beschikbaar"}), 200
