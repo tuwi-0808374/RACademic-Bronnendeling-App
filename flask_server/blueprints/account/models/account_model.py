@@ -237,3 +237,24 @@ class Account:
         finally:
             if con:
                 con.close()
+                
+    def get_users_with_overall_rating(self, limit=5):
+        # Geeft de top 5 gebruikers met de hoogste totale rating,
+        # dit op basis van de som van hun ratings op hun posts.
+        cursor, con = self.connect_db()
+        try:
+            result = cursor.execute(
+                """
+                    SELECT users.id, users.first_name, sum(posts.total_rating) as overall_rating, count(posts.total_rating) as total_ratings_received
+                    FROM users
+                    LEFT JOIN posts ON users.id = posts.user_id
+                    GROUP BY users.id
+                    ORDER BY overall_rating DESC
+                    LIMIT ?           
+                """,
+                (limit,)
+            ).fetchall()
+            return [dict(row) for row in result]
+        finally:
+            if con:
+                con.close()

@@ -289,12 +289,18 @@ Markdown is cool""", "user_id": 6,
     # Insert initial badges into the database
     def insert_initial_badges(self):
         badges = [
-            {"title": "First Post!", "requirement": "Eerste bericht geplaatst"},
-            {"title": "5 Posts", "requirement": "Minimaal 5 berichten geplaatst"},
-            {"title": "10 Posts", "requirement": "Minimaal 10 berichten geplaatst"}
+            {"title": "First Post!", "requirement": "Eerste bericht geplaatst", "image_url": "default_badge.png"},
+            {"title": "5 Posts", "requirement": "Minimaal 5 berichten geplaatst", "image_url": "1.png"},
+            {"title": "10 Posts", "requirement": "Minimaal 10 berichten geplaatst", "image_url": "2.png"},
+            {"title": "First Favorite", "requirement": "Eerste favoriet toegevoegd", "image_url": "3.png"},
+            {"title": "5 Favorites", "requirement": "Minimaal 5 favorieten toegevoegd", "image_url": "4.png"},
+            {"title": "10 Favorites", "requirement": "Minimaal 10 favorieten toegevoegd", "image_url": "5.png"},
+            {"title": "First Comment", "requirement": "Eerste reactie geplaatst", "image_url": "6.png"},
+            {"title": "5 Comments", "requirement": "Minimaal 5 reacties geplaatst", "image_url": "7.png"},
+            {"title": "10 Comments", "requirement": "Minimaal 10 reacties geplaatst", "image_url": "8.png"}
         ]
-        list_of_parameters = [(badge["title"], badge["requirement"]) for badge in badges]
-        create_statement = """INSERT INTO badges (title, requirement) VALUES (?, ?)"""
+        list_of_parameters = [(badge["title"], badge["requirement"], badge['image_url']) for badge in badges]
+        create_statement = """INSERT INTO badges (title, requirement, image_url) VALUES (?, ?, ?)"""
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
         print("✅ Initial badges inserted")
 
