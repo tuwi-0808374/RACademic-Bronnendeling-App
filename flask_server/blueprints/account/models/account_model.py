@@ -226,14 +226,18 @@ class Account:
             if con:
                 con.close()
 
-    def get_user_by_username(self, username):
+    def get_user_by_username(self, username, exclude_user_id=None):
         cursor, con = self.connect_db()
         try:
-            result = cursor.execute(
-                "SELECT id FROM users WHERE username = ?",
-                (username,)
-            ).fetchone()
-            return result is not None
+            query = "SELECT id, username FROM users WHERE username = ?"
+            params = [username]
+            
+            if exclude_user_id:
+                query += " AND id != ?"
+                params.append(exclude_user_id)
+                
+            result = cursor.execute(query, params).fetchone()
+            return dict(result) if result else None
         finally:
             if con:
                 con.close()
