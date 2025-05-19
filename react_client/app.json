@@ -10,13 +10,7 @@
     "ios": {
       "supportsTablet": true
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.anonymous.wp4KiwiApp"
-    },
+    
     "web": {
       "bundler": "metro",
       "output": "static",
