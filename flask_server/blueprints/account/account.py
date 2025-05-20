@@ -193,3 +193,27 @@ def check_email():
         return jsonify({"available": False, "message": "Email al in gebruik"}), 200
     else:
         return jsonify({"available": True, "message": "Email is beschikbaar"}), 200
+      
+@account_bp.route('/get_users_with_overall_rating')
+@cross_origin()
+def get_users_with_overall_rating():
+    account_model = Account()
+    limit = request.args.get('limit', default=5, type=int)
+    users = account_model.get_users_with_overall_rating(limit)
+    
+    if not users:
+        return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
+    
+    return jsonify({'status': 'success', 'data': users}), 200
+
+@account_bp.route('/get_users_with_most_badges', methods=['GET'])
+@cross_origin()
+def get_users_with_most_badges():
+    account_model = Account()
+    limit = request.args.get('limit', default=5, type=int)
+    users = account_model.get_users_with_most_badges(limit=limit)
+    
+    if not users:
+        return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
+    
+    return jsonify({'status': 'success', 'data': users}), 200
