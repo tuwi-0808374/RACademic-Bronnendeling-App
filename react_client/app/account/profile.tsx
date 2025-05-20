@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
-import ImageUploader from '../../components/account/ImageUploader';
-import { useDebouncedCallback } from 'use-debounce';
+import { useRouter } from 'expo-router';
 
 
 const COLORS = {
@@ -28,33 +27,15 @@ interface JwtPayload {
 }
 
 
-export default function ProfileScreen() {
+export default function PublicProfileScreen() {
   const [email, setEmail] = useState('');
-  const [first_name, setFirstName] = useState('');
+  const [first_name, FirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUserName] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
-
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [passwordChangeMessage, setPasswordChangeMessage] = useState('');
-  const [passwordChangeMessageType, setPasswordChangeMessageType] = useState<'success' | 'error' | ''>('');
-
-
-  const [emailStatus, setEmailStatus] = useState<{
-    checking: boolean;
-    available?: boolean;
-    message: string;
-  }>({ checking: false, message: '' });
   
-  const [usernameStatus, setUsernameStatus] = useState<{
-    checking: boolean;
-    available?: boolean;
-    message: string;
-  }>({ checking: false, message: '' });
-
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -87,7 +68,7 @@ export default function ProfileScreen() {
           const responseData = await response.json();
           const userData = responseData.data; 
           if (userData) {
-              setFirstName(userData.first_name || '');
+              FirstName(userData.first_name || '');
               setLastName(userData.last_name || '');
               setEmail(userData.email || '');
               setUserName(userData.username || '');
@@ -113,195 +94,6 @@ export default function ProfileScreen() {
     fetchProfile();
   }, []);
 
-  const handleChangePassword = async () => {
-    setPasswordChangeMessage('');
-    setPasswordChangeMessageType('');
-
-    if (!oldPassword || !newPassword || !confirmNewPassword) {
-      setPasswordChangeMessage('Vul alstublieft alle wachtwoordvelden in.');
-      setPasswordChangeMessageType('error');
-      return;
-    }
-    if (newPassword !== confirmNewPassword) {
-      setPasswordChangeMessage('Nieuwe wachtwoorden komen niet overeen.');
-      setPasswordChangeMessageType('error');
-      return;
-    }
-
-
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-      if (!token || !userId) {
-        setPasswordChangeMessage('Log opnieuw in.');
-        setPasswordChangeMessageType('error');
-        return;
-      }
-
-      const response = await fetch(`http://127.0.0.1:5000/change_password/${userId}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          old_password: oldPassword,
-          new_password: newPassword,
-        }),
-      });
-
-      const responseData = await response.json();
-      if (response.ok) {
-        setPasswordChangeMessage(responseData.message || 'Wachtwoord succesvol gewijzigd!');
-        setPasswordChangeMessageType('success');
-        setOldPassword('');
-        setNewPassword('');
-        setConfirmNewPassword('');
-      } else {
-        setPasswordChangeMessage(responseData.message || 'Kon wachtwoord niet wijzigen.');
-        setPasswordChangeMessageType('error');
-      }
-    } catch (error) {
-      console.error('Fout bij wijzigen wachtwoord:', error);
-      setPasswordChangeMessage('Er is een fout opgetreden.');
-      setPasswordChangeMessageType('error');
-    }
-};
-
-  
-  const saveProfile = async () => {
-    if ((!emailStatus.available && email) || (!usernameStatus.available && username)) {
-      console.log('Kies een beschikbare e-mail en gebruikersnaam');
-      return;
-    }
-    console.log('Profiel opslaan met:', { first_name, lastName, email, username });
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-      if (!token) {
-        console.log('Geen token gevonden.');
-        
-        return;
-        
-      }
-      let base64Image = null;
-      if (profileImage && profileImage.startsWith('file://')) {
-        const response = await fetch(profileImage);
-        const blob = await response.blob();
-        base64Image = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(blob);
-          });
-        }
-      const decoded = jwt_decode<JwtPayload>(token);
-      const currentUserId = decoded.user_id; 
-
-      if (!currentUserId) {
-        console.error('User ID niet gevonden in token:', decoded);
-        return;
-      }
-
-      const response = await fetch(`http://127.0.0.1:5000/update_profile/${currentUserId}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          first_name,
-          last_name: lastName,
-          email,
-          username,
-          profile_image: base64Image
-        }),
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log('Profiel succesvol bijgewerkt:', responseData);        
-        } else {
-            
-        console.log(`Kan profiel niet updaten.`);
-        const errorData = await response.text(); 
-        console.log('Foutdetails:', errorData);
-      }
-    } catch (error) {
-      console.log('Fout bij opslaan profiel:', error);
-    }
-  };
-
-  const debouncedCheckEmail = useDebouncedCallback((email: string) => {
-    if (!email) {
-      setEmailStatus({ checking: false, message: '' });
-      return;
-    }
-    
-    setEmailStatus({ checking: true, message: 'Controleren...' });
-    
-    fetch('http://127.0.0.1:5000/check_email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        email: email,
-        current_user_id: userId
-       }),
-      
-    })
-    .then(response => response.json())
-    .then(data => {
-      setEmailStatus({
-        checking: false,
-        available: data.available,
-        message: data.message,
-      });
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      setEmailStatus({ checking: false, message: 'Fout bij controleren' });
-    });
-  }, 800);
-  
-  const debouncedCheckUsername = useDebouncedCallback((username: string) => {
-    if (!username) {
-      setUsernameStatus({ checking: false, message: '' });
-      return;
-    }
-    
-    setUsernameStatus({ checking: true, message: 'Controleren...' });
-    
-    fetch('http://127.0.0.1:5000/check_username', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        username: username,
-        current_user_id: userId }),
-    })
-    .then(response => response.json())
-    .then(data => {
-      setUsernameStatus({
-        checking: false,
-        available: data.available,
-        message: data.message,
-      });
-    })
-    .catch(error => {
-      console.error('Error checking username:', error);
-      setUsernameStatus({ checking: false, message: 'Fout bij controleren' });
-    });
-  }, 800);
-  
-  const usernameStatusStyle = [
-    styles.statusMessage,
-    usernameStatus.checking && styles.statusChecking,
-    usernameStatus.available === true && styles.statusAvailable,
-    usernameStatus.available === false && styles.statusUnavailable,
-  ];
-  
-  const emailStatusStyle = [
-    styles.statusMessage,
-    emailStatus.checking && styles.statusChecking,
-    emailStatus.available === true && styles.statusAvailable,
-    emailStatus.available === false && styles.statusUnavailable,
-  ];
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -313,97 +105,44 @@ export default function ProfileScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.innerContainer}>
             <View style={styles.profileImageContainer}>
-              <ImageUploader
-                image={profileImage}
-                onImageSelected={setProfileImage}
-              />
+                {profileImage ? (
+                    <Image
+                    source={{ uri: profileImage }}
+                    style={styles.profileImage}
+                    />
+                ) : (
+                    <Image
+                    source={require('../../assets/images/profile.png')} 
+                    style={styles.profileImage}
+                    />
+                )}
             </View>
+
 
             <Image
               source={require('../../assets/images/hr-logo.png')}
               style={styles.logo}
               resizeMode="contain"
             />
-            <Text style={styles.logoTitle}>MIJN PROFIEL</Text>
+            <Text style={styles.logoTitle}>PROFIEL</Text>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Voornaam</Text>
-              <TextInput value={first_name} onChangeText={setFirstName} style={styles.input} selectionColor={COLORS.red} placeholderTextColor={COLORS.placeholderText} />
+              <Text style={styles.inputLabel}>Naam</Text>
+              <Text style={styles.input}>{first_name} {lastName}</Text>
             </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Achternaam</Text>
-              <TextInput value={lastName} onChangeText={setLastName} style={styles.input} selectionColor={COLORS.red} placeholderTextColor={COLORS.placeholderText} />
-            </View>
+
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>E-mail</Text>
-              <TextInput 
-                value={email} 
-                onChangeText={(text) => {
-                  setEmail(text);
-                  debouncedCheckEmail(text);
-                }} 
-                style={styles.input} 
-                keyboardType="email-address" 
-                autoCapitalize="none" 
-                selectionColor={COLORS.red} 
-                placeholderTextColor={COLORS.placeholderText} 
-              />
-              {emailStatus.checking ? (
-                <Text style={emailStatusStyle}>Controleren...</Text>
-              ) : emailStatus.message ? (
-                <Text style={emailStatusStyle}>{emailStatus.message}</Text>
-              ) : null}
+              <Text style={styles.input}>{email}</Text>
             </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Gebruikersnaam</Text>
-              <TextInput 
-                value={username} 
-                onChangeText={(text) => {
-                  setUserName(text);
-                  debouncedCheckUsername(text);
-                }} 
-                style={styles.input} 
-                autoCapitalize="none" 
-                selectionColor={COLORS.red} 
-                placeholderTextColor={COLORS.placeholderText} 
-              />
-              {usernameStatus.checking ? (
-                <Text style={usernameStatusStyle}>Controleren...</Text>
-              ) : usernameStatus.message ? (
-                <Text style={usernameStatusStyle}>{usernameStatus.message}</Text>
-              ) : null}
+              <Text style={styles.input}>{username}</Text>
             </View>
 
-            <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
-              <Text style={styles.actionButtonText}>Profiel Opslaan</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.sectionTitle}>Wachtwoord Wijzigen</Text>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Huidig Wachtwoord</Text>
-              <TextInput value={oldPassword} onChangeText={setOldPassword} style={styles.input} secureTextEntry selectionColor={COLORS.red} placeholderTextColor={COLORS.placeholderText} />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Nieuw Wachtwoord</Text>
-              <TextInput value={newPassword} onChangeText={setNewPassword} style={styles.input} secureTextEntry selectionColor={COLORS.red} placeholderTextColor={COLORS.placeholderText} />
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Bevestig Nieuw Wachtwoord</Text>
-              <TextInput value={confirmNewPassword} onChangeText={setConfirmNewPassword} style={styles.input} secureTextEntry selectionColor={COLORS.red} placeholderTextColor={COLORS.placeholderText} />
-            </View>
-
-            {passwordChangeMessage ? (
-              <Text style={[
-                styles.messageText,
-                passwordChangeMessageType === 'success' ? styles.successText : styles.errorText
-              ]}>
-                {passwordChangeMessage}
-              </Text>
-            ) : null}
-
-            <TouchableOpacity style={[styles.actionButton, styles.changePasswordButton]} onPress={handleChangePassword}>
-              <Text style={styles.actionButtonText}>Wachtwoord Wijzigen</Text>
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/account/edit_profile')}>
+                <Text style={styles.actionButtonText}>Profiel Bewerken</Text>
             </TouchableOpacity>
 
           </View>
