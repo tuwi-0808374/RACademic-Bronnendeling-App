@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import CheckBox from 'expo-checkbox';
-import { TextInput, View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { TextInput, View, TouchableOpacity,TouchableWithoutFeedback, StyleSheet,Button ,Text } from 'react-native';
 
 function SearchBar() {
-    const [data, setData] = useState([]);
-    const [checkedTags, setCheckedTags] = useState({});
+    const [postTags, setPostTags] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [posts, setPosts] = useState({});
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         fetch('http://localhost:5000/tags')
             .then(res => res.json())
             .then(data => {
-                setData(data.data);
-                console.log('Fetched tags:', data.data);
+                console.log('Fetched data:', data);
+                setPostTags(data.data);
             })
             .catch(err => console.error('Error fetching tags:', err));
     }, []);
@@ -20,15 +22,15 @@ function SearchBar() {
     // ik heb deze bronnen gebruikt om de checkboxes te maken
     // https://stackoverflow.com/questions/65205428/handle-multiple-checkboxes-in-expo-react-native
     // https://docs.expo.dev/versions/latest/sdk/checkbox/
-    const handleCheckboxChange = (id) => {
-        setCheckedTags((prev_checkbox) => ({
-            ...prev_checkbox,
-            [id]: !prev_checkbox[id],
+    const toggleTag = (id) => {
+        setSelectedTags((prev) => ({
+            ...prev,
+            [id]: !prev[id],
         }));
     };
 
     const fetchPosts = () => {
-        const selectedTagIds = Object.keys(checkedTags).filter((id) => checkedTags[id]);
+        const selectedTagIds = Object.keys(selectedTags).filter((id) => selectedTag[id]);
         const queryParams = new URLSearchParams();
         queryParams.append('user_id', 1);
         if (searchQuery) queryParams.append('search_query', searchQuery);
@@ -37,35 +39,67 @@ function SearchBar() {
         fetch(`http://localhost:5000/posts?${queryParams.toString()}`)
             .then(res => res.json())
             .then(data => {
+                setPosts(data.data);
                 console.log('Fetched posts:', data.data);
             })
             .catch(err => console.error('Error fetching posts:', err));
     };
-
     const handleOnKeyPress = event =>{
         const key = event.nativeEvent.key
         if(key ==="Enter"){
             fetchPosts();
         }
     }
+    const focusSearch = (value) => {
+        if (value === true) {
+            setVisible(true);
+            console.log('focusss')
+        } else {
+            setVisible(false);
+            console.log('unfocusss')
+        }
+
+    }
     return (
         <View style={styles.container}>
-            <TextInput
-                style={styles.searchInput}
-                placeholder="Search tags"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                onKeyPress={handleOnKeyPress}
-            />
+            <TouchableWithoutFeedback
+                onFocus={() => focusSearch(true)}
+                onBlur={() => focusSearch(false)}
+            >
+                <View>
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search tags"
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        onKeyPress={handleOnKeyPress}
+                        onFocus={() => focusSearch(true)}
+                    />
+                    { visible && (
+
+                        <View style={styles.containerPostTags}>
+                            <Text>hi</Text>
+                            {postTags.map((tag) => (
+                                <TouchableOpacity
+                                    key={tag.id}
+                                    onPress={() => toggleTag(tag.id)}
+                                    style={[styles.tag, selectedTags[tag.id] ? styles.tagSelected : null,]}>
+                                    <Text style={selectedTags[tag.id] ? styles.tagTextSelected : styles.tagText}>
+                                        {tag.name}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    )}
+
+                </View>
+            </TouchableWithoutFeedback>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        width: '50%',
-        padding: 20,
-        backgroundColor: '#f5f5f5',
     },
     searchInput: {
         height: 40,
@@ -75,6 +109,9 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         marginBottom: 20,
         backgroundColor: '#fff',
+    },
+    containerPostTags: {
+
     }
 });
 
