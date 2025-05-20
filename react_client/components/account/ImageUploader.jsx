@@ -7,6 +7,8 @@ interface Props {
   onImageSelected: (uri: string | null) => void;
 }
 
+
+
 const ImageUploader: React.FC<Props> = ({ image, onImageSelected }) => {
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -20,6 +22,7 @@ const ImageUploader: React.FC<Props> = ({ image, onImageSelected }) => {
       onImageSelected(result.assets[0].uri);
     }
   };
+      
 
   const removeImage = () => {
     onImageSelected(null);
@@ -41,6 +44,7 @@ const ImageUploader: React.FC<Props> = ({ image, onImageSelected }) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   image: {
