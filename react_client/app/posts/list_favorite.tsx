@@ -3,8 +3,10 @@ import { View, Text, Button } from 'react-native';
 import FavoriteButton from '../../components/posts/FavoriteButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
+import { useRouter } from 'expo-router';
 
 export default function Test() {
+  const router = useRouter();
   const [posts, setPosts] = useState([]);
   const [user_id, setUserId] = useState(0);
 
@@ -95,6 +97,7 @@ export default function Test() {
 
   return (
     <View style={{ padding: 20 }}>
+      <Button title="Terug" onPress={() => router.push('/')} />
       { undoID.length > 0 ? 
       <>
       <Button color='green' title="Opslaan" onPress={refresh} ></Button>
