@@ -18,7 +18,6 @@ def get_examples():
 @post_bp.route('/posts/<int:user_id>', methods=['GET'])
 def get_posts_with_user(user_id):
     post = Post()
-    rating = Rating()
     data = request.get_json(silent=True) or {}
 
     search_query = data.get('search_query', None)

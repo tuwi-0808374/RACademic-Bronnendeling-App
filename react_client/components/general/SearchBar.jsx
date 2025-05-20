@@ -3,7 +3,6 @@ import CheckBox from 'expo-checkbox';
 import { TextInput, View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 
 function SearchBar() {
-
     const [data, setData] = useState([]);
     const [checkedTags, setCheckedTags] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
@@ -58,24 +57,6 @@ function SearchBar() {
                 onChangeText={setSearchQuery}
                 onKeyPress={handleOnKeyPress}
             />
-
-            <View style={styles.checkBoxContainer}>
-                {data.map((item) => (
-                    <TouchableOpacity
-                        key={item.id}
-                        style={styles.section}
-                        onPress={() => handleCheckboxChange(item.id)}
-                    >
-                        <View style={styles.checkBoxWrapper}>
-                            <CheckBox
-                                style={styles.checkbox}
-                                value={checkedTags[item.id] || false}
-                            />
-                            <Text style={styles.paragraph}>{item.title}</Text>
-                        </View>
-                    </TouchableOpacity>
-                ))}
-            </View>
         </View>
     );
 }
@@ -94,22 +75,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         marginBottom: 20,
         backgroundColor: '#fff',
-    },
-    checkBoxContainer: {
-        flex: 1,
-        marginTop: 10,
-    },
-    checkBoxWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    checkbox: {
-        marginRight: 10,
-    },
-    paragraph: {
-        fontSize: 16,
-    },
+    }
 });
 
 export default SearchBar;

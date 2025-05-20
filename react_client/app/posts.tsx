@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+ import { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import RateButtons from "@/components/posts/RateButtons";
 import FavoriteButton from '../components/posts/FavoriteButton';
