@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import CheckBox from 'expo-checkbox';
-import { TextInput, View, TouchableOpacity,TouchableWithoutFeedback, StyleSheet,Button ,Text } from 'react-native';
+import { TextInput, View, TouchableOpacity,Pressable,StyleSheet,Button ,Text } from 'react-native';
 
-function SearchBar() {
-    const [postTags, setPostTags] = useState([]);
+function SearchBar({ visible, setVisible }) {
+    const [postTags, setPostTags] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedTags, setSelectedTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState({});
     const [posts, setPosts] = useState({});
-    const [visible, setVisible] = useState(false);
+
 
     useEffect(() => {
         fetch('http://localhost:5000/tags')
@@ -44,62 +44,59 @@ function SearchBar() {
             })
             .catch(err => console.error('Error fetching posts:', err));
     };
+    const handleInsidePress = () => {
+        console.log('inside press')
+        setVisible(true);
+    }
     const handleOnKeyPress = event =>{
         const key = event.nativeEvent.key
         if(key ==="Enter"){
             fetchPosts();
         }
     }
-    const focusSearch = (value) => {
-        if (value === true) {
-            setVisible(true);
-            console.log('focusss')
-        } else {
-            setVisible(false);
-            console.log('unfocusss')
-        }
 
-    }
     return (
         <View style={styles.container}>
-            <TouchableWithoutFeedback
-                onFocus={() => focusSearch(true)}
-                onBlur={() => focusSearch(false)}
-            >
-                <View>
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="Search tags"
-                        value={searchQuery}
-                        onChangeText={setSearchQuery}
-                        onKeyPress={handleOnKeyPress}
-                        onFocus={() => focusSearch(true)}
-                    />
-                    { visible && (
-
-                        <View style={styles.containerPostTags}>
-                            <Text>hi</Text>
-                            {postTags.map((tag) => (
-                                <TouchableOpacity
-                                    key={tag.id}
-                                    onPress={() => toggleTag(tag.id)}
-                                    style={[styles.tag, selectedTags[tag.id] ? styles.tagSelected : null,]}>
-                                    <Text style={selectedTags[tag.id] ? styles.tagTextSelected : styles.tagText}>
-                                        {tag.name}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-                    )}
-
-                </View>
-            </TouchableWithoutFeedback>
+             <TextInput
+                style={styles.searchInput}
+                placeholder="Search tags"
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                onKeyPress={handleOnKeyPress}
+                onFocus={handleInsidePress}
+            />
+            { visible && (
+                <Pressable style={styles.containerPostTags} >
+                    {postTags.map((tag) => (
+                        <TouchableOpacity
+                            key={tag.id}
+                            onPress={(event) => {
+                                toggleTag(tag.id);
+                                event.stopPropagation();
+                            }}
+                            style={[styles.tag, selectedTags[tag.id] ? styles.tagSelected : null,]}>
+                            <Text style={selectedTags[tag.id] ? styles.tagTextSelected : styles.tagText}>
+                                {tag.title}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </Pressable>
+            )}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        width: '50vw',
+        alignItems: 'center',
+    },
+    tag: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        backgroundColor: '#ccc',
+        borderRadius: 12,
+        margin: 4,
     },
     searchInput: {
         height: 40,
@@ -111,7 +108,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     containerPostTags: {
-
+        backgroundColor: '#fff',
     }
 });
 
