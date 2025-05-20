@@ -2,15 +2,16 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import *
 from blueprints.account.models.account_model import Account
 import bcrypt
+from flask_cors import CORS
 from flask_cors import cross_origin
 import base64, os
 from flask import send_from_directory
-
+import re
 
 account_bp = Blueprint('account', __name__)
+CORS(account_bp)
 
 @account_bp.route('/api/login', methods=['POST'])
-@cross_origin()
 def login_api():
     data = request.json
     login_email = data.get('email')
@@ -38,7 +39,6 @@ def login_api():
 
 @account_bp.route('/profile/<int:user_id>', methods=['GET'])
 @jwt_required()
-@cross_origin()
 def get_profile_by_id(user_id):
     account_model = Account() 
     user = account_model.get_user_by_id(user_id)
@@ -52,7 +52,6 @@ def get_profile_by_id(user_id):
 
 @account_bp.route('/change_password/<int:user_id>', methods=['PATCH'])
 @jwt_required()
-@cross_origin()
 def change_password_route(user_id):
     jwt_payload = get_jwt()
     token_user_id = jwt_payload.get('user_id')
@@ -83,7 +82,6 @@ def change_password_route(user_id):
 
 @account_bp.route('/update_profile/<int:user_id>', methods=['PATCH'])
 @jwt_required()
-@cross_origin()
 def update_profile(user_id):
     account_model = Account()
     data = request.get_json()
@@ -157,23 +155,45 @@ def register():
             print(f"Registration error: {str(e)}")
             return jsonify({"error": "Registration failed", "details": str(e)}), 500
         
+    
 @account_bp.route('/check_username', methods=['POST'])
-@cross_origin()
 def check_username():
     data = request.json
     username = data.get('username')
+    current_user_id = data.get('current_user_id')
     
     if not username:
         return jsonify({"available": False, "message": "Gebruikersnaam is verplicht"}), 400
     
     account_model = Account()
-    existing_user = account_model.get_user_by_username(username)
+    existing_user = account_model.get_user_by_username(username, current_user_id)
     
     if existing_user:
         return jsonify({"available": False, "message": "Gebruikersnaam al in gebruik"}), 200
     else:
         return jsonify({"available": True, "message": "Gebruikersnaam is beschikbaar"}), 200
 
+@account_bp.route('/check_email', methods=['POST'])
+def check_email():
+    data = request.json
+    email = data.get('email')
+    current_user_id = data.get('current_user_id')
+    
+    if not email:
+        return jsonify({"available": False, "message": "Emailadres is verplicht"}), 400
+    
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify({"available": False, "message": "Ongeldig email formaat"}), 400
+    
+    account_model = Account()
+    existing = account_model.get_user_by_email(email)
+    existing_email = account_model.get_user_by_email(email)
+    
+    if existing and (not current_user_id or existing['id'] != current_user_id):
+        return jsonify({"available": False, "message": "Email al in gebruik"}), 200
+    else:
+        return jsonify({"available": True, "message": "Email is beschikbaar"}), 200
+      
 @account_bp.route('/get_users_with_overall_rating')
 @cross_origin()
 def get_users_with_overall_rating():

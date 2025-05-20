@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaVie
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import ImageUploader from '../../components/account/ImageUploader';
+import { useDebouncedCallback } from 'use-debounce';
 
 
 const COLORS = {
@@ -40,6 +41,20 @@ export default function ProfileScreen() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [passwordChangeMessage, setPasswordChangeMessage] = useState('');
   const [passwordChangeMessageType, setPasswordChangeMessageType] = useState<'success' | 'error' | ''>('');
+
+
+  const [emailStatus, setEmailStatus] = useState<{
+    checking: boolean;
+    available?: boolean;
+    message: string;
+  }>({ checking: false, message: '' });
+  
+  const [usernameStatus, setUsernameStatus] = useState<{
+    checking: boolean;
+    available?: boolean;
+    message: string;
+  }>({ checking: false, message: '' });
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -154,6 +169,10 @@ export default function ProfileScreen() {
 
   
   const saveProfile = async () => {
+    if ((!emailStatus.available && email) || (!usernameStatus.available && username)) {
+      console.log('Kies een beschikbare e-mail en gebruikersnaam');
+      return;
+    }
     console.log('Profiel opslaan met:', { first_name, lastName, email, username });
     try {
       const token = await AsyncStorage.getItem('authToken');
@@ -210,7 +229,79 @@ export default function ProfileScreen() {
     }
   };
 
-
+  const debouncedCheckEmail = useDebouncedCallback((email: string) => {
+    if (!email) {
+      setEmailStatus({ checking: false, message: '' });
+      return;
+    }
+    
+    setEmailStatus({ checking: true, message: 'Controleren...' });
+    
+    fetch('http://127.0.0.1:5000/check_email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        email: email,
+        current_user_id: userId
+       }),
+      
+    })
+    .then(response => response.json())
+    .then(data => {
+      setEmailStatus({
+        checking: false,
+        available: data.available,
+        message: data.message,
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      setEmailStatus({ checking: false, message: 'Fout bij controleren' });
+    });
+  }, 800);
+  
+  const debouncedCheckUsername = useDebouncedCallback((username: string) => {
+    if (!username) {
+      setUsernameStatus({ checking: false, message: '' });
+      return;
+    }
+    
+    setUsernameStatus({ checking: true, message: 'Controleren...' });
+    
+    fetch('http://127.0.0.1:5000/check_username', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        username: username,
+        current_user_id: userId }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setUsernameStatus({
+        checking: false,
+        available: data.available,
+        message: data.message,
+      });
+    })
+    .catch(error => {
+      console.error('Error checking username:', error);
+      setUsernameStatus({ checking: false, message: 'Fout bij controleren' });
+    });
+  }, 800);
+  
+  const usernameStatusStyle = [
+    styles.statusMessage,
+    usernameStatus.checking && styles.statusChecking,
+    usernameStatus.available === true && styles.statusAvailable,
+    usernameStatus.available === false && styles.statusUnavailable,
+  ];
+  
+  const emailStatusStyle = [
+    styles.statusMessage,
+    emailStatus.checking && styles.statusChecking,
+    emailStatus.available === true && styles.statusAvailable,
+    emailStatus.available === false && styles.statusUnavailable,
+  ];
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -245,11 +336,43 @@ export default function ProfileScreen() {
             </View>
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>E-mail</Text>
-              <TextInput value={email} onChangeText={setEmail} style={styles.input} keyboardType="email-address" autoCapitalize="none" selectionColor={COLORS.red} placeholderTextColor={COLORS.placeholderText} />
+              <TextInput 
+                value={email} 
+                onChangeText={(text) => {
+                  setEmail(text);
+                  debouncedCheckEmail(text);
+                }} 
+                style={styles.input} 
+                keyboardType="email-address" 
+                autoCapitalize="none" 
+                selectionColor={COLORS.red} 
+                placeholderTextColor={COLORS.placeholderText} 
+              />
+              {emailStatus.checking ? (
+                <Text style={emailStatusStyle}>Controleren...</Text>
+              ) : emailStatus.message ? (
+                <Text style={emailStatusStyle}>{emailStatus.message}</Text>
+              ) : null}
             </View>
+
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Gebruikersnaam</Text>
-              <TextInput value={username} onChangeText={setUserName} style={styles.input} autoCapitalize="none" selectionColor={COLORS.red} placeholderTextColor={COLORS.placeholderText} />
+              <TextInput 
+                value={username} 
+                onChangeText={(text) => {
+                  setUserName(text);
+                  debouncedCheckUsername(text);
+                }} 
+                style={styles.input} 
+                autoCapitalize="none" 
+                selectionColor={COLORS.red} 
+                placeholderTextColor={COLORS.placeholderText} 
+              />
+              {usernameStatus.checking ? (
+                <Text style={usernameStatusStyle}>Controleren...</Text>
+              ) : usernameStatus.message ? (
+                <Text style={usernameStatusStyle}>{usernameStatus.message}</Text>
+              ) : null}
             </View>
 
             <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
@@ -399,5 +522,18 @@ const styles = StyleSheet.create({
     marginBottom: 15, 
     textAlign: 'center',
     textTransform: 'uppercase',
+  },
+  statusMessage: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  statusChecking: {
+    color: COLORS.placeholderText,
+  },
+  statusAvailable: {
+    color: 'green',
+  },
+  statusUnavailable: {
+    color: COLORS.error,
   },
 });
