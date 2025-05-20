@@ -122,7 +122,7 @@ export default function editpost() {
                     <View style={styles.create}>
                         <TouchableOpacity onPress={EditPost}>
                             <View style={styles.button}>
-                                <Text style={styles.buttontext}>Save post</Text>
+                                <Text style={styles.buttontext}>edit post</Text>
                             </View>
                         </TouchableOpacity>
                     </View>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
-import {CheckBox} from "@/components/input";
+import {NavigationContainer} from "@react-navigation/native";
+import {Link} from "expo-router";
 
 const COLORS = {
     red: '#C80032',
@@ -29,6 +30,10 @@ export default function UserPosts () {
             })
     }, []);
 
+    const EditPost = () => {
+        fetch('/http://localhost:8081/posts/edit_post')
+    }
+
 
 
         return (
@@ -46,6 +51,11 @@ export default function UserPosts () {
                             <View key={post.id} style={styles.postbox} >
                                 <Text style={styles.textTitle}>{post.title}</Text>
                                 <Text style={styles.textContent}>{post.content}</Text>
+                                <TouchableOpacity onPress={EditPost}>
+                                    <View style={styles.button}>
+                                        <Text style={styles.buttontext}>edit post</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         ))}
                     </View>
