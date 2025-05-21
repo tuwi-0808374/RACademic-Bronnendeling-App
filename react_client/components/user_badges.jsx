@@ -48,9 +48,9 @@ const UserBadges = () => {
             <Text>Je hebt nog geen badges.</Text>
           ) : (
             badges.map((badge, i) => (
-              <Text >
-                <Image key={i} onClick={() => showBadgeInfo()}
-                    source={`${API_BASE_URL}/static/badges/${badge['image_url']}`}
+              <Text key={badge['id']}>
+                <Image onClick={() => showBadgeInfo()}
+                    source={{ uri: `${API_BASE_URL}/static/badges/${badge.image_url}` }}
                     style={styles.badge}
                   />
                   {showInfo && (
