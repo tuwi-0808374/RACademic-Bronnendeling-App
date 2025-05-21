@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getApiBaseUrl } from '../../constants/get_ip';
+
 
 const COLORS = {
   red: '#C80032',
@@ -12,6 +14,8 @@ const COLORS = {
   placeholderText: '#666666',
   languageBackground: '#E0E0E0',
 };
+
+const API_BASE_URL = getApiBaseUrl();
 
 const LoginButton = ({ onPress }: { onPress: () => void }) => (
   <TouchableOpacity style={styles.loginButton} onPress={onPress}>
@@ -24,15 +28,17 @@ const LoginScreen = () => {
   const [password, setPassword] = useState<string>('');
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
-
+  
   const handleLogin = async () => {
     if (!email || !password) {
       console.log('Please fill in both fields.');
       return;
     }
-
+    
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/login", {
+      
+      const response = await fetch(`${API_BASE_URL}/api/login`, {
+        
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,14 +48,14 @@ const LoginScreen = () => {
           password: password,
         }),
       });
-
+      
       if (response.ok) {
         const data = await response.json();
         console.log('Login succesvol', data);
-
+        
         // https://medium.com/@paritasampa95/how-asyncstorage-stores-data-in-react-native-102498260af0
         await AsyncStorage.setItem('authToken', data['access_token']);
-
+        
         router.push('/account/profile');
       } else {
         const errorData = await response.json();
