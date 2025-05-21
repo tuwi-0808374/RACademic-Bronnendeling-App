@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import CheckBox from 'expo-checkbox';
-import { TextInput, View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { TextInput, View, TouchableOpacity,Pressable ,StyleSheet, Text } from 'react-native';
 import { getApiBaseUrl } from '../../constants/get_ip';
 
 const API_BASE_URL = getApiBaseUrl();
 
 function SearchBar() {
     const [postTags, setPostTags] = useState({});
-    const [data, setData] = useState([]);
-    const [checkedTags, setCheckedTags] = useState({});
+    const [visible, setVisible] = useState(false);
+    const [selectedTag, setSelectedTag] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedTags, setSelectedTags] = useState({});
     const [posts, setPosts] = useState({});
@@ -28,14 +28,16 @@ function SearchBar() {
     // https://stackoverflow.com/questions/65205428/handle-multiple-checkboxes-in-expo-react-native
     // https://docs.expo.dev/versions/latest/sdk/checkbox/
     const toggleTag = (id) => {
+        console.log('button works')
         setSelectedTags((prev) => ({
             ...prev,
             [id]: !prev[id],
         }));
+        console.log(selectedTags);
     };
 
     const fetchPosts = () => {
-        const selectedTagIds = Object.keys(selectedTags).filter((id) => selectedTag[id]);
+        const selectedTagIds = Object.keys(selectedTags).filter((id) => selectedTags[id]);
         const queryParams = new URLSearchParams();
         queryParams.append('user_id', 1);
         if (searchQuery) queryParams.append('search_query', searchQuery);
@@ -49,6 +51,7 @@ function SearchBar() {
             })
             .catch(err => console.error('Error fetching posts:', err));
     };
+
     const handleInsidePress = () => {
         console.log('inside press')
         setVisible(true);
@@ -57,6 +60,7 @@ function SearchBar() {
         const key = event.nativeEvent.key
         if(key ==="Enter"){
             fetchPosts();
+            setVisible(false);
         }
     }
     return (
@@ -76,7 +80,8 @@ function SearchBar() {
                             key={tag.id}
                             onPress={(event) => {
                                 toggleTag(tag.id);
-                                event.stopPropagation();
+
+                                // event.stopPropagation();
                             }}
                             style={[styles.tag, selectedTags[tag.id] ? styles.tagSelected : null,]}>
                             <Text style={selectedTags[tag.id] ? styles.tagTextSelected : styles.tagText}>
@@ -113,6 +118,9 @@ const styles = StyleSheet.create({
     },
     containerPostTags: {
         backgroundColor: '#fff',
+    },
+    tagSelected: {
+        backgroundColor: 'green',
     }
 });
 

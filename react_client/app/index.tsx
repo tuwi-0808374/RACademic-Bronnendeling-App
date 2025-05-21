@@ -1,5 +1,5 @@
 import { Text, View} from 'react-native';
-import SearchBar from '../components/general/SearchBar';
+import NavBar from '../components/general/NavBar';
 
 import { Link } from 'expo-router';
 import {useState} from "react";
