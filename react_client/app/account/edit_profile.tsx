@@ -16,6 +16,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import ImageUploader from "../../components/account/ImageUploader";
 import { useDebouncedCallback } from "use-debounce";
+import { getApiBaseUrl } from '../../constants/get_ip';
+
+const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
   red: "#C80032",
@@ -85,7 +88,7 @@ export default function EditProfileScreen() {
         setUserId(currentUserId);
 
         const response = await fetch(
-          `http://127.0.0.1:5000/profile/${currentUserId}`,
+          `${API_BASE_URL}/profile/${currentUserId}`,
           {
             method: "GET",
             headers: {
@@ -146,7 +149,7 @@ export default function EditProfileScreen() {
       }
 
       const response = await fetch(
-        `http://127.0.0.1:5000/change_password/${userId}`,
+        `${API_BASE_URL}/change_password/${userId}`,
         {
           method: "PATCH",
           headers: {
@@ -225,7 +228,7 @@ export default function EditProfileScreen() {
     }
 
     const response = await fetch(
-      `http://127.0.0.1:5000/update_profile/${currentUserId}`,
+      `${API_BASE_URL}/update_profile/${currentUserId}`,
       {
         method: "PATCH",
         headers: {
@@ -257,7 +260,7 @@ export default function EditProfileScreen() {
 
     setEmailStatus({ checking: true, message: "Controleren..." });
 
-    fetch("http://127.0.0.1:5000/check_email", {
+    fetch(`${API_BASE_URL}/check_email`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -287,7 +290,7 @@ export default function EditProfileScreen() {
 
     setUsernameStatus({ checking: true, message: "Controleren..." });
 
-    fetch("http://127.0.0.1:5000/check_username", {
+    fetch(`${API_BASE_URL}/check_username`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

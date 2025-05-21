@@ -4,6 +4,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
 import UserBadges from '../../components/user_badges';
+import { getApiBaseUrl } from '../../constants/get_ip';
+
+const API_BASE_URL = getApiBaseUrl();
+
 
 const COLORS = {
   red: '#C80032',
@@ -56,7 +60,7 @@ export default function PublicProfileScreen() {
 
         setUserId(currentUserId); 
 
-        const response = await fetch(`http://127.0.0.1:5000/profile/${currentUserId}`, {
+        const response = await fetch(`${API_BASE_URL}/profile/${currentUserId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
