@@ -44,7 +44,7 @@ const UserBadges = () => {
 
   return (
     <View style={styles.badges}>
-          {badges.length === 0 ? (
+          {badges === undefined ? (
             <Text>Je hebt nog geen badges.</Text>
           ) : (
             badges.map((badge, i) => (
