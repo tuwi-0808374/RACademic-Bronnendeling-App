@@ -1,8 +1,10 @@
 from flask import *
 from blueprints.tag.models.tag_model import Tag
+from flask_cors import CORS
 
 tag_bp = Blueprint('tag', __name__)
 base = Blueprint('base', __name__)
+CORS(tag_bp)
 
 @tag_bp.route('/tags', methods=['GET'])
 def get_tags():
