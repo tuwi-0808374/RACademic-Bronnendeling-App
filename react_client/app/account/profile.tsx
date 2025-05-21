@@ -124,11 +124,7 @@ export default function PublicProfileScreen() {
             </View>
 
 
-            <Image
-              source={require('../../assets/images/hr-logo.png')}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            
             <Text style={styles.logoTitle}>PROFIEL</Text>
 
             <View style={styles.inputGroup}>
