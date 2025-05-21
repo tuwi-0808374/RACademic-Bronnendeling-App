@@ -56,6 +56,8 @@ export default function EditProfileScreen() {
     "success" | "error" | ""
   >("");
 
+  const [saveMessage, setSaveMessage] = useState("");
+
   const [emailStatus, setEmailStatus] = useState<{
     checking: boolean;
     available?: boolean;
@@ -246,9 +248,17 @@ export default function EditProfileScreen() {
 
     const responseData = await response.json();
     console.log("Succesvol bijgewerkt:", responseData);
+    setSaveMessage("Profiel succesvol opgeslagen!");
+    setTimeout(() => {
+      setSaveMessage("");
+    }, 3000);
     
   } catch (error) {
     console.error("Fout bij opslaan:", error);
+    setSaveMessage("Er is een fout opgetreden bij het opslaan.");
+    setTimeout(() => {
+      setSaveMessage("");
+    }, 3000);
   }
 };
 
@@ -342,11 +352,7 @@ export default function EditProfileScreen() {
               />
             </View>
 
-            <Image
-              source={require("../../assets/images/hr-logo.png")}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            
             <Text style={styles.logoTitle}>MIJN PROFIEL</Text>
 
             <View style={styles.inputGroup}>
@@ -411,6 +417,10 @@ export default function EditProfileScreen() {
                 </Text>
               ) : null}
             </View>
+
+            {saveMessage ? (
+            <Text style={styles.saveMessage}>{saveMessage}</Text>
+          ) : null}
 
             <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
               <Text style={styles.actionButtonText}>Profiel Opslaan</Text>
@@ -598,5 +608,11 @@ const styles = StyleSheet.create({
   },
   statusUnavailable: {
     color: COLORS.error,
+  },
+  saveMessage: {
+    color: COLORS.success,
+    textAlign: "center",
+    marginVertical: 10,
+    fontSize: 14,
   },
 });

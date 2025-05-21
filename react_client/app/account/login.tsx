@@ -4,6 +4,7 @@ import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApiBaseUrl } from '../../constants/get_ip';
 
+const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
   red: '#C80032',
@@ -15,7 +16,6 @@ const COLORS = {
   languageBackground: '#E0E0E0',
 };
 
-const API_BASE_URL = getApiBaseUrl();
 
 const LoginButton = ({ onPress }: { onPress: () => void }) => (
   <TouchableOpacity style={styles.loginButton} onPress={onPress}>
