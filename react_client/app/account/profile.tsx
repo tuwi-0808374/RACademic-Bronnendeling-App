@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaVie
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
-
+import UserBadges from '../../components/user_badges';
 
 const COLORS = {
   red: '#C80032',
@@ -103,6 +103,7 @@ export default function PublicProfileScreen() {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <UserBadges />
           <View style={styles.innerContainer}>
             <View style={styles.profileImageContainer}>
                 {profileImage ? (

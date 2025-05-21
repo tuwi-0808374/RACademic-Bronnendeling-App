@@ -42,7 +42,7 @@ const UserBadges = () => {
   }
 
   return (
-    <>
+    <View style={styles.badges}>
           {badges.length === 0 ? (
             <Text>Je hebt nog geen badges.</Text>
           ) : (
@@ -60,15 +60,26 @@ const UserBadges = () => {
               </Text>
             ))
           )}
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   badge: {
-    padding: 10,
+    margin: 6,
     width: 50,
     height: 50,
+  },
+  badges: {
+    borderWidth: 2,
+    borderColor: '#ccc',
+    borderRadius: 12,
+    padding: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignSelf: 'flex-end',
+    backgroundColor: '#fff',
+    maxWidth: 320,
   },
 });
 
