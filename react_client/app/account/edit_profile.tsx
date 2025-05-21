@@ -183,126 +183,71 @@ export default function EditProfileScreen() {
   };
 
   const saveProfile = async () => {
-    if (!profileImage) {
-      console.log("Profielfoto verwijderen");
-      try {
-        const token = await AsyncStorage.getItem("authToken");
-        if (!token) {
-          console.log("Geen token gevonden.");
-          return;
-        }
-
-        const decoded = jwt_decode<JwtPayload>(token);
-        const currentUserId = decoded.user_id;
-
-        if (!currentUserId) {
-          console.error("User ID niet gevonden in token:", decoded);
-          return;
-        }
-
-        const response = await fetch(
-          `http://127.0.0.1:5000/update_profile/${currentUserId}`,
-          {
-            method: "PATCH",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              first_name,
-              last_name: lastName,
-              email,
-              username,
-              profile_image: null,
-            }),
-          }
-        );
-
-        if (response.ok) {
-          const responseData = await response.json();
-          console.log("Profiel succesvol bijgewerkt:", responseData);
-        } else {
-          console.log(`Kan profiel niet updaten.`);
-          const errorData = await response.text();
-          console.log("Foutdetails:", errorData);
-        }
-      } catch (error) {
-        console.log("Fout bij opslaan profiel:", error);
-      }
+  try {
+    const token = await AsyncStorage.getItem("authToken");
+    if (!token) {
+      console.log("Geen token gevonden.");
       return;
     }
 
-    if (
-      (!emailStatus.available && email) ||
-      (!usernameStatus.available && username)
-    ) {
+    const decoded = jwt_decode<JwtPayload>(token);
+    const currentUserId = decoded.user_id;
+    
+
+    if (!currentUserId) {
+      return;
+    }
+
+    if (emailStatus.available === false || usernameStatus.available === false) {
       console.log("Kies een beschikbare e-mail en gebruikersnaam");
       return;
     }
 
-    console.log("Profiel opslaan met:", {
+    const formData: any = {
       first_name,
-      lastName,
+      last_name: lastName,
       email,
       username,
-    });
+    };
 
-    try {
-      const token = await AsyncStorage.getItem("authToken");
-      if (!token) {
-        console.log("Geen token gevonden.");
-        return;
-      }
-
-      let base64Image = null;
-      if (profileImage && profileImage.startsWith("file://")) {
-        const response = await fetch(profileImage);
-        const blob = await response.blob();
-        base64Image = await new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(blob);
-        });
-      }
-
-      const decoded = jwt_decode<JwtPayload>(token);
-      const currentUserId = decoded.user_id;
-
-      if (!currentUserId) {
-        console.error("User ID niet gevonden in token:", decoded);
-        return;
-      }
-
-      const response = await fetch(
-        `http://127.0.0.1:5000/update_profile/${currentUserId}`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            first_name,
-            last_name: lastName,
-            email,
-            username,
-            profile_image: base64Image,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log("Profiel succesvol bijgewerkt:", responseData);
-      } else {
-        console.log(`Kan profiel niet updaten.`);
-        const errorData = await response.text();
-        console.log("Foutdetails:", errorData);
-      }
-    } catch (error) {
-      console.log("Fout bij opslaan profiel:", error);
+    if (profileImage === null) {
+      formData.profile_image = "remove"; 
+    } else if (profileImage && profileImage.startsWith('file://')) {
+      const response = await fetch(profileImage);
+      const blob = await response.blob();
+      formData.profile_image = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    } else if (profileImage && profileImage.startsWith('data:')) {
+      formData.profile_image = profileImage; 
     }
-  };
+
+    const response = await fetch(
+      `http://127.0.0.1:5000/update_profile/${currentUserId}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(errorData || "Update mislukt");
+    }
+
+    const responseData = await response.json();
+    console.log("Succesvol bijgewerkt:", responseData);
+    
+  } catch (error) {
+    console.error("Fout bij opslaan:", error);
+  }
+};
 
   const debouncedCheckEmail = useDebouncedCallback((email: string) => {
     if (!email) {

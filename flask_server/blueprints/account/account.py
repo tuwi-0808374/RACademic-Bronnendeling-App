@@ -86,35 +86,30 @@ def update_profile(user_id):
     account_model = Account()
     data = request.get_json()
     
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
-    email = data.get('email')
-    username = data.get('username')
-    
     profile_image = data.get('profile_image')
-    image_filename = None
     
-    if profile_image is None or (isinstance(profile_image, str) and profile_image.lower() == "null"):
+    if profile_image == "remove":
+        pass  
+    elif profile_image is None or profile_image.lower() == "null":
         profile_image = None
-    
-    if profile_image and isinstance(profile_image, str) and profile_image.startswith('data:image'):
-        image_filename = account_model.save_base64_image(profile_image)
-        if not image_filename:
-            return jsonify({'status': 'error', 'message': 'Fout bij opslaan profielfoto'}), 400
-    
+    elif isinstance(profile_image, str) and profile_image.startswith('data:image'):
+        profile_image = profile_image  
+    else:
+        profile_image = None  
+
     success = account_model.update_profile(
         user_id=user_id,
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
-        username=username,
-        profile_image=image_filename
+        first_name=data.get('first_name'),
+        last_name=data.get('last_name'),
+        email=data.get('email'),
+        username=data.get('username'),
+        profile_image=profile_image  
     )
+    
     if success:
         return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200
     else:
-        return jsonify({'status': 'error', 'message': f'Bijwerken mislukt: {success}'}), 500
-
+        return jsonify({'status': 'error', 'message': 'Bijwerken mislukt'}), 500
 
 @account_bp.route('/uploads/<filename>')
 def serve_uploaded_file(filename):

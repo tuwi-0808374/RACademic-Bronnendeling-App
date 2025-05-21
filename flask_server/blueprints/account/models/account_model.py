@@ -142,49 +142,62 @@ class Account:
                 con.close()
                 
     def update_profile(self, user_id, first_name=None, last_name=None, email=None, username=None, profile_image=None):
-        
-        cursor, con = self.connect_db()  
+        cursor, con = self.connect_db()
         try:
             current_user = cursor.execute(
-            "SELECT profile_image FROM users WHERE id = ?", 
-            (user_id,)
-        ).fetchone()
-            
+                "SELECT profile_image FROM users WHERE id = ?", 
+                (user_id,)
+            ).fetchone()
             current_image = current_user['profile_image'] if current_user else None
+
+            new_image_filename = None
             
-            if profile_image is None and current_image:
-                self.delete_old_image(current_image)
-                profile_image = None
-            elif isinstance(profile_image, str) and profile_image.startswith('data:image'):
+            if profile_image == "remove":
+
+                if current_image:
+                    if self.delete_old_image(current_image):
+                        print("Bestand succesvol verwijderd")
+                    else:
+                        print("Kon bestand niet verwijderen")
+                new_image_filename = None
+                
+            elif isinstance(profile_image, str) and profile_image.startswith('data:'):
                 if current_image:
                     self.delete_old_image(current_image)
-                profile_image = self.save_base64_image(profile_image) 
-
+                new_image_filename = self.save_base64_image(profile_image)
             
-            cursor.execute(  
-                "UPDATE users SET first_name = ?, last_name = ?, email = ?, username = ?, profile_image = ? WHERE id = ?",
-                (first_name, last_name, email, username, profile_image, user_id)
+            cursor.execute(
+                "UPDATE users SET first_name=?, last_name=?, email=?, username=?, profile_image=? WHERE id=?",
+                (first_name, last_name, email, username, new_image_filename, user_id)
             )
             con.commit()
+            
             return True
+
         except Exception as e:
-            print(f"Error bij bijwerken van gebruiker {user_id}: {e}")
-            return False   
+            print(f"Error: {str(e)}")
+            return False
         finally:
             if con:
                 con.close()
                 
     def delete_old_image(self, filename):
-        if filename:
+        if not filename:
+            return False
+            
+        try:
             filepath = os.path.join(self.upload_folder, filename)
-            try:
-                if os.path.exists(filepath):
-                    os.remove(filepath)
-                    return True
-            except Exception as e:
-                print(f"Fout bij verwijderen oude afbeelding: {e}")
-        return False
+            
+            if not os.path.exists(filepath):
+                return False
                 
+            os.remove(filepath)
+            return True
+            
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return False
+        
     def register_user(self, user_data):
         cursor, con = self.connect_db()
         try:
