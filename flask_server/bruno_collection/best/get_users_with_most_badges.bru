@@ -1,0 +1,15 @@
+meta {
+  name: get_users_with_most_badges
+  type: http
+  seq: 2
+}
+
+get {
+  url: 127.0.0.1:5000/get_users_with_most_badges?limit=3
+  body: none
+  auth: inherit
+}
+
+params:query {
+  limit: 3
+}

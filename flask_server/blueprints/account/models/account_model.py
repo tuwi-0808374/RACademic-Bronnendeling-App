@@ -275,3 +275,23 @@ class Account:
         finally:
             if con:
                 con.close()
+                
+    def get_users_with_most_badges(self, limit=5):
+        # Geeft de top 5 gebruikers met de meeste badges.
+        cursor, con = self.connect_db()
+        try:
+            result = cursor.execute(
+                """
+                    SELECT users.id, users.first_name, count(user_badges.badge_id) as total_badges
+                    FROM users
+                    LEFT JOIN user_badges ON users.id = user_badges.user_id
+                    GROUP BY users.id
+                    ORDER BY total_badges DESC
+                    LIMIT ?           
+                """,
+                (limit,)
+            ).fetchall()
+            return [dict(row) for row in result]
+        finally:
+            if con:
+                con.close()
