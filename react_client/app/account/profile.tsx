@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
+import { useRouter } from 'expo-router';
+import UserBadges from '../../components/user_badges';
+import { getApiBaseUrl } from '../../constants/get_ip';
+
+const API_BASE_URL = getApiBaseUrl();
+
 
 const COLORS = {
   red: '#C80032',
@@ -10,6 +16,8 @@ const COLORS = {
   textLight: '#FFFFFF',
   inputLine: '#555555', 
   placeholderText: '#666666', 
+  success: '#4CAF50', 
+  error: '#D32F2F',
 
 };
 
@@ -23,13 +31,15 @@ interface JwtPayload {
 }
 
 
-export default function ProfileScreen() {
+export default function PublicProfileScreen() {
   const [email, setEmail] = useState('');
-  const [first_name, setFirstName] = useState('');
+  const [first_name, FirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUserName] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
+  
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -50,7 +60,7 @@ export default function ProfileScreen() {
 
         setUserId(currentUserId); 
 
-        const response = await fetch(`http://127.0.0.1:5000/profile/${currentUserId}`, {
+        const response = await fetch(`${API_BASE_URL}/profile/${currentUserId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -62,7 +72,7 @@ export default function ProfileScreen() {
           const responseData = await response.json();
           const userData = responseData.data; 
           if (userData) {
-              setFirstName(userData.first_name || '');
+              FirstName(userData.first_name || '');
               setLastName(userData.last_name || '');
               setEmail(userData.email || '');
               setUserName(userData.username || '');
@@ -83,55 +93,10 @@ export default function ProfileScreen() {
       }
     };
 
+    
+    
     fetchProfile();
   }, []);
-
-  
-  const saveProfile = async () => {
-    console.log('Profiel opslaan met:', { first_name, lastName, email, username });
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-      if (!token) {
-        console.log('Geen token gevonden.');
-        return;
-      }
-
-      const decoded = jwt_decode<JwtPayload>(token);
-      const currentUserId = decoded.user_id; 
-
-      if (!currentUserId) {
-        console.error('User ID niet gevonden in token:', decoded);
-        return;
-      }
-
-      const response = await fetch(`http://127.0.0.1:5000/update_profile/${currentUserId}`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          first_name,
-          last_name: lastName,
-          email,
-          username,
-        }),
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log('Profiel succesvol bijgewerkt:', responseData);        
-        } else {
-            
-        console.log(`Kan profiel niet updaten.`);
-        const errorData = await response.text(); 
-        console.log('Foutdetails:', errorData);
-      }
-    } catch (error) {
-      console.log('Fout bij opslaan profiel:', error);
-    }
-  };
-
 
 
   return (
@@ -141,83 +106,48 @@ export default function ProfileScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingContainer}
       >
-        <View style={styles.innerContainer}>
-        <View style={styles.profileImageContainer}>
-          {profileImage ? (
-            <Image
-              source={{ uri: profileImage }}
-              style={styles.profileImage}
-            />
-          ) : (
-            <Image
-              source={require('../../assets/images/profile.png')}
-              style={styles.profileImage}
-            />
-          )}
-        </View>
-        
-        <Image
-          source={require('../../assets/images/hr-logo.png')} 
-          style={styles.logo}
-          resizeMode="contain"
-        />
-          
-          <Text style={styles.logoTitle}>MIJN PROFIEL</Text> 
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <UserBadges />
+          <View style={styles.innerContainer}>
+            <View style={styles.profileImageContainer}>
+                {profileImage ? (
+                    <Image
+                    source={{ uri: profileImage }}
+                    style={styles.profileImage}
+                    />
+                ) : (
+                    <Image
+                    source={require('../../assets/images/profile.png')} 
+                    style={styles.profileImage}
+                    />
+                )}
+            </View>
 
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Voornaam</Text>
-            <TextInput
-              value={first_name}
-              onChangeText={setFirstName}
-              style={[styles.input, styles.inputStyle]} 
-              selectionColor={COLORS.red} 
-              placeholderTextColor={COLORS.placeholderText} 
-            />
+            
+            <Text style={styles.logoTitle}>PROFIEL</Text>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Naam</Text>
+              <Text style={styles.input}>{first_name} {lastName}</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>E-mail</Text>
+              <Text style={styles.input}>{email}</Text>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Gebruikersnaam</Text>
+              <Text style={styles.input}>{username}</Text>
+            </View>
+
+            <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/account/edit_profile')}>
+                <Text style={styles.actionButtonText}>Profiel Bewerken</Text>
+            </TouchableOpacity>
+
           </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Achternaam</Text>
-            <TextInput
-              value={lastName}
-              onChangeText={setLastName}
-              style={[styles.input, styles.inputStyle]}
-              selectionColor={COLORS.red}
-              placeholderTextColor={COLORS.placeholderText}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>E-mail</Text>
-            <TextInput
-              value={email}
-              onChangeText={setEmail} 
-              style={[styles.input, styles.inputStyle]}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              selectionColor={COLORS.red}
-              placeholderTextColor={COLORS.placeholderText}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Gebruikersnaam</Text>
-            <TextInput
-              value={username}
-              onChangeText={setUserName} 
-              style={[styles.input, styles.inputStyle]}
-              autoCapitalize="none"
-              selectionColor={COLORS.red}
-              placeholderTextColor={COLORS.placeholderText}
-            />
-          </View>
-
-          <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
-            <Text style={styles.actionButtonText}>Opslaan</Text>
-          </TouchableOpacity>
-
-
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -230,6 +160,10 @@ const styles = StyleSheet.create({
   },
   keyboardAvoidingContainer: {
     flex: 1,
+  },
+  scrollContainer: { 
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   innerContainer: {
     flex: 1,
@@ -304,5 +238,42 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     borderWidth: 2,
     borderColor: COLORS.red,
+  },
+  changePasswordButton: {
+    marginTop: 10, 
+    marginBottom: 30, 
+  },
+  successText: {
+    color: COLORS.success,
+  },
+  errorText: {
+    color: COLORS.error,
+  },
+  messageText: {
+    textAlign: 'center',
+    marginVertical: 10,
+    fontSize: 14,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    marginTop: 30, 
+    marginBottom: 15, 
+    textAlign: 'center',
+    textTransform: 'uppercase',
+  },
+  statusMessage: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  statusChecking: {
+    color: COLORS.placeholderText,
+  },
+  statusAvailable: {
+    color: 'green',
+  },
+  statusUnavailable: {
+    color: COLORS.error,
   },
 });

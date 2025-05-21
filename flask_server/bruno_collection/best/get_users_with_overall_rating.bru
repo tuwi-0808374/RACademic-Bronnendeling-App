@@ -1,0 +1,15 @@
+meta {
+  name: get_users_with_overall_rating
+  type: http
+  seq: 1
+}
+
+get {
+  url: 127.0.0.1:5000/get_users_with_overall_rating?limit=3
+  body: none
+  auth: inherit
+}
+
+params:query {
+  limit: 3
+}

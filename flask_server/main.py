@@ -10,7 +10,7 @@ from blueprints.account.account import account_bp
 from blueprints.rating.rating import rating_bp
 from blueprints.badge.badge import badge_bp
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 CORS(app)
 
 app.config["JWT_SECRET_KEY"] = "geheim"
@@ -27,4 +27,4 @@ app.register_blueprint(account_bp)
 app.register_blueprint(badge_bp)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")

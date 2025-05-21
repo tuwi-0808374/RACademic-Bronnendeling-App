@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import CheckBox from 'expo-checkbox';
-import { TextInput, View, TouchableOpacity,Pressable,StyleSheet,Button ,Text } from 'react-native';
+import { TextInput, View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { getApiBaseUrl } from '../../constants/get_ip';
 
-function SearchBar({ visible, setVisible }) {
+const API_BASE_URL = getApiBaseUrl();
+
+function SearchBar() {
     const [postTags, setPostTags] = useState({});
+    const [data, setData] = useState([]);
+    const [checkedTags, setCheckedTags] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedTags, setSelectedTags] = useState({});
     const [posts, setPosts] = useState({});
@@ -36,7 +41,7 @@ function SearchBar({ visible, setVisible }) {
         if (searchQuery) queryParams.append('search_query', searchQuery);
         selectedTagIds.forEach((id) => queryParams.append('tag_id', id));
 
-        fetch(`http://localhost:5000/posts?${queryParams.toString()}`)
+        fetch(`${API_BASE_URL}/posts?${queryParams.toString()}`)
             .then(res => res.json())
             .then(data => {
                 setPosts(data.data);
@@ -54,7 +59,6 @@ function SearchBar({ visible, setVisible }) {
             fetchPosts();
         }
     }
-
     return (
         <View style={styles.container}>
              <TextInput
