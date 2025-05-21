@@ -17,6 +17,9 @@ import jwt_decode from "jwt-decode";
 import ImageUploader from "../../components/account/ImageUploader";
 import { useDebouncedCallback } from "use-debounce";
 import { getApiBaseUrl } from '../../constants/get_ip';
+import { CheckBox } from "@/components/input";
+import { Switch } from 'react-native';
+
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -70,6 +73,13 @@ export default function EditProfileScreen() {
     message: string;
   }>({ checking: false, message: "" });
 
+
+  const [checkedTags, setCheckedTags] = useState({});
+  const [data, setData] = useState([]);
+
+  const [isUsernamePublic, setIsUsernamePublic] = useState(false);
+
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -99,7 +109,7 @@ export default function EditProfileScreen() {
             },
           }
         );
-
+        
         if (response.ok) {
           const responseData = await response.json();
           const userData = responseData.data;
@@ -108,7 +118,9 @@ export default function EditProfileScreen() {
             setLastName(userData.last_name || "");
             setEmail(userData.email || "");
             setUserName(userData.username || "");
-
+            setIsUsernamePublic(userData.username_public);
+            
+            
             if (userData.profile_image_url) {
               setProfileImage(userData.profile_image_url);
               console.log("Profiel foto URL:", userData.profile_image_url);
@@ -165,6 +177,9 @@ export default function EditProfileScreen() {
         }
       );
 
+      
+     
+
       const responseData = await response.json();
       if (response.ok) {
         setPasswordChangeMessage(
@@ -213,6 +228,7 @@ export default function EditProfileScreen() {
       last_name: lastName,
       email,
       username,
+      username_public: isUsernamePublic,
     };
 
     if (profileImage === null) {
@@ -409,6 +425,11 @@ export default function EditProfileScreen() {
                 selectionColor={COLORS.red}
                 placeholderTextColor={COLORS.placeholderText}
               />
+
+
+              
+                    
+
               {usernameStatus.checking ? (
                 <Text style={usernameStatusStyle}>Controleren...</Text>
               ) : usernameStatus.message ? (
@@ -417,6 +438,14 @@ export default function EditProfileScreen() {
                 </Text>
               ) : null}
             </View>
+              <View style={styles.toggleContainer}>
+                <Text style={styles.toggleLabel}>Gebruikersnaam openbaar</Text>
+                <Switch
+                  value={isUsernamePublic}
+                  onValueChange={(value) => setIsUsernamePublic(value)}
+                />
+              </View>
+            
 
             {saveMessage ? (
             <Text style={styles.saveMessage}>{saveMessage}</Text>
@@ -614,5 +643,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 10,
     fontSize: 14,
+  },
+  toggleContainer: {
+   flexDirection: 'row', 
+   alignItems: 'center', 
+   marginBottom: 20,
+   justifyContent: 'flex-start',
+   
+  },
+  toggleLabel: {
+    fontSize: 16,
+    marginRight: 20,
+    
   },
 });
