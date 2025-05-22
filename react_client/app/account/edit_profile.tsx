@@ -65,6 +65,13 @@ export default function EditProfileScreen() {
     message: string;
   }>({ checking: false, message: "" });
 
+
+  const [checkedTags, setCheckedTags] = useState({});
+  const [data, setData] = useState([]);
+
+  const [AccountPublic, setAccountPublic] = useState(false);
+
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -103,7 +110,9 @@ export default function EditProfileScreen() {
             setLastName(userData.last_name || "");
             setEmail(userData.email || "");
             setUserName(userData.username || "");
-
+            setAccountPublic(userData.username_public);
+            
+            
             if (userData.profile_image_url) {
               setProfileImage(userData.profile_image_url);
               console.log("Profiel foto URL:", userData.profile_image_url);
@@ -208,6 +217,7 @@ export default function EditProfileScreen() {
       last_name: lastName,
       email,
       username,
+      username_public: AccountPublic,
     };
 
     if (profileImage === null) {
@@ -400,6 +410,8 @@ export default function EditProfileScreen() {
                 selectionColor={COLORS.red}
                 placeholderTextColor={COLORS.placeholderText}
               />
+                    
+
               {usernameStatus.checking ? (
                 <Text style={usernameStatusStyle}>Controleren...</Text>
               ) : usernameStatus.message ? (
@@ -408,6 +420,18 @@ export default function EditProfileScreen() {
                 </Text>
               ) : null}
             </View>
+              <View style={styles.toggleContainer}>
+                <Text style={styles.toggleLabel}>Privéaccount</Text>
+                <Switch
+                  value={AccountPublic}
+                  onValueChange={(value) => setAccountPublic(value)}
+                />
+              </View>
+            
+
+            {saveMessage ? (
+            <Text style={styles.saveMessage}>{saveMessage}</Text>
+          ) : null}
 
             <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
               <Text style={styles.actionButtonText}>Profiel Opslaan</Text>

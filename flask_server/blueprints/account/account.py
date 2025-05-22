@@ -103,6 +103,7 @@ def update_profile(user_id):
         last_name=data.get('last_name'),
         email=data.get('email'),
         username=data.get('username'),
+        is_public=data.get('is_public'),
         profile_image=profile_image  
     )
     
