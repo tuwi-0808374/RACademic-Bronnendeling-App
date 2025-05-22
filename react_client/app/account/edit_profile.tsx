@@ -77,7 +77,7 @@ export default function EditProfileScreen() {
   const [checkedTags, setCheckedTags] = useState({});
   const [data, setData] = useState([]);
 
-  const [isUsernamePublic, setIsUsernamePublic] = useState(false);
+  const [AccountPublic, setAccountPublic] = useState(false);
 
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export default function EditProfileScreen() {
             setLastName(userData.last_name || "");
             setEmail(userData.email || "");
             setUserName(userData.username || "");
-            setIsUsernamePublic(userData.username_public);
+            setAccountPublic(!!userData.is_public);
             
             
             if (userData.profile_image_url) {
@@ -228,7 +228,7 @@ export default function EditProfileScreen() {
       last_name: lastName,
       email,
       username,
-      username_public: isUsernamePublic,
+      is_public: Boolean(AccountPublic),
     };
 
     if (profileImage === null) {
@@ -425,6 +425,8 @@ export default function EditProfileScreen() {
                 selectionColor={COLORS.red}
                 placeholderTextColor={COLORS.placeholderText}
               />
+                    
+
 
 
               
@@ -439,10 +441,10 @@ export default function EditProfileScreen() {
               ) : null}
             </View>
               <View style={styles.toggleContainer}>
-                <Text style={styles.toggleLabel}>Gebruikersnaam openbaar</Text>
+                <Text style={styles.toggleLabel}>Privéaccount</Text>
                 <Switch
-                  value={isUsernamePublic}
-                  onValueChange={(value) => setIsUsernamePublic(value)}
+                  value={AccountPublic}
+                  onValueChange={(value) => setAccountPublic(value)}
                 />
               </View>
             
