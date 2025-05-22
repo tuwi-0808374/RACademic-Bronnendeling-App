@@ -69,7 +69,7 @@ class Account:
                 first_name,
                 id,
                 last_name,
-                first_name,
+                is_public,
                 username,
                 profile_image
                 FROM users
@@ -165,9 +165,10 @@ class Account:
                 if current_image:
                     self.delete_old_image(current_image)
                 new_image_filename = self.save_base64_image(profile_image)
-            
+                
+            is_public = bool(is_public) if is_public is not None else False
             cursor.execute(
-                "UPDATE users SET first_name=?, last_name=?, email=?, username=?, is_public=? profile_image=? WHERE id=?",
+                "UPDATE users SET first_name=?, last_name=?, email=?, username=?, is_public=?, profile_image=? WHERE id=?",
                 (first_name, last_name, email, username, is_public, new_image_filename, user_id)
             )
             con.commit()

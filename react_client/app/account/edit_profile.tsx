@@ -118,7 +118,7 @@ export default function EditProfileScreen() {
             setLastName(userData.last_name || "");
             setEmail(userData.email || "");
             setUserName(userData.username || "");
-            setAccountPublic(userData.username_public);
+            setAccountPublic(!!userData.is_public);
             
             
             if (userData.profile_image_url) {
@@ -228,7 +228,7 @@ export default function EditProfileScreen() {
       last_name: lastName,
       email,
       username,
-      username_public: AccountPublic,
+      is_public: Boolean(AccountPublic),
     };
 
     if (profileImage === null) {
