@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView} from 'react-native';
 import {CheckBox} from "@/components/input";
 
+
+
 const COLORS = {
     red: '#C80032',
     background: '#F8F4EF',
