@@ -3,6 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvo
 import { Link, useRouter } from 'expo-router';
 import ImageUploader from '../../components/account/ImageUploader';
 import { useDebouncedCallback } from 'use-debounce';
+import { getApiBaseUrl } from '../../constants/get_ip';
+
+const API_BASE_URL = getApiBaseUrl();
+
 
 const COLORS = {
   red: '#C80032',
@@ -67,7 +71,7 @@ const RegisterScreen = () => {
     
     setUsernameStatus({ checking: true, message: 'Controleren...' });
     
-    fetch('http://127.0.0.1:5000/check_username', {  
+    fetch(`${API_BASE_URL}/check_username`, {  
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username }),
@@ -94,7 +98,7 @@ const RegisterScreen = () => {
       
     setEmailStatus({ checking: true, message: 'Controleren...' });
     
-    fetch('http://127.0.0.1:5000/check_email', {  
+    fetch(`${API_BASE_URL}/check_email`, {  
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
@@ -155,7 +159,7 @@ const RegisterScreen = () => {
         profile_image: base64Image, 
       };
   
-      const response = await fetch('http://127.0.0.1:5000/register', {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -16,6 +16,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import ImageUploader from "../../components/account/ImageUploader";
 import { useDebouncedCallback } from "use-debounce";
+import { getApiBaseUrl } from '../../constants/get_ip';
+import { CheckBox } from "@/components/input";
+import { Switch } from 'react-native';
+
+
+const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
   red: "#C80032",
@@ -52,6 +58,8 @@ export default function EditProfileScreen() {
   const [passwordChangeMessageType, setPasswordChangeMessageType] = useState<
     "success" | "error" | ""
   >("");
+
+  const [saveMessage, setSaveMessage] = useState("");
 
   const [emailStatus, setEmailStatus] = useState<{
     checking: boolean;
@@ -92,7 +100,7 @@ export default function EditProfileScreen() {
         setUserId(currentUserId);
 
         const response = await fetch(
-          `http://127.0.0.1:5000/profile/${currentUserId}`,
+          `${API_BASE_URL}/profile/${currentUserId}`,
           {
             method: "GET",
             headers: {
@@ -101,7 +109,7 @@ export default function EditProfileScreen() {
             },
           }
         );
-
+        
         if (response.ok) {
           const responseData = await response.json();
           const userData = responseData.data;
@@ -155,7 +163,7 @@ export default function EditProfileScreen() {
       }
 
       const response = await fetch(
-        `http://127.0.0.1:5000/change_password/${userId}`,
+        `${API_BASE_URL}/change_password/${userId}`,
         {
           method: "PATCH",
           headers: {
@@ -168,6 +176,9 @@ export default function EditProfileScreen() {
           }),
         }
       );
+
+      
+     
 
       const responseData = await response.json();
       if (response.ok) {
@@ -235,7 +246,7 @@ export default function EditProfileScreen() {
     }
 
     const response = await fetch(
-      `http://127.0.0.1:5000/update_profile/${currentUserId}`,
+      `${API_BASE_URL}/update_profile/${currentUserId}`,
       {
         method: "PATCH",
         headers: {
@@ -253,9 +264,17 @@ export default function EditProfileScreen() {
 
     const responseData = await response.json();
     console.log("Succesvol bijgewerkt:", responseData);
+    setSaveMessage("Profiel succesvol opgeslagen!");
+    setTimeout(() => {
+      setSaveMessage("");
+    }, 3000);
     
   } catch (error) {
     console.error("Fout bij opslaan:", error);
+    setSaveMessage("Er is een fout opgetreden bij het opslaan.");
+    setTimeout(() => {
+      setSaveMessage("");
+    }, 3000);
   }
 };
 
@@ -267,7 +286,7 @@ export default function EditProfileScreen() {
 
     setEmailStatus({ checking: true, message: "Controleren..." });
 
-    fetch("http://127.0.0.1:5000/check_email", {
+    fetch(`${API_BASE_URL}/check_email`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -297,7 +316,7 @@ export default function EditProfileScreen() {
 
     setUsernameStatus({ checking: true, message: "Controleren..." });
 
-    fetch("http://127.0.0.1:5000/check_username", {
+    fetch(`${API_BASE_URL}/check_username`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -349,11 +368,7 @@ export default function EditProfileScreen() {
               />
             </View>
 
-            <Image
-              source={require("../../assets/images/hr-logo.png")}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            
             <Text style={styles.logoTitle}>MIJN PROFIEL</Text>
 
             <View style={styles.inputGroup}>
@@ -410,6 +425,11 @@ export default function EditProfileScreen() {
                 selectionColor={COLORS.red}
                 placeholderTextColor={COLORS.placeholderText}
               />
+                    
+
+
+
+              
                     
 
               {usernameStatus.checking ? (
@@ -619,5 +639,23 @@ const styles = StyleSheet.create({
   },
   statusUnavailable: {
     color: COLORS.error,
+  },
+  saveMessage: {
+    color: COLORS.success,
+    textAlign: "center",
+    marginVertical: 10,
+    fontSize: 14,
+  },
+  toggleContainer: {
+   flexDirection: 'row', 
+   alignItems: 'center', 
+   marginBottom: 20,
+   justifyContent: 'flex-start',
+   
+  },
+  toggleLabel: {
+    fontSize: 16,
+    marginRight: 20,
+    
   },
 });

@@ -1,9 +1,11 @@
 from flask import *
-
+from flask_cors import CORS
 from blueprints.post.models.post_model import Post
 from blueprints.rating.models.rating_model import Rating
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
+CORS(post_bp)
+CORS(base)
 
 
 @post_bp.route('/example', methods=['GET'])

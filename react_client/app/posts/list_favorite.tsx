@@ -100,7 +100,7 @@ export default function Test() {
       <Button title="Terug" onPress={() => router.push('/')} />
       { undoID.length > 0 ? 
       <>
-      <Button color='green' title="Opslaan" onPress={refresh} ></Button>
+      {/* <Button color='green' title="Opslaan" onPress={refresh} ></Button> */}
       <Button title="Maak ongedaan" onPress={undoDeleteFavorite} ></Button>
       </>
        : null }

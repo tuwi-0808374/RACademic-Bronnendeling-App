@@ -1,9 +1,11 @@
 from flask import *
-
+from flask_cors import CORS
 from blueprints.rating.models.rating_model import Rating
 
 rating_bp = Blueprint('rating', __name__)
 base = Blueprint('base', __name__)
+CORS(rating_bp)
+CORS(base)
 
 @rating_bp.route('/rating', methods=['POST'])
 def create_rating():

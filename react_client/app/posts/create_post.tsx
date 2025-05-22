@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView} from 'react-native';
 import { CheckBox } from "@/components/input";
 
 const COLORS = {
@@ -57,6 +57,7 @@ export default function Create_post() {
                     <Text style={styles.title}>Create Post</Text>
                 </View>
 
+                <ScrollView>
                 <View style={styles.form}>
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Titel</Text>
@@ -98,7 +99,7 @@ export default function Create_post() {
                     </View>
 
                 </View>
-
+                </ScrollView>
             </View>
         </SafeAreaView>
     )

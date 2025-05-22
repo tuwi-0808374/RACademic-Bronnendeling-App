@@ -1,10 +1,11 @@
 from flask import *
-
+from flask_cors import CORS
 from blueprints.badge.models.badge_model import Badge
 
 badge_bp = Blueprint('badge', __name__)
+CORS(badge_bp)
 base = Blueprint('base', __name__)
-
+CORS(base)
 
 @badge_bp.route('/badge/<int:user_id>', methods=['GET'])
 def get_badges_of_user(user_id):

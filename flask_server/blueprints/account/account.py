@@ -46,7 +46,9 @@ def get_profile_by_id(user_id):
         return jsonify({'status': 'error', 'message': 'Gebruiker niet gevonden'}), 404
     
     if user.get('profile_image'):
-        user['profile_image_url'] = f"http://127.0.0.1:5000/uploads/{user['profile_image']}"
+        base_url = request.host_url.rstrip('/') 
+        user['profile_image_url'] = f"{base_url}/uploads/{user['profile_image']}"
+
 
     return jsonify({'status': 'success', 'data': user}), 200
 

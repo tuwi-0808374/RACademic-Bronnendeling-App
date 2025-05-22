@@ -3,14 +3,15 @@ import { View, Text, Button, Image } from 'react-native';
 import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
+import { getApiBaseUrl } from '../constants/get_ip';
 
 const UserBadges = () => {
+  const API_BASE_URL = getApiBaseUrl();
+  const [badges, setBadges] = useState([]);
 
-    const [badges, setBadges] = useState([]);
-
-    useEffect(() => {
-        refreshBadges();
-    }, []);
+  useEffect(() => {
+      refreshBadges();
+  }, []);
 
   const refreshBadges = async () => {
     try {
@@ -23,7 +24,7 @@ const UserBadges = () => {
       const decoded_user = jwt_decode(token);
       const user_id = decoded_user.user_id;
 
-      url = `http://localhost:5000/badge/${user_id}`;
+      url = `${API_BASE_URL}/badge/${user_id}`;
       const response = await fetch(url, {
         method: 'GET',
       });
@@ -42,14 +43,14 @@ const UserBadges = () => {
   }
 
   return (
-    <>
-          {badges.length === 0 ? (
+    <View style={styles.badges}>
+          {badges === undefined ? (
             <Text>Je hebt nog geen badges.</Text>
           ) : (
             badges.map((badge, i) => (
               <Text >
                 <Image key={i} onClick={() => showBadgeInfo()}
-                    source={`http://localhost:5000/static/badges/${badge['image_url']}`}
+                    source={`${API_BASE_URL}/static/badges/${badge['image_url']}`}
                     style={styles.badge}
                   />
                   {showInfo && (
@@ -60,15 +61,26 @@ const UserBadges = () => {
               </Text>
             ))
           )}
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   badge: {
-    padding: 10,
+    margin: 6,
     width: 50,
     height: 50,
+  },
+  badges: {
+    borderWidth: 2,
+    borderColor: '#ccc',
+    borderRadius: 12,
+    padding: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignSelf: 'flex-end',
+    backgroundColor: '#fff',
+    maxWidth: 320,
   },
 });
 
