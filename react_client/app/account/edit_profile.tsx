@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Button,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
@@ -20,6 +21,7 @@ import { getApiBaseUrl } from '../../constants/get_ip';
 import { CheckBox } from "@/components/input";
 import { Switch } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 
 const API_BASE_URL = getApiBaseUrl();
@@ -79,7 +81,8 @@ export default function EditProfileScreen() {
   const [data, setData] = useState([]);
 
   const [AccountPublic, setAccountPublic] = useState(false);
-
+  const router = useRouter();
+  
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -356,6 +359,9 @@ export default function EditProfileScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+
+      
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingContainer}
@@ -368,6 +374,10 @@ export default function EditProfileScreen() {
                 onImageSelected={setProfileImage}
               />
             </View>
+            
+            <TouchableOpacity style={styles.backButton} onPress={() => router.navigate('/account/profile')}>
+              <MaterialIcons name="arrow-back" size={24} color={COLORS.text} />
+            </TouchableOpacity>
 
             
             <Text style={styles.logoTitle}>MIJN PROFIEL</Text>
@@ -457,6 +467,11 @@ export default function EditProfileScreen() {
             <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
               <Text style={styles.actionButtonText}>Profiel Opslaan</Text>
             </TouchableOpacity>
+            
+            <TouchableOpacity style={[styles.actionButton, styles.backToProfileButton]} onPress={() => router.navigate('/account/profile')}>
+              <Text style={styles.actionButtonText}>Terug naar Profiel</Text>
+            </TouchableOpacity>
+
 
             <Text style={styles.sectionTitle}>Wachtwoord Wijzigen</Text>
             <View style={styles.inputGroup}>
@@ -658,5 +673,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 20,
     
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    zIndex: 1,
+  },
+  backToProfileButton: {
+    backgroundColor: COLORS.placeholderText,
+    marginTop: 10,
   },
 });
