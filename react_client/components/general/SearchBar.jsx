@@ -2,40 +2,14 @@ import React, { useState, useEffect } from 'react';
 import CheckBox from 'expo-checkbox';
 import { TextInput, View, TouchableOpacity,Pressable ,StyleSheet, Text } from 'react-native';
 import { getApiBaseUrl } from '../../constants/get_ip';
+import { Ionicons } from '@expo/vector-icons';
 
 const API_BASE_URL = getApiBaseUrl();
 
 function SearchBar() {
-    const [postTags, setPostTags] = useState({});
-    const [visible, setVisible] = useState(false);
-    const [selectedTag, setSelectedTag] = useState({});
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedTags, setSelectedTags] = useState({});
     const [posts, setPosts] = useState({});
-
-
-    useEffect(() => {
-        fetch('http://localhost:5000/tags')
-            .then(res => res.json())
-            .then(data => {
-                console.log('Fetched data:', data);
-                setPostTags(data.data);
-            })
-            .catch(err => console.error('Error fetching tags:', err));
-    }, []);
-
-    // ik heb deze bronnen gebruikt om de checkboxes te maken
-    // https://stackoverflow.com/questions/65205428/handle-multiple-checkboxes-in-expo-react-native
-    // https://docs.expo.dev/versions/latest/sdk/checkbox/
-    const toggleTag = (id) => {
-        console.log('button works')
-        setSelectedTags((prev) => ({
-            ...prev,
-            [id]: !prev[id],
-        }));
-        console.log(selectedTags);
-    };
-
+    const [visible, setVisible] = useState(false);
     const fetchPosts = () => {
         const selectedTagIds = Object.keys(selectedTags).filter((id) => selectedTags[id]);
         const queryParams = new URLSearchParams();
@@ -56,6 +30,10 @@ function SearchBar() {
         console.log('inside press')
         setVisible(true);
     }
+    const handleClose = () => {
+        console.log('te')
+        setVisible(false);
+    }
     const handleOnKeyPress = event =>{
         const key = event.nativeEvent.key
         if(key ==="Enter"){
@@ -73,55 +51,30 @@ function SearchBar() {
                 onKeyPress={handleOnKeyPress}
                 onFocus={handleInsidePress}
             />
-            { visible && (
-                <Pressable style={styles.containerPostTags} >
-                    {postTags.map((tag) => (
-                        <TouchableOpacity
-                            key={tag.id}
-                            onPress={(event) => {
-                                toggleTag(tag.id);
-
-                                // event.stopPropagation();
-                            }}
-                            style={[styles.tag, selectedTags[tag.id] ? styles.tagSelected : null,]}>
-                            <Text style={selectedTags[tag.id] ? styles.tagTextSelected : styles.tagText}>
-                                {tag.title}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
-                </Pressable>
-            )}
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        width: '50vw',
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
-    },
-    tag: {
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        backgroundColor: '#ccc',
-        borderRadius: 12,
-        margin: 4,
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        overflow: 'visible',
+        zIndex: 1,
     },
     searchInput: {
-        height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingLeft: 10,
-        marginBottom: 20,
-        backgroundColor: '#fff',
-    },
-    containerPostTags: {
-        backgroundColor: '#fff',
-    },
-    tagSelected: {
-        backgroundColor: 'green',
+        backgroundColor: 'white',
+        marginTop: '2%',
+        width: '40%',
+        height: '25%',
+        padding: 5,
+        borderRadius: 25
     }
+
 });
 
 export default SearchBar;

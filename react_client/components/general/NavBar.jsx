@@ -5,7 +5,7 @@ import SearchBar from './SearchBar';
 
 export default function NavBar() {
     return(
-        <View style={styles.containerNavbar}>
+        <View style={styles.navbarContent}>
             <SearchBar />
         {/*    profile knop en zo */}
         </View>
@@ -13,13 +13,12 @@ export default function NavBar() {
 }
 
 const styles = StyleSheet.create({
-    containerNavbar: {
-        // display: 'flex',
-        // justifyContent: 'center',
-        // alignItems: 'flex-start',
+    navbarContent: {
         width: '100%',
-        backgroundColor: 'black',
-        height: '6vh',
+        height: '100%',
+        position: 'relative',
+        overflow: 'visible',
+        zIndex: 1,
     }
 
 })
