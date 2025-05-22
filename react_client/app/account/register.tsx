@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, ScrollView } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
+import ImageUploader from '../../components/account/ImageUploader';
+import { useDebouncedCallback } from 'use-debounce';
+import { getApiBaseUrl } from '../../constants/get_ip';
+
+const API_BASE_URL = getApiBaseUrl();
+
 
 const COLORS = {
   red: '#C80032',
@@ -24,13 +29,103 @@ const RegisterScreen = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
+  const [usernameStatus, setUsernameStatus] = useState<{
+    checking: boolean;
+    available?: boolean;
+    message: string;
+  }>({ checking: false, message: '' });
+  const [emailStatus, setEmailStatus] = useState<{
+    checking: boolean;
+    available?: boolean;
+    message: string;
+  }>({ checking: false, message: '' });
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [image, setImage] = useState<string | null>(null);
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
 
+  const usernameStatusStyle = [
+    styles.usernameStatus,
+    usernameStatus.checking && styles.usernameChecking,
+    usernameStatus.available === true && styles.usernameAvailable,
+    usernameStatus.available === false && styles.usernameUnavailable,
+  ];
+
+  
+
+  const emailStatusStyle = [
+    styles.usernameStatus,
+    emailStatus.checking && styles.usernameChecking,
+    emailStatus.available === true && styles.usernameAvailable,
+    emailStatus.available === false && styles.usernameUnavailable,
+  ];
+
+  
+  const debouncedCheckUsername = useDebouncedCallback((username: string) => {
+    if (!username) {
+      setUsernameStatus({ checking: false, message: '' });
+      return;
+    }
+    
+    setUsernameStatus({ checking: true, message: 'Controleren...' });
+    
+    fetch(`${API_BASE_URL}/check_username`, {  
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setUsernameStatus({
+        checking: false,
+        available: data.available,
+        message: data.message,
+      });
+    })
+    .catch(error => {
+      console.error('Error checking username:', error);
+      setUsernameStatus({ checking: false, message: 'Fout bij controleren' });
+    });
+  }, 900);
+  
+  const debouncedCheckEmail = useDebouncedCallback((email: string) => {
+    if (!email) {
+      setEmailStatus({ checking: false, message: '' });
+      return;
+    }
+      
+    setEmailStatus({ checking: true, message: 'Controleren...' });
+    
+    fetch(`${API_BASE_URL}/check_email`, {  
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setEmailStatus({
+        checking: false,
+        available: data.available,
+        message: data.message,
+      });
+    })
+    .catch(error => {
+      console.error('Error checking email:', error);
+      setEmailStatus({ checking: false, message: 'Fout bij controleren' });
+    });
+  }, 900);
+  const handleUsernameChange = (text: string) => {
+    setUsername(text);
+    debouncedCheckUsername(text);
+  };
+  
   const handleRegister = async () => {
+    if ((!usernameStatus.available && username) || (!emailStatus.available && email)) {
+      console.log('Kies een beschikbare gebruikersnaam en email');
+      return;
+    }
     if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
       console.log('Vul alle velden in.');
       return;
@@ -64,7 +159,7 @@ const RegisterScreen = () => {
         profile_image: base64Image, 
       };
   
-      const response = await fetch('http://127.0.0.1:5000/register', {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -76,23 +171,13 @@ const RegisterScreen = () => {
     } catch (error) {
       console.log('Error:', error);
     }
-  };
-
-    const [image, setImage] = useState<string | null>(null);
-
-      const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-
-        if (!result.canceled) {
-          setImage(result.assets[0].uri);
-        }
-      };
-
+    
+      
+    };
+    const removeImage = () => {
+      setImage(null);
+    };
+      
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
@@ -141,26 +226,18 @@ const RegisterScreen = () => {
                 />
                 <Text style={styles.logoTitle}>HOGESCHOOL {'\n'}ROTTERDAM</Text>
               </View>
-              <TouchableOpacity onPress={pickImage} style={styles.imagePickerButton}>
-                {image ? (
-                  <Image
-                    source={{ uri: image }}
-                    style={styles.profileImage}
-                    resizeMode="cover"
-
-                  />
-                ) : (
-                  <Image
-                    source={require('../../assets/images/profile.png')}
-                    style={styles.profileImage}
-                    resizeMode="cover"
-
-                  />
-                )}
-              </TouchableOpacity>
+              
+              <ImageUploader
+                image={image} 
+                onImageSelected={setImage} 
+              />
 
             </View>
-            
+            {image && (
+              <TouchableOpacity onPress={removeImage} style={styles.removeImageButton}>
+                <Text style={styles.removeImageButtonText}>Verwijder foto</Text>
+              </TouchableOpacity>
+            )}
             <View style={styles.nameInputRow}>
               <View style={styles.nameInputContainer}>
                 <Text style={styles.inputLabel}>VOORNAAM</Text>
@@ -187,7 +264,7 @@ const RegisterScreen = () => {
                 />
               </View>
             </View>
-
+    
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>GEBRUIKERSNAAM</Text>
               <TextInput
@@ -195,9 +272,14 @@ const RegisterScreen = () => {
                 placeholder="test01"
                 placeholderTextColor={COLORS.placeholderText}
                 value={username}
-                onChangeText={setUsername}
+                onChangeText={handleUsernameChange}
                 selectionColor={COLORS.inputLine}
               />
+              {usernameStatus.checking ? (
+                <Text style={usernameStatusStyle}>Controleren op beschikbaarheid...</Text>
+              ) : usernameStatus.message ? (
+                <Text style={usernameStatusStyle}>{usernameStatus.message}</Text>
+              ) : null}
             </View>
 
             <View style={styles.inputGroup}>
@@ -207,10 +289,18 @@ const RegisterScreen = () => {
                 placeholder="voorbeeld@hr.nl"
                 placeholderTextColor={COLORS.placeholderText}
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  debouncedCheckEmail(text);
+                }}
                 keyboardType="email-address"
                 selectionColor={COLORS.inputLine}
               />
+              {emailStatus.checking ? (
+                <Text style={emailStatusStyle}>Controleren op beschikbaarheid...</Text>
+              ) : emailStatus.message ? (
+                <Text style={emailStatusStyle}>{emailStatus.message}</Text>
+              ) : null}
             </View>
 
             <View style={styles.inputGroup}>
@@ -412,7 +502,33 @@ const styles = StyleSheet.create({
     borderRadius: 80,
     aspectRatio: 1,  
   },
+  removeImageButton: {
+    marginTop: 10,
+    backgroundColor: '#ccc',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    alignSelf: 'flex-end',
+  },
   
+  removeImageButtonText: {
+    color: COLORS.black,
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  usernameStatus: {
+  fontSize: 12,
+  marginTop: 4,
+  },
+  usernameAvailable: {
+    color: 'green',
+  },
+  usernameUnavailable: {
+    color: 'red',
+  },
+  usernameChecking: {
+    color: COLORS.placeholderText,
+  },
   
 });
 

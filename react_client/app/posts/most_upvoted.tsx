@@ -3,9 +3,12 @@ import { View, Text, Button } from 'react-native';
 import FavoriteButton from '../../components/posts/FavoriteButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
+import { useRouter } from 'expo-router';
 
-export default function Test() {
+export default function MostUpvoted() {
+  const router = useRouter();
   const [posts, setPosts] = useState([]);
+  const [user_id, setUserId] = useState(0);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -40,6 +43,7 @@ export default function Test() {
 
   return (
     <View style={{ padding: 20 }}>
+      <Button title="Terug" onPress={() => router.push('/')} />
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts.length === 0 ? (
         <Text>No posts available.</Text>
@@ -54,6 +58,7 @@ export default function Test() {
             {post['total_rating']}
             {'\n'}
             <FavoriteButton
+              user_id={user_id}
               post_id={post['id']}
               is_favorited={post['is_favorite']}
               onPress={undefined}
