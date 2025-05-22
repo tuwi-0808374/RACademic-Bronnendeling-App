@@ -62,8 +62,12 @@ const UserBadges = () => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>{modelBadge['title']}</Text>
-              <Text style={styles.modalText}>{modelBadge['requirement']}</Text> 
+              <Text style={styles.modalText}>{modelBadge.id}</Text>
+              <Image 
+                    source={{ uri: `${API_BASE_URL}/static/badges/${modelBadge.image_url}` }}
+                    style={styles.badge}
+                />
+              <Text style={styles.modalText}>{modelBadge.requirement}</Text> 
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => setModalVisible(!modalVisible)}>
@@ -76,8 +80,8 @@ const UserBadges = () => {
             <Text>Je hebt nog geen badges.</Text>
           ) : (
             badges.map((badge, i) => (
-              <Text key={badge['id']}>
-                <TouchableOpacity onPress={() => showBadgeInfo(badge['id'])}>
+              <Text key={badge.id}>
+                <TouchableOpacity onPress={() => showBadgeInfo(badge.id)}>
                 <Image 
                     source={{ uri: `${API_BASE_URL}/static/badges/${badge.image_url}` }}
                     style={styles.badge}
