@@ -85,10 +85,12 @@ def change_password_route(user_id):
 @account_bp.route('/update_profile/<int:user_id>', methods=['PATCH'])
 @jwt_required()
 def update_profile(user_id):
+    
     account_model = Account()
     data = request.get_json()
     
     profile_image = data.get('profile_image')
+    is_public=data.get('is_public')
     
     if profile_image == "remove":
         pass  
@@ -98,16 +100,20 @@ def update_profile(user_id):
         profile_image = profile_image  
     else:
         profile_image = None  
-
+        
+    if is_public == "None":
+        is_public = False
+        
     success = account_model.update_profile(
         user_id=user_id,
         first_name=data.get('first_name'),
         last_name=data.get('last_name'),
         email=data.get('email'),
         username=data.get('username'),
+        is_public=data.get('is_public'),
         profile_image=profile_image  
     )
-    
+    print(f"{data}")
     if success:
         return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200
     else:
