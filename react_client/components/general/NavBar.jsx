@@ -3,10 +3,10 @@ import { TextInput, View, TouchableOpacity, StyleSheet, Text } from 'react-nativ
 import SearchBar from './SearchBar';
 // import { Link } from 'expo-router';
 
-export default function NavBar() {
+export default function NavBar(visible) {
     return(
         <View style={styles.navbarContent}>
-            <SearchBar />
+            <SearchBar visible={visible}/>
         {/*    profile knop en zo */}
         </View>
     );
@@ -14,11 +14,13 @@ export default function NavBar() {
 
 const styles = StyleSheet.create({
     navbarContent: {
-        width: '100%',
-        height: '100%',
-        position: 'relative',
-        overflow: 'visible',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex:1,
+        width:'100%',
         zIndex: 1,
+        elevation:1,
     }
 
 })

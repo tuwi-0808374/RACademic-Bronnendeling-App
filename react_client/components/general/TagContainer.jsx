@@ -1,89 +1,89 @@
-import {Pressable, StyleSheet, Text, TouchableOpacity} from "react-native";
-import React, {useEffect, useState} from "react";
-import {Ionicons} from "@expo/vector-icons";
-function TagContainer(visible) {
-    if (!visible) return null;
-    const [postTags, setPostTags] = useState({});
-    const [visible, setVisible] = useState(visible);
-    const [selectedTag, setSelectedTag] = useState({});
-    const [selectedTags, setSelectedTags] = useState({});
+import { StyleSheet, Text, TouchableOpacity ,View} from "react-native";
+import React, { useEffect, useState } from "react";
+import { getApiBaseUrl } from '../../constants/get_ip';
+const API_BASE_URL = getApiBaseUrl();
+
+function TagContainer({ visible,selectedTags, setSelectedTags }) {
+    const [postTags, setPostTags] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/tags')
-            .then(res => res.json())
-            .then(data => {
-                console.log('Fetched data:', data);
-                setPostTags(data.data);
+        fetch("http://localhost:5000/tags") // Replace with device IP if testing on phone
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("Fetched data:", data);
+                setPostTags(data.data || []); // Make sure it's an array
             })
-            .catch(err => console.error('Error fetching tags:', err));
+            .catch((err) => console.error("Error fetching tags:", err));
     }, []);
-    // ik heb deze bronnen gebruikt om de checkboxes te maken
-    // https://stackoverflow.com/questions/65205428/handle-multiple-checkboxes-in-expo-react-native
-    // https://docs.expo.dev/versions/latest/sdk/checkbox/
+
     const toggleTag = (id) => {
-        console.log('button works')
         setSelectedTags((prev) => ({
             ...prev,
             [id]: !prev[id],
         }));
-        console.log(selectedTags);
     };
 
-    const handleInsidePress = () => {
-        console.log('inside press')
-        setVisible(true);
-    }
-    const handleClose = () => {
-        console.log('te')
-        setVisible(false);
-    }
+    if (!visible) return null;
 
-    return(
-        <Pressable style={styles.containerPostTags} >
-            <TouchableOpacity style={styles.backButton} onPress={handleClose}>
-                <Ionicons
-                    name={'chevron-back-outline'}
-                    size={24}
-                    color={'#000000'}
-                />
-            </TouchableOpacity>
+    return (
+        <View style={styles.containerPostTags}>
             {postTags.map((tag) => (
                 <TouchableOpacity
                     key={tag.id}
-                    onPress={() => {
-                        toggleTag(tag.id);
-                    }}
-                    style={[styles.tag, selectedTags[tag.id] ? styles.tagSelected : null,]}>
-                    <Text style={selectedTags[tag.id] ? styles.tagTextSelected : styles.tagText}>
+                    onPress={() => toggleTag(tag.id)}
+                    style={[
+                        styles.tag,
+                        selectedTags[tag.id] ? styles.tagSelected : null,
+                    ]}
+                >
+                    <Text
+                        style={
+                            selectedTags[tag.id]
+                                ? styles.tagTextSelected
+                                : styles.tagText
+                        }
+                    >
                         {tag.title}
                     </Text>
                 </TouchableOpacity>
             ))}
-        </Pressable>
-
-    )
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
     containerPostTags: {
-        position: 'absolute',
-        top: 100,
-        backgroundColor: 'white',
-        width: '35%',
+        position: "absolute",
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
+        top: 60,
+        width: "35%",
         padding: 5,
         borderRadius: 25,
-        zIndex: 999,
         elevation: 5,
+        backgroundColor: "white",
     },
     tag: {
-        backgroundColor: 'white',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "white",
+        padding: 8,
+        borderRadius: 10,
+        marginVertical: 3,
+        width: "25%",
     },
     tagSelected: {
-        backgroundColor: 'orange',
+        backgroundColor: "orange",
     },
-    backButton: {
-
-    }
-
+    tagText: {
+        color: "black",
+    },
+    tagTextSelected: {
+        color: "white",
+        fontWeight: "bold",
+    },
 });
+
 export default TagContainer;
