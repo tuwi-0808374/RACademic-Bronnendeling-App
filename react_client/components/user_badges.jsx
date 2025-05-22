@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Button, Image } from 'react-native';
+import { View, Text, Button, Image, TouchableOpacity } from 'react-native';
 import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
@@ -39,6 +39,7 @@ const UserBadges = () => {
 
   const [showInfo, setShowInfo] = useState(false);
   const showBadgeInfo = () => {
+    console.log('Badge info clicked');
     setShowInfo(!showInfo);
   }
 
@@ -49,10 +50,12 @@ const UserBadges = () => {
           ) : (
             badges.map((badge, i) => (
               <Text key={badge['id']}>
-                <Image onClick={() => showBadgeInfo()}
+                <TouchableOpacity onPress={() => showBadgeInfo()}>
+                <Image 
                     source={{ uri: `${API_BASE_URL}/static/badges/${badge.image_url}` }}
                     style={styles.badge}
                   />
+                </TouchableOpacity>
                   {showInfo && (
                     <Text>
                       {badge['requirement']}
