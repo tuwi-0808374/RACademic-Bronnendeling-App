@@ -42,7 +42,7 @@ export default function UserPosts () {
 
 
                 <ScrollView style={styles.scrollview} >
-                    <View style={styles.container}>
+                    <View style={styles.header}>
                         {postdata.map((post) => (
                             <View key={post['id']} style={styles.postbox} >
                                 <Text style={styles.textTitle}>{post['title']}</Text>
@@ -151,8 +151,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     scrollview:{
-        flex: 1,
-        padding:60
+        flex: 1
     }
 
 })
