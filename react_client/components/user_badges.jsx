@@ -8,13 +8,14 @@ import { getApiBaseUrl } from '../constants/get_ip';
 const UserBadges = () => {
   const API_BASE_URL = getApiBaseUrl();
   const [badges, setBadges] = useState([]);
-
+  // Bron om toe tevoegen aan state array: https://react.dev/learn/updating-arrays-in-state
   // Bron voor popup maken: https://reactnative.dev/docs/modal
   const [modalVisible, setModalVisible] = useState(false);
   const [modelBadge, setModelBadge] = useState({});
 
   useEffect(() => {
     refreshBadges();
+    checkForNewBadges();
   }, []);
 
   const refreshBadges = async () => {
@@ -41,14 +42,50 @@ const UserBadges = () => {
     }
   };
 
+  const checkForNewBadges = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      if (!token) {
+        console.log('Geen token gevonden.');
+        return;
+      }
+
+      const decoded_user = jwt_decode(token);
+      const user_id = decoded_user.user_id;
+
+      url = `${API_BASE_URL}/badge/check_eligibility/${user_id}`;
+      const response = await fetch(url, {
+        method: 'GET',
+      });
+      const result = await response.json();
+      // setBadges(result.data);
+      console.log('Badges:', result.data);
+      if (result.data && result.data.length > 0) {
+        console.log('Je hebt een nieuwe badge!');
+        refreshBadges();
+        let badge_info = result.data[0];
+        badge_info['message'] = 'Je hebt een nieuwe badge verdiend!';
+        setModelBadge(badge_info);
+        setModalVisible(true);
+
+      } else {
+        console.log('Geen nieuwe badges.');
+      }
+
+    } catch (error) {
+      console.error('API request failed:', error);
+    }
+  };
+
   const showBadgeInfo = (badge_id) => {
     console.log('Badge info clicked: ' + badge_id);
     let badge_info = badges.find(badge => badge.id === badge_id);
+    badge_info['message'] = '';
     setModelBadge(badge_info);
     setModalVisible(true);
   };
 
-  const modal = () => {
+  const modalBadgeInfo = () => {
     return (
       <Modal
         animationType="fade"
@@ -60,7 +97,8 @@ const UserBadges = () => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>{modelBadge.id}</Text>
+            <Text style={styles.modalText}>{modelBadge.title}</Text>
+            {modelBadge.message !== '' && ( <Text style={styles.modalText}>{modelBadge.message}</Text> )}
             <Image
               source={{ uri: `${API_BASE_URL}/static/badges/${modelBadge.image_url}` }}
               style={styles.badge}
@@ -79,7 +117,7 @@ const UserBadges = () => {
 
   return (
     <View style={styles.badges}>
-      {modal()}
+      {modalBadgeInfo()}
       {badges === undefined ? (
         <Text>Je hebt nog geen badges.</Text>
       ) : (

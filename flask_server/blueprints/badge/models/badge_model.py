@@ -13,7 +13,7 @@ class Badge:
         return cursor, con
     
     def get_bages_of_user(self, user_id):
-        self.check_if_user_is_eligible_for_badges(user_id)
+        # self.check_if_user_is_eligible_for_badges(user_id)
         
         requirement = self.get_badge_requirements(1)        
         self.cursor.execute('''
@@ -77,14 +77,25 @@ class Badge:
         
         # Ga na of de gebruiker in aanmerking komt voor de badges die hij nog niet heeft
         # Als de gebruiker in aanmerking komt voor een badge, geef deze dan aan de gebruiker
+        new_badges_received = []
         for badge in badges:    
             if badge['requirement'] in requirements_method and requirements_method[badge['requirement']]:
                 print("User is eligible for badge: ", badge['id'])
                 result = self.give_badge_to_user(user_id, badge['id'])
                 if result[0]:
                     print("Badge given to user: ", badge['id'])
+                    new_badge = {
+                        "id": badge['id'],
+                        "title": badge['title'],
+                        "requirement": badge['requirement'],
+                        "image_url": badge['image_url'],
+                        "user_id": user_id,
+                    }
+                    new_badges_received.append(new_badge)
                 else:
                     print("Badge already given to user: ", badge['id'])
+        
+        return new_badges_received
         
     def count_user_posts(self, user_id):
         self.cursor.execute('''
