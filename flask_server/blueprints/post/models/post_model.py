@@ -1,6 +1,6 @@
 import sqlite3, os
 from datetime import datetime
-from blueprints.tag.models.tag_model import Tag
+from flask_server.blueprints.tag.models.tag_model import Tag
 
 
 class Post:
@@ -136,9 +136,12 @@ class Post:
     def get_posts_by_user_id(self, user_id):
         query = "SELECT * FROM posts WHERE user_id = ?"
         self.cursor.execute(query,(user_id,))
-        result = self.cursor.fetchone()
-        dict_result = dict(result) if result else None
-        return dict_result
+        posts = self.cursor.fetchall()
+
+        if posts:
+            result_dicts = [dict(row) for row in posts]
+            return result_dicts
+        return None
 
     def delete_post(self, post_id):
         query = "DELETE FROM posts WHERE id = ?"

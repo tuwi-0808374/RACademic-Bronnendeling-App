@@ -1,20 +1,11 @@
 from flask import *
 from flask_cors import CORS
-from blueprints.post.models.post_model import Post
-from blueprints.rating.models.rating_model import Rating
+from flask_server.blueprints.post.models.post_model import Post
+from flask_server.blueprints.rating.models.rating_model import Rating
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
 CORS(post_bp)
 CORS(base)
-
-
-@post_bp.route('/example', methods=['GET'])
-def get_examples():
-    data = [
-        {'id': 1, 'name': 'Voorbeeld 1'},
-        {'id': 2, 'name': 'Voorbeeld 2'}
-    ]
-    return jsonify({'status': 'success', 'data': data})
 
 
 @post_bp.route('/posts/<int:user_id>', methods=['GET'])
@@ -55,7 +46,6 @@ def get_posts_with_user(user_id):
     return jsonify({'status': 'success', 'data': data}), 200
 
 
-
 @post_bp.route('/post_by_post_id/<int:id>', methods=['GET'])
 def get_posts_by_id(id):    
     post = Post()
@@ -65,7 +55,7 @@ def get_posts_by_id(id):
     return jsonify({'status': 'success', 'data': posts}), 200
 
 
-# bron https://flask-restful.readthedocs.io/en/latest/quickstart.html#resourceful-routing
+
 @post_bp.route('/posts', methods=['POST'])
 def create_posts():
     post = Post()
@@ -89,7 +79,7 @@ def create_posts():
         return jsonify({'status': 'success', 'data': created_posts}), 200
 
 
-@post_bp.route('/edit_posts/<int:id>', methods=['PATCH'])
+@post_bp.route('/edit_post/<int:id>', methods=['PATCH'])
 def edit_posts(id):
     post = Post()
     data = request.get_json()
@@ -122,15 +112,14 @@ def delete_post(id):
     return jsonify({'status': 'success', 'data': delete_post}), 200
 
 
-# @post_bp.route('/posts_by_user_id/<int:user_id>', methods=['GET'])
-# def get_posts_by_user_id(user_id):
-#     print(user_id)
-#     post = Post()
-#     posts = post.get_posts_by_user_id(user_id)
-#     if not posts:
-#         return jsonify({'status': 'error', 'message': 'Post not found'}), 404
-#     return jsonify({'status': 'success', 'data': posts}), 200
-
+@post_bp.route('/posts_by_user_id/<int:user_id>', methods=['GET'])
+def get_posts_by_user_id(user_id):
+    print(user_id)
+    post = Post()
+    posts = post.get_posts_by_user_id(user_id)
+    if not posts:
+        return jsonify({'status': 'error', 'message': 'Post not found'}), 404
+    return jsonify({'status': 'success', 'data': posts}), 200
 
 
 @post_bp.route('/posts/favorite/<int:user_id>', methods=['GET'])
@@ -156,6 +145,7 @@ def add_post_as_favorite(post_id, user_id):
         return jsonify({'status': 'error', 'post': 'Post not found'}), 404
     return jsonify({'status': 'success', 'post': result}), 200
 
+
 @post_bp.route('/posts/<int:post_id>/favorite/<int:user_id>', methods=['GET'])
 def is_post_favorite(post_id, user_id):
     post = Post()
@@ -163,6 +153,7 @@ def is_post_favorite(post_id, user_id):
     if not result:
         return jsonify({'status': 'error', 'message': 'Post not found'}), 404
     return jsonify({'status': 'success', 'post': result}), 200
+
 
 @post_bp.route('/posts/multiple_favorites/<int:user_id>', methods=['POST'])
 def add_multiple_posts_as_favorite(user_id):
@@ -184,12 +175,14 @@ def add_multiple_posts_as_favorite(user_id):
         return jsonify({'status': 'error', 'posts': 'Post not found'}), 404
     return jsonify({'status': 'success', 'posts': result}), 200
 
+
 @post_bp.route('/posts/most_upvoted', methods=['GET'])
 def get_most_upvoted_posts(user_id = None):
     limit = request.args.get('limit', default=10, type=int)
     post = Post()
     posts = post.get_most_upvoted_posts(user_id, limit=limit)
     return jsonify({'status': 'success', 'posts': posts}), 200
+
 
 @post_bp.route('/posts/most_upvoted/<int:user_id>', methods=['GET'])
 def get_most_upvoted_posts_of_user(user_id):

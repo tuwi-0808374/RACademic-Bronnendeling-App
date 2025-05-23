@@ -23,7 +23,7 @@ export default function UserPosts () {
 
 
     useEffect(() => {
-        fetch(`http://localhost:5000/posts/${user_id}`)
+        fetch(`http://localhost:5000/posts_by_user_id/${user_id}`)
             .then(res => res.json())
             .then(data => {
                 console.log(data);

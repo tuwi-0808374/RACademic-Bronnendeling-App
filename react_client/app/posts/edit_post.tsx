@@ -58,7 +58,7 @@ export default function editpost() {
     }, []);
 
     const EditPost = async () => {
-        const url = `http://localhost:5000/edit_posts/${post_id}`;
+        const url = `http://localhost:5000/edit_post/${post_id}`;
         let result = await fetch(url, {
             method: 'PATCH',
             headers: {"Content-Type": "application/json"},

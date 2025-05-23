@@ -25,9 +25,6 @@ export default function Index() {
             <Link href={'/posts/create_post'}>
                 Create post
             </Link>
-            <Link href={'/posts/edit_post'}>
-                Edit post
-            </Link>
             <Link href={'/posts'}>
                 Posts
             </Link>
