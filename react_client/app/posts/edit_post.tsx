@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 import {CheckBox} from "@/components/input";
+import {useLocalSearchParams, useRouter} from "expo-router";
 
 const COLORS = {
     red: '#C80032',
@@ -18,16 +19,18 @@ const COLORS = {
 export default function editpost() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const postid = 1
+    const { post_id } = useLocalSearchParams();
     const [tagData, setTagData] = useState([]);
     const [selected_tags, setSelectedTagId] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
-        fetch(`http://localhost:5000/tags_by_post_id/${postid}`)
+        fetch(`http://localhost:5000/tags_by_post_id/${post_id}`)
             .then(res => res.json())
             .then(data => {
                 setTagData(data.data.tags);
                 setSelectedTagId(data.data.tag_ids);
+
             })
     }, []);
 
@@ -37,7 +40,7 @@ export default function editpost() {
     useEffect(() => {
     const fetchPost = async () => {
     try{
-        const response = await fetch(`http://localhost:5000/post_by_post_id/${postid}`);
+        const response = await fetch(`http://localhost:5000/post_by_post_id/${post_id}`);
         if(!response.ok){
             throw new Error('Failed to fetch posts.');
         }
@@ -55,7 +58,7 @@ export default function editpost() {
     }, []);
 
     const EditPost = async () => {
-        const url = `http://localhost:5000/edit_posts/${postid}`;
+        const url = `http://localhost:5000/edit_posts/${post_id}`;
         let result = await fetch(url, {
             method: 'PATCH',
             headers: {"Content-Type": "application/json"},
@@ -64,11 +67,12 @@ export default function editpost() {
         result = await  result.json();
         if(result){
             console.warn("Post is Edited successfully.")
+            router.push('/posts/user_posts');
         }
     }
 
     const DeletePost = async () => {
-        const url = `http://localhost:5000/delete_post/${postid}`;
+        const url = `http://localhost:5000/delete_post/${post_id}`;
         let result = await fetch(url, {
             method: 'DELETE',
             headers: {"Content-Type": "application/json"},
@@ -76,6 +80,7 @@ export default function editpost() {
         result = await result.json();
         if(result){
             console.warn("Post is Deleted successfully.")
+            router.push('/posts/user_posts');
         }
     }
 

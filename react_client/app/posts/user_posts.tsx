@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
-import {NavigationContainer} from "@react-navigation/native";
-import {Link} from "expo-router";
+import {useRouter} from "expo-router";
 
 const COLORS = {
     red: '#C80032',
@@ -14,11 +13,13 @@ const COLORS = {
 };
 
 
-
+// bronnen
+// https://www.youtube.com/watch?v=Z20nUdAUGmM
 
 export default function UserPosts () {
     const [postdata, setPostdata] = useState([]);
     const user_id = 1
+    const router = useRouter();
 
 
     useEffect(() => {
@@ -29,11 +30,6 @@ export default function UserPosts () {
                 setPostdata(data.data);
             })
     }, []);
-
-    const EditPost = () => {
-        fetch('/http://localhost:8081/posts/edit_post')
-    }
-
 
 
         return (
@@ -48,10 +44,11 @@ export default function UserPosts () {
                 <ScrollView style={styles.scrollview} >
                     <View style={styles.container}>
                         {postdata.map((post) => (
-                            <View key={post.id} style={styles.postbox} >
-                                <Text style={styles.textTitle}>{post.title}</Text>
-                                <Text style={styles.textContent}>{post.content}</Text>
-                                <TouchableOpacity onPress={EditPost}>
+                            <View key={post['id']} style={styles.postbox} >
+                                <Text style={styles.textTitle}>{post['title']}</Text>
+                                <Text style={styles.textContent}>{post['content']}</Text>
+
+                                <TouchableOpacity onPress={() => router.push({ pathname: "/posts/edit_post", params: { post_id: post['id']} })}>
                                     <View style={styles.button}>
                                         <Text style={styles.buttontext}>edit post</Text>
                                     </View>

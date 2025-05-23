@@ -129,8 +129,6 @@ class Post:
     def delete_assigned_post_tags(self, post_id):
         query = "DELETE FROM post_tags WHERE post_id = ?"
         result = self.cursor.execute(query, (post_id,))
-
-
         if result:
             return True
         return False
