@@ -3,6 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvo
 import { Link, useRouter } from 'expo-router';
 import ImageUploader from '../../components/account/ImageUploader';
 import { useDebouncedCallback } from 'use-debounce';
+import { getApiBaseUrl } from '../../constants/get_ip';
+
+const API_BASE_URL = getApiBaseUrl();
+
 
 const COLORS = {
   red: '#C80032',
@@ -30,6 +34,11 @@ const RegisterScreen = () => {
     available?: boolean;
     message: string;
   }>({ checking: false, message: '' });
+  const [emailStatus, setEmailStatus] = useState<{
+    checking: boolean;
+    available?: boolean;
+    message: string;
+  }>({ checking: false, message: '' });
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -43,17 +52,26 @@ const RegisterScreen = () => {
     usernameStatus.available === true && styles.usernameAvailable,
     usernameStatus.available === false && styles.usernameUnavailable,
   ];
+
+  
+
+  const emailStatusStyle = [
+    styles.usernameStatus,
+    emailStatus.checking && styles.usernameChecking,
+    emailStatus.available === true && styles.usernameAvailable,
+    emailStatus.available === false && styles.usernameUnavailable,
+  ];
+
   
   const debouncedCheckUsername = useDebouncedCallback((username: string) => {
-    console.log('Checking username:', username);
     if (!username) {
       setUsernameStatus({ checking: false, message: '' });
       return;
     }
     
-    setUsernameStatus({ checking: true, message: 'Checking...' });
+    setUsernameStatus({ checking: true, message: 'Controleren...' });
     
-    fetch('http://127.0.0.1:5000/check_username', {
+    fetch(`${API_BASE_URL}/check_username`, {  
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username }),
@@ -66,17 +84,46 @@ const RegisterScreen = () => {
         message: data.message,
       });
     })
-    
-  }, 500); 
+    .catch(error => {
+      console.error('Error checking username:', error);
+      setUsernameStatus({ checking: false, message: 'Fout bij controleren' });
+    });
+  }, 900);
   
+  const debouncedCheckEmail = useDebouncedCallback((email: string) => {
+    if (!email) {
+      setEmailStatus({ checking: false, message: '' });
+      return;
+    }
+      
+    setEmailStatus({ checking: true, message: 'Controleren...' });
+    
+    fetch(`${API_BASE_URL}/check_email`, {  
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setEmailStatus({
+        checking: false,
+        available: data.available,
+        message: data.message,
+      });
+    })
+    .catch(error => {
+      console.error('Error checking email:', error);
+      setEmailStatus({ checking: false, message: 'Fout bij controleren' });
+    });
+  }, 900);
   const handleUsernameChange = (text: string) => {
     setUsername(text);
     debouncedCheckUsername(text);
   };
   
   const handleRegister = async () => {
-    if (!usernameStatus.available && username) {
-      console.log('Please choose an available username');
+    if ((!usernameStatus.available && username) || (!emailStatus.available && email)) {
+      console.log('Kies een beschikbare gebruikersnaam en email');
       return;
     }
     if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
@@ -112,7 +159,7 @@ const RegisterScreen = () => {
         profile_image: base64Image, 
       };
   
-      const response = await fetch('http://127.0.0.1:5000/register', {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -124,7 +171,11 @@ const RegisterScreen = () => {
     } catch (error) {
       console.log('Error:', error);
     }
+    
       
+    };
+    const removeImage = () => {
+      setImage(null);
     };
       
   return (
@@ -182,7 +233,11 @@ const RegisterScreen = () => {
               />
 
             </View>
-            
+            {image && (
+              <TouchableOpacity onPress={removeImage} style={styles.removeImageButton}>
+                <Text style={styles.removeImageButtonText}>Verwijder foto</Text>
+              </TouchableOpacity>
+            )}
             <View style={styles.nameInputRow}>
               <View style={styles.nameInputContainer}>
                 <Text style={styles.inputLabel}>VOORNAAM</Text>
@@ -234,10 +289,18 @@ const RegisterScreen = () => {
                 placeholder="voorbeeld@hr.nl"
                 placeholderTextColor={COLORS.placeholderText}
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  debouncedCheckEmail(text);
+                }}
                 keyboardType="email-address"
                 selectionColor={COLORS.inputLine}
               />
+              {emailStatus.checking ? (
+                <Text style={emailStatusStyle}>Controleren op beschikbaarheid...</Text>
+              ) : emailStatus.message ? (
+                <Text style={emailStatusStyle}>{emailStatus.message}</Text>
+              ) : null}
             </View>
 
             <View style={styles.inputGroup}>
@@ -438,6 +501,20 @@ const styles = StyleSheet.create({
     height: 160,
     borderRadius: 80,
     aspectRatio: 1,  
+  },
+  removeImageButton: {
+    marginTop: 10,
+    backgroundColor: '#ccc',
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    alignSelf: 'flex-end',
+  },
+  
+  removeImageButtonText: {
+    color: COLORS.black,
+    fontWeight: 'bold',
+    fontSize: 12,
   },
   usernameStatus: {
   fontSize: 12,

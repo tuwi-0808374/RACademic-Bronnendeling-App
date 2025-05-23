@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import CheckBox from 'expo-checkbox';
 import { TextInput, View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { getApiBaseUrl } from '../../constants/get_ip';
+
+const API_BASE_URL = getApiBaseUrl();
 
 function SearchBar() {
 
@@ -35,7 +38,7 @@ function SearchBar() {
         if (searchQuery) queryParams.append('search_query', searchQuery);
         selectedTagIds.forEach((id) => queryParams.append('tag_id', id));
 
-        fetch(`http://localhost:5000/posts?${queryParams.toString()}`)
+        fetch(`${API_BASE_URL}/posts?${queryParams.toString()}`)
             .then(res => res.json())
             .then(data => {
                 console.log('Fetched posts:', data.data);

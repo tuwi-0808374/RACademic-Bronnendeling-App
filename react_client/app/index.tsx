@@ -37,8 +37,8 @@ export default function Index() {
             <Link href={'/posts/list_favorite'}>
                 List of favorited posts of logged user
             </Link>
-            <Link href={'/posts/set_favorite'}>
-                List of posts with favorite button
+            <Link href={'/posts/most_upvoted'}>
+                List of most upvoted posts
             </Link>
         </View>
     );

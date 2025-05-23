@@ -5,14 +5,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
 
+
 export default function Test() {
   const router = useRouter();
   const [posts, setPosts] = useState([]);
   const [user_id, setUserId] = useState(0);
+  const [undoID, setundoID] = useState<number[]>([]); 
+
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [undoID]);
 
   const fetchPosts = async () => {
     try {
@@ -46,8 +49,6 @@ export default function Test() {
 
   // https://stackoverflow.com/questions/62917259/how-to-pass-an-array-of-numbers-with-typescript-and-react
   // https://www.dhiwise.com/post/react-usestate-append-to-array-a-simple-guide
-  const [undoID, setundoID] = useState<number[]>([]); 
-
   useEffect(() => {
     console.log("Updated undoID:", undoID);
   }, [undoID]);
@@ -92,7 +93,7 @@ export default function Test() {
   const refresh = () => {
     setundoID([]);
     setPosts([]);
-    fetchPosts();
+    // fetchPosts();
   };
 
   return (
@@ -100,7 +101,7 @@ export default function Test() {
       <Button title="Terug" onPress={() => router.push('/')} />
       { undoID.length > 0 ? 
       <>
-      {/* <Button color='green' title="Opslaan" onPress={refresh} ></Button> */}
+      <Button color='green' title="Opslaan" onPress={refresh} ></Button>
       <Button title="Maak ongedaan" onPress={undoDeleteFavorite} ></Button>
       </>
        : null }
@@ -109,7 +110,7 @@ export default function Test() {
       {posts === undefined ? (
         <Text>No favorite posts found.</Text>
       ) : posts.map((post, i) => (
-        <Text key={i}>
+        <Text key={post['id']}>
           {'\n'}
           Title: {post['title']}
           {'\n'}
@@ -117,7 +118,7 @@ export default function Test() {
           {'\n'}
           Fav: {post['is_favorite']}
           {'\n'}
-          <FavoriteButton user_id={user_id} post_id = {post['id']} is_favorited = {post['is_favorite']} onPress={() => showUndoDeleteFavorite(post['id'])} />
+          <FavoriteButton user_id={user_id} post_id = {post['id']} is_favorited = {1} onPress={() => showUndoDeleteFavorite(post['id'])} />
           <hr></hr>
         </Text>  
         

@@ -60,7 +60,7 @@ export default function Test() {
   }, [user_id]);
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ padding: 20, overflowY: 'scroll', height: '100%' }}>
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts.map((post, i) => (
         <Text key={i}>

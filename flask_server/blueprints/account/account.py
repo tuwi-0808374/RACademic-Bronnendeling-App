@@ -2,15 +2,16 @@ from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import *
 from blueprints.account.models.account_model import Account
 import bcrypt
+from flask_cors import CORS
 from flask_cors import cross_origin
 import base64, os
 from flask import send_from_directory
-
+import re
 
 account_bp = Blueprint('account', __name__)
+CORS(account_bp)
 
 @account_bp.route('/api/login', methods=['POST'])
-@cross_origin()
 def login_api():
     data = request.json
     login_email = data.get('email')
@@ -38,7 +39,6 @@ def login_api():
 
 @account_bp.route('/profile/<int:user_id>', methods=['GET'])
 @jwt_required()
-@cross_origin()
 def get_profile_by_id(user_id):
     account_model = Account() 
     user = account_model.get_user_by_id(user_id)
@@ -46,13 +46,14 @@ def get_profile_by_id(user_id):
         return jsonify({'status': 'error', 'message': 'Gebruiker niet gevonden'}), 404
     
     if user.get('profile_image'):
-        user['profile_image_url'] = f"http://127.0.0.1:5000/uploads/{user['profile_image']}"
+        base_url = request.host_url.rstrip('/') 
+        user['profile_image_url'] = f"{base_url}/uploads/{user['profile_image']}"
+
 
     return jsonify({'status': 'success', 'data': user}), 200
 
 @account_bp.route('/change_password/<int:user_id>', methods=['PATCH'])
 @jwt_required()
-@cross_origin()
 def change_password_route(user_id):
     jwt_payload = get_jwt()
     token_user_id = jwt_payload.get('user_id')
@@ -83,40 +84,40 @@ def change_password_route(user_id):
 
 @account_bp.route('/update_profile/<int:user_id>', methods=['PATCH'])
 @jwt_required()
-@cross_origin()
 def update_profile(user_id):
+    
     account_model = Account()
     data = request.get_json()
     
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
-    email = data.get('email')
-    username = data.get('username')
-    
     profile_image = data.get('profile_image')
-    image_filename = None
+    is_public=data.get('is_public')
     
-    if profile_image is None or (isinstance(profile_image, str) and profile_image.lower() == "null"):
+    if profile_image == "remove":
+        pass  
+    elif profile_image is None or profile_image.lower() == "null":
         profile_image = None
-    
-    if profile_image and isinstance(profile_image, str) and profile_image.startswith('data:image'):
-        image_filename = account_model.save_base64_image(profile_image)
-        if not image_filename:
-            return jsonify({'status': 'error', 'message': 'Fout bij opslaan profielfoto'}), 400
-    
+    elif isinstance(profile_image, str) and profile_image.startswith('data:image'):
+        profile_image = profile_image  
+    else:
+        profile_image = None  
+        
+    if is_public == "None":
+        is_public = False
+        
     success = account_model.update_profile(
         user_id=user_id,
-        first_name=first_name,
-        last_name=last_name,
-        email=email,
-        username=username,
-        profile_image=image_filename
+        first_name=data.get('first_name'),
+        last_name=data.get('last_name'),
+        email=data.get('email'),
+        username=data.get('username'),
+        is_public=data.get('is_public'),
+        profile_image=profile_image  
     )
+    print(f"{data}")
     if success:
         return jsonify({'status': 'success', 'message': 'Profiel succesvol bijgewerkt'}), 200
     else:
-        return jsonify({'status': 'error', 'message': f'Bijwerken mislukt: {success}'}), 500
-
+        return jsonify({'status': 'error', 'message': 'Bijwerken mislukt'}), 500
 
 @account_bp.route('/uploads/<filename>')
 def serve_uploaded_file(filename):
@@ -157,19 +158,65 @@ def register():
             print(f"Registration error: {str(e)}")
             return jsonify({"error": "Registration failed", "details": str(e)}), 500
         
+    
 @account_bp.route('/check_username', methods=['POST'])
-@cross_origin()
 def check_username():
     data = request.json
     username = data.get('username')
+    current_user_id = data.get('current_user_id')
     
     if not username:
         return jsonify({"available": False, "message": "Gebruikersnaam is verplicht"}), 400
     
     account_model = Account()
-    existing_user = account_model.get_user_by_username(username)
+    existing_user = account_model.get_user_by_username(username, current_user_id)
     
     if existing_user:
         return jsonify({"available": False, "message": "Gebruikersnaam al in gebruik"}), 200
     else:
         return jsonify({"available": True, "message": "Gebruikersnaam is beschikbaar"}), 200
+
+@account_bp.route('/check_email', methods=['POST'])
+def check_email():
+    data = request.json
+    email = data.get('email')
+    current_user_id = data.get('current_user_id')
+    
+    if not email:
+        return jsonify({"available": False, "message": "Emailadres is verplicht"}), 400
+    
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify({"available": False, "message": "Ongeldig email formaat"}), 400
+    
+    account_model = Account()
+    existing = account_model.get_user_by_email(email)
+    existing_email = account_model.get_user_by_email(email)
+    
+    if existing and (not current_user_id or existing['id'] != current_user_id):
+        return jsonify({"available": False, "message": "Email al in gebruik"}), 200
+    else:
+        return jsonify({"available": True, "message": "Email is beschikbaar"}), 200
+      
+@account_bp.route('/get_users_with_overall_rating')
+@cross_origin()
+def get_users_with_overall_rating():
+    account_model = Account()
+    limit = request.args.get('limit', default=5, type=int)
+    users = account_model.get_users_with_overall_rating(limit)
+    
+    if not users:
+        return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
+    
+    return jsonify({'status': 'success', 'data': users}), 200
+
+@account_bp.route('/get_users_with_most_badges', methods=['GET'])
+@cross_origin()
+def get_users_with_most_badges():
+    account_model = Account()
+    limit = request.args.get('limit', default=5, type=int)
+    users = account_model.get_users_with_most_badges(limit=limit)
+    
+    if not users:
+        return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
+    
+    return jsonify({'status': 'success', 'data': users}), 200
