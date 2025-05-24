@@ -40,6 +40,10 @@ export default function RootLayout() {
       <ScrollView style={styles.contentContainer}>
         <Stack>
           <Stack.Screen
+              name='account/profile'
+              options={{headerShown:false,}}
+          />
+          <Stack.Screen
               name="index"
               options={{headerShown: false,}}
           />
@@ -47,6 +51,23 @@ export default function RootLayout() {
               name="posts"
               options={{headerShown: false,}}
           />
+          <Stack.Screen
+            name="posts/list_favorite"
+            options={{headerShown:false,}}
+          />
+          <Stack.Screen
+              name="posts/most_upvoted"
+              options={{headerShown:false,}}
+          />
+          <Stack.Screen
+              name="posts/create_post"
+              options={{headerShown:false,}}
+          />
+          <Stack.Screen
+              name="posts/edit_post"
+              options={{headerShown:false,}}
+          />
+
         </Stack>
       </ScrollView>
     </TouchableWithoutFeedback>
