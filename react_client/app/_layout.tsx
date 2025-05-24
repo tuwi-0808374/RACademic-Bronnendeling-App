@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import {useEffect, useState} from "react";
+import { useState } from "react";
 import {ScrollView, StyleSheet, TouchableWithoutFeedback, View} from "react-native";
 import NavBar from "@/components/general/NavBar";
 import TagContainer from "@/components/general/TagContainer";
