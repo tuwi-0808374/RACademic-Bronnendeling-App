@@ -1,17 +1,14 @@
 import { Stack } from 'expo-router';
-import {useState} from "react";
-import {ScrollView, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import {useEffect, useState} from "react";
+import {ScrollView, StyleSheet, TouchableWithoutFeedback, View} from "react-native";
 import NavBar from "@/components/general/NavBar";
 import TagContainer from "@/components/general/TagContainer";
 import { getApiBaseUrl } from '@/constants/get_ip';
-
-
 
 export default function RootLayout() {
   const [visible, setVisible] = useState(false);
   const [selectedTags, setSelectedTags] = useState({});
   const API_BASE_URL = getApiBaseUrl();
-
 
   const handleInsidePress = () => {
     setVisible(true);
@@ -19,6 +16,7 @@ export default function RootLayout() {
   const handleClose = () => {
     setVisible(false);
   }
+
   return (
 
   <View style={styles.pageContainer}>
@@ -41,8 +39,14 @@ export default function RootLayout() {
     <TouchableWithoutFeedback onPress={handleClose}>
       <ScrollView style={styles.contentContainer}>
         <Stack>
-          <Stack.Screen name="index" options={{headerShown: false,}} />
-          <Stack.Screen name="posts" options={{headerShown: false,}} />
+          <Stack.Screen
+              name="index"
+              options={{headerShown: false,}}
+          />
+          <Stack.Screen
+              name="posts"
+              options={{headerShown: false,}}
+          />
         </Stack>
       </ScrollView>
     </TouchableWithoutFeedback>

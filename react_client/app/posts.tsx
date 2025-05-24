@@ -1,44 +1,16 @@
 import { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import RateButtons from "@/components/posts/RateButtons";
 import FavoriteButton from '../components/posts/FavoriteButton';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import jwt_decode from "jwt-decode";
+import useUserId from '../constants/get_user_id'
 
-const get_user_id = async () => {
-  try {
-    const token = await AsyncStorage.getItem('authToken');
-    if (!token) {
-      console.log('Geen token gevonden.');
-      return null;
-    }
 
-    const decoded_user = jwt_decode(token);
-    // @ts-ignore
-    return decoded_user.user_id;
+function Posts() {
 
-  } catch (error) {
-    console.error('API request failed:', error);
-  }
-}
-
-export default function Posts() {
   const [posts, setPosts] = useState([]);
-  const [user_id, setUserId] = useState(null)
+  const user_id = useUserId();
 
-  useEffect(() => {
-    const fetchUserId = async () => {
-      const id = await get_user_id();
-      if (id) {
-        setUserId(id);
-      }
-    };
-
-    fetchUserId();
-  }, []);
-
-
-
+  console.log(user_id);
   useEffect(() => {
     const fetchPosts = async () => {
       if (user_id) {
@@ -58,7 +30,7 @@ export default function Posts() {
   }, [user_id]);
 
   return (
-    <View style={{ padding: 20, overflowY: 'scroll', height: '100%' }}>
+    <View style={styles.container}>
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts.map((post, i) => (
         <Text key={i}>
@@ -87,3 +59,12 @@ export default function Posts() {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex:1,
+    padding: 20,
+    height: '100%'
+  }
+
+})
+export default Posts;
