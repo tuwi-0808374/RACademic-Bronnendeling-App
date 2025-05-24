@@ -6,7 +6,7 @@ import SearchBar from './SearchBar';
 export default function NavBar(visible) {
     return(
         <View style={styles.navbarContent}>
-            <SearchBar visible={visible}/>
+            <SearchBar setVisible={visible.setVisible} selectedTags={visible.selectedTags}/>
         {/*    profile knop en zo */}
         </View>
     );

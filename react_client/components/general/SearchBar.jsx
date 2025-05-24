@@ -9,13 +9,13 @@ function SearchBar({ setVisible, selectedTags }) {
     const [posts, setPosts] = useState({});
 
     const fetchPosts = () => {
+        const user_id = 1
         const selectedTagIds = Object.keys(selectedTags).filter((id) => selectedTags[id]);
         const queryParams = new URLSearchParams();
-        queryParams.append('user_id', 1);
         if (searchQuery) queryParams.append('search_query', searchQuery);
         selectedTagIds.forEach((id) => queryParams.append('tag_id', id));
-
-        fetch(`${API_BASE_URL}/posts?${queryParams.toString()}`)
+        console.log(queryParams.toString());
+        fetch(`${API_BASE_URL}/posts/${user_id}?${queryParams.toString()}`)
             .then(res => res.json())
             .then(data => {
                 setPosts(data.data);
@@ -23,6 +23,11 @@ function SearchBar({ setVisible, selectedTags }) {
             })
             .catch(err => console.error('Error fetching posts:', err));
     };
+
+    // const fetchPosts = () => {
+    //     const selectedTagIds = Object.keys(selectedTags).filter((id) => selectedTags[id]);
+    //     fetch()
+    // }
 
     const handleOnKeyPress = event =>{
         const key = event.nativeEvent.key

@@ -5,18 +5,22 @@ meta {
 }
 
 get {
-  url: http://localhost:5000/posts
-  body: json
+  url: http://localhost:5000/posts/1?tag_id=1&tag_id=2&search_query=eerste
+  body: none
   auth: inherit
 }
 
 params:query {
-  ~tag_id: 2
+  tag_id: 1
+  tag_id: 2
+  search_query: eerste
 }
 
 body:json {
   {
     "search_query": "markdown test",
-    "tags": [4]
+    "tags": [
+      4
+    ]
   }
 }
