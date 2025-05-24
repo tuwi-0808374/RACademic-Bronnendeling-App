@@ -1,4 +1,4 @@
- import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import RateButtons from "@/components/posts/RateButtons";
 import FavoriteButton from '../components/posts/FavoriteButton';
@@ -22,9 +22,7 @@ const get_user_id = async () => {
   }
 }
 
-
-
-export default function Test() {
+export default function Posts() {
   const [posts, setPosts] = useState([]);
   const [user_id, setUserId] = useState(null)
 
