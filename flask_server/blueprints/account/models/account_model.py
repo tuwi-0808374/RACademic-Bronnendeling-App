@@ -69,7 +69,7 @@ class Account:
                 first_name,
                 id,
                 last_name,
-                first_name,
+                is_public,
                 username,
                 profile_image
                 FROM users
@@ -141,7 +141,7 @@ class Account:
             if con:
                 con.close()
                 
-    def update_profile(self, user_id, first_name=None, last_name=None, email=None, username=None, profile_image=None):
+    def update_profile(self, user_id, first_name=None, last_name=None, email=None, username=None, is_public=None, profile_image=None):
         cursor, con = self.connect_db()
         try:
             current_user = cursor.execute(
@@ -165,10 +165,11 @@ class Account:
                 if current_image:
                     self.delete_old_image(current_image)
                 new_image_filename = self.save_base64_image(profile_image)
-            
+                
+            is_public = bool(is_public) if is_public is not None else False
             cursor.execute(
-                "UPDATE users SET first_name=?, last_name=?, email=?, username=?, profile_image=? WHERE id=?",
-                (first_name, last_name, email, username, new_image_filename, user_id)
+                "UPDATE users SET first_name=?, last_name=?, email=?, username=?, is_public=?, profile_image=? WHERE id=?",
+                (first_name, last_name, email, username, is_public, new_image_filename, user_id)
             )
             con.commit()
             

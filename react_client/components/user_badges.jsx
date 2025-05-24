@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Button, Image } from 'react-native';
+import { View, Text, Button, Image, TouchableOpacity, Alert, Modal, Pressable } from 'react-native';
 import { StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
@@ -8,23 +8,34 @@ import { getApiBaseUrl } from '../constants/get_ip';
 const UserBadges = () => {
   const API_BASE_URL = getApiBaseUrl();
   const [badges, setBadges] = useState([]);
+  // Bron om toe tevoegen aan state array: https://react.dev/learn/updating-arrays-in-state
+  // Bron voor popup maken: https://reactnative.dev/docs/modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modelBadge, setModelBadge] = useState({});
 
-  useEffect(() => {
-      refreshBadges();
-  }, []);
-
-  const refreshBadges = async () => {
+useEffect(() => {
+  const fetchAll = async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
       if (!token) {
         console.log('Geen token gevonden.');
         return;
       }
-
       const decoded_user = jwt_decode(token);
-      const user_id = decoded_user.user_id;
+      const userId = decoded_user.user_id;
 
-      url = `${API_BASE_URL}/badge/${user_id}`;
+      await refreshBadges(userId);
+      await checkForNewBadges(userId);
+    } catch (error) {
+      console.error('Error loading badges:', error);
+    }
+  };
+  fetchAll();
+}, []);
+
+  const refreshBadges = async (userId) => {
+    try {
+      url = `${API_BASE_URL}/badge/${userId}`;
       const response = await fetch(url, {
         method: 'GET',
       });
@@ -33,34 +44,90 @@ const UserBadges = () => {
       console.log('Badges:', result.data);
 
     } catch (error) {
-      console.error('API request failed:', error);
+      console.error('API request refresh badges failed:', error);
     }
   };
 
-  const [showInfo, setShowInfo] = useState(false);
-  const showBadgeInfo = () => {
-    setShowInfo(!showInfo);
-  }
+  const checkForNewBadges = async (userId) => {
+    try {
+      url = `${API_BASE_URL}/badge/check_eligibility/${userId}`;
+      const response = await fetch(url, {
+        method: 'GET',
+      });
+      const result = await response.json();
+      console.log('Badges:', result.data);
+      if (result.data && result.data.length > 0) {
+        console.log('Je hebt een nieuwe badge!');
+        let badge_info = result.data[0];
+        badge_info['message'] = 'Je hebt een nieuwe badge verdiend!';
+        setModelBadge(badge_info);
+        setModalVisible(true);
+
+        refreshBadges(userId);
+      } else {
+        console.log('Geen nieuwe badges.');
+      }
+
+    } catch (error) {
+      console.error('API request check for new badges failed:', error);
+    }
+  };
+
+  const showBadgeInfo = (badge_id) => {
+    console.log('Badge info clicked: ' + badge_id);
+    let badge_info = badges.find(badge => badge.id === badge_id);
+    badge_info['message'] = '';
+    setModelBadge(badge_info);
+    setModalVisible(true);
+  };
+
+  const modalBadgeInfo = () => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{modelBadge.title}</Text>
+            {modelBadge.message !== '' && ( <Text style={styles.modalText}>{modelBadge.message}</Text> )}
+            <Image
+              source={{ uri: `${API_BASE_URL}/static/badges/${modelBadge.image_url}` }}
+              style={styles.badge}
+            />
+            <Text style={styles.modalText}>{modelBadge.requirement}</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.textStyle}>Sluit bericht</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
 
   return (
     <View style={styles.badges}>
-          {badges === undefined ? (
-            <Text>Je hebt nog geen badges.</Text>
-          ) : (
-            badges.map((badge, i) => (
-              <Text >
-                <Image key={i} onClick={() => showBadgeInfo()}
-                    source={`${API_BASE_URL}/static/badges/${badge['image_url']}`}
-                    style={styles.badge}
-                  />
-                  {showInfo && (
-                    <Text>
-                      {badge['requirement']}
-                    </Text>
-                  )}
-              </Text>
-            ))
-          )}
+      {modalBadgeInfo()}
+      {badges === undefined ? (
+        <Text>Je hebt nog geen badges.</Text>
+      ) : (
+        badges.map((badge, i) => (
+          <Text key={badge.id}>
+            <TouchableOpacity onPress={() => showBadgeInfo(badge.id)}>
+              <Image
+                source={{ uri: `${API_BASE_URL}/static/badges/${badge.image_url}` }}
+                style={styles.badge}
+              />
+            </TouchableOpacity>
+          </Text>
+        ))
+      )}
     </View>
   );
 };
@@ -81,6 +148,41 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: '#fff',
     maxWidth: 320,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
 });
 
