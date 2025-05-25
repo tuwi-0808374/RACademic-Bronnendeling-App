@@ -1,21 +1,20 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import RateButtons from "@/components/posts/RateButtons";
 import FavoriteButton from '../components/posts/FavoriteButton';
-import useUserId from '../constants/get_user_id'
-
+import {getApiBaseUrl} from "@/constants/get_ip";
+import { useUser } from '@/constants/get_user_id';
+const API_BASE_URL = getApiBaseUrl();
 
 function Posts() {
-
   const [posts, setPosts] = useState([]);
-  const user_id = useUserId();
+  const { userId, loading } = useUser();
 
-  console.log(user_id);
   useEffect(() => {
     const fetchPosts = async () => {
-      if (user_id) {
+      if (!loading && userId) {
         try {
-          const res = await fetch(`http://127.0.0.1:5000/posts/${user_id}`);
+          const res = await fetch(`${API_BASE_URL}/posts/${userId}`);
           const data = await res.json();
           setPosts(data.data);
         } catch (error) {
@@ -24,13 +23,17 @@ function Posts() {
       }
     };
 
-    if (user_id) {
+    if (userId) {
       fetchPosts();
     }
-  }, [user_id]);
+  }, [userId, loading]);
+
+  if (loading && !userId) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts.map((post, i) => (
         <Text key={i}>
@@ -45,25 +48,27 @@ function Posts() {
               post_id={post['id']}
               total_rating={ post['total_rating']}
               user_rating={post['rating']}
-              user_id={user_id}
+              userId={userId}
+              loading={loading}
           />
           {'\n'}
           <FavoriteButton
               post_id = {post['id']}
               is_favorited = {post['is_favorite']}
               onPress={undefined}
-              user_id={user_id}
+              user_id={userId}
+              loading={loading}
           />
         </Text>
       ))}
-    </View>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex:1,
     padding: 20,
-    height: '100%'
+    height: '100%',
   }
 
 })

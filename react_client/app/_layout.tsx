@@ -1,9 +1,10 @@
 import { Stack } from 'expo-router';
 import { useState } from "react";
-import { ScrollView, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import NavBar from "@/components/general/NavBar";
 import TagContainer from "@/components/general/TagContainer";
 import { getApiBaseUrl } from '@/constants/get_ip';
+import { UserProvider } from '../constants/get_user_id';
 
 export default function Layout() {
   const [visible, setVisible] = useState(false);
@@ -29,11 +30,14 @@ export default function Layout() {
           />
         </View>
 
-        <TouchableWithoutFeedback onPress={handleClose}>
-          <View style={styles.contentContainer}>
-            <Stack screenOptions={{ headerShown: false }} />
-          </View>
-        </TouchableWithoutFeedback>
+
+        <UserProvider>
+          <TouchableWithoutFeedback onPress={handleClose}>
+            <View style={styles.contentContainer}>
+              <Stack screenOptions={{ headerShown: false }} />
+            </View>
+          </TouchableWithoutFeedback>
+        </UserProvider>
       </View>
   );
 }

@@ -1,26 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
+
+
+const UserContext = createContext();
 
 const get_user_id = async () => {
     try {
         const token = await AsyncStorage.getItem('authToken');
         if (!token) {
-            console.log('Geen token gevonden.');
+            console.log('No token found.');
             return null;
         }
-
         const decoded_user = jwt_decode(token);
-        // @ts-ignore
-        return decoded_user.user_id;
+        return decoded_user.user_id; // Adjust depending on your token structure
     } catch (error) {
-        console.error('API request failed:', error);
+        console.error('Failed to decode token:', error);
         return null;
     }
-}
+};
 
-function useUserId() {
+export const UserProvider = ({ children }) => {
     const [userId, setUserId] = useState('');
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUserId = async () => {
@@ -28,11 +30,17 @@ function useUserId() {
             if (id) {
                 setUserId(id);
             }
+            setLoading(false);
         };
         fetchUserId();
     }, []);
 
-    return userId;
-}
+    return (
+        <UserContext.Provider value={{ userId, setUserId, loading }}>
+            {children}
+        </UserContext.Provider>
+    );
+};
 
-export default useUserId;
+// Hook to use in screens/components
+export const useUser = () => useContext(UserContext);
