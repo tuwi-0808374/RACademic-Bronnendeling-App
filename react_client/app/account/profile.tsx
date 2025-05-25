@@ -28,6 +28,7 @@ interface JwtPayload {
   iat: number; 
   exp: number; 
   jti: string; 
+  is_admin: boolean;
 }
 
 

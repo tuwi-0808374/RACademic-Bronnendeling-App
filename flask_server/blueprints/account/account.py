@@ -25,12 +25,15 @@ def login_api():
 
     if not user:
         return jsonify({"message": "Gebruiker niet gevonden"}), 404
+    
+    print(f"User found: {user['id']}")
 
     if bcrypt.checkpw(login_password.encode('utf-8'), user['hashed_password']):
         access_token = create_access_token(
             identity=login_email,
             additional_claims={
-                "user_id": user["id"]
+                "user_id": user["id"],
+                "is_admin": user["is_admin"],
             }
         )  
         return jsonify({"access_token": access_token}), 200

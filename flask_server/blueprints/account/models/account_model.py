@@ -31,7 +31,8 @@ class Account:
                 password,
                 last_name,
                 first_name || ' ' || last_name AS full_name,
-                username
+                username,
+                is_admin
             
                 FROM users
                 WHERE email = ?
@@ -47,6 +48,7 @@ class Account:
                     "hashed_password": result[3],
                     "full_name": result[5],
                     "username": result[6],
+                    "is_admin": result[7],
                     
                     
                 }
