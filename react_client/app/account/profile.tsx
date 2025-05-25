@@ -79,9 +79,10 @@ export default function PublicProfileScreen() {
             setUserName(userData.username || '');
 
             if (userData.profile_image_url) {
-              setProfileImage(userData.profile_image_url);
-              console.log('Profiel foto URL:', userData.profile_image_url);
-            }
+          setProfileImage(`${userData.profile_image_url}?${Date.now()}`);
+          } else {
+            setProfileImage(null); 
+          }
             
         }
       } else {

@@ -234,6 +234,7 @@ export default function EditProfileScreen() {
       username,
       is_public: Boolean(AccountPublic),
     };
+    
 
     if (profileImage === null) {
       formData.profile_image = "remove"; 
