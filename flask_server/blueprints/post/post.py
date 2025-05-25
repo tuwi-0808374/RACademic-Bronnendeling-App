@@ -20,13 +20,15 @@ def get_examples():
 @post_bp.route('/posts/<int:user_id>', methods=['GET'])
 def get_posts_with_user(user_id):
     post = Post()
-    rating = Rating()
     data = request.get_json(silent=True) or {}
 
-    search_query = data.get('search_query', None)
-    tag_ids = data.get('tags', None)
+    search_query = request.args.get('search_query', None)
+    tag_ids = []
+    if request.args.get('tag_id'):
+        for tag in request.args.getlist('tag_id'):
+            tag_ids.append(tag)
     # user_rating = None
-
+    print(search_query, tag_ids)
     if not user_id:
         return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
 
