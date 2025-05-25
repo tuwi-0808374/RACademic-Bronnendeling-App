@@ -296,3 +296,20 @@ class Account:
         finally:
             if con:
                 con.close()
+    
+    def get_users(self, limit=5, offset=0):
+        # Geeft een lijst van gebruikers met een limiet en offset.
+        cursor, con = self.connect_db()
+        try:
+            result = cursor.execute(
+                """
+                    SELECT id, first_name, last_name, username, email, is_public, profile_image, is_banned
+                    FROM users
+                    LIMIT ? OFFSET ?
+                """,
+                (limit, offset)
+            ).fetchall()
+            return [dict(row) for row in result]
+        finally:
+            if con:
+                con.close() 
