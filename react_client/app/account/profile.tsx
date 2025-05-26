@@ -31,6 +31,15 @@ interface JwtPayload {
   jti: string; 
 }
 
+interface UserData {
+  is_public: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  profile_image_url?: string;
+}
+
 
 export default function PublicProfileScreen() {
   const [email, setEmail] = useState('');
@@ -42,6 +51,8 @@ export default function PublicProfileScreen() {
   const [refreshKey, setRefreshKey] = useState(0);
   
   const router = useRouter();
+  const [isPublic, setIsPublic] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   const fetchProfile = async () => {
     try {
@@ -71,19 +82,27 @@ export default function PublicProfileScreen() {
 
       if (response.ok) {
         const responseData = await response.json();
-        const userData = responseData.data; 
+        const userData = responseData.data;
         if (userData) {
+          setUserData(userData);
+          setIsPublic(userData.is_public === 0);
+          setUserName(userData.username || '');
+          
+          if (userData.is_public === 0) {
             setFirstName(userData.first_name || '');
             setLastName(userData.last_name || '');
             setEmail(userData.email || '');
-            setUserName(userData.username || '');
-
-            if (userData.profile_image_url) {
-          setProfileImage(`${userData.profile_image_url}?${Date.now()}`);
+          } else {
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+          }
+          
+          if (userData.profile_image_url) {
+            setProfileImage(`${userData.profile_image_url}?${Date.now()}`);
           } else {
             setProfileImage(null); 
           }
-            
         }
       } else {
         console.log(`Kan profiel niet ophalen.`);
@@ -136,14 +155,22 @@ export default function PublicProfileScreen() {
             <Text style={styles.logoTitle}>PROFIEL</Text>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Naam</Text>
+            <Text style={styles.inputLabel}>Naam</Text>
+            {isPublic ? (
               <Text style={styles.input}>{first_name} {lastName}</Text>
-            </View>
+            ) : (
+              <Text style={styles.input}>Privé account</Text>
+            )}
+          </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>E-mail</Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>E-mail</Text>
+            {isPublic ? (
               <Text style={styles.input}>{email}</Text>
-            </View>
+            ) : (
+              <Text style={styles.input}>Privé account</Text>
+            )}
+          </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Gebruikersnaam</Text>
