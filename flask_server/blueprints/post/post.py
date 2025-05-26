@@ -16,7 +16,6 @@ def get_examples():
     ]
     return jsonify({'status': 'success', 'data': data})
 
-
 @post_bp.route('/posts/<int:user_id>', methods=['GET'])
 def get_posts_with_user(user_id):
     post = Post()

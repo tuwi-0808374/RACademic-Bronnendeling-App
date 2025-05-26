@@ -14,14 +14,14 @@ export default function UserListScreen() {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   interface JwtPayload {
-  sub: string; 
-  user_id: number; 
-  full_name?: string; 
-  iat: number; 
-  exp: number; 
-  jti: string; 
-  is_admin: boolean;
-}
+    sub: string;
+    user_id: number;
+    full_name?: string;
+    iat: number;
+    exp: number;
+    jti: string;
+    is_admin: boolean;
+  }
 
   useEffect(() => {
     console.log('Loading user ID from AsyncStorage');
@@ -33,11 +33,10 @@ export default function UserListScreen() {
           return;
         }
         const decoded = jwt_decode<JwtPayload>(token);
-        const userID = decoded.user_id; 
+        const userID = decoded.user_id;
         setUserId(userID);
         const isAdmin = decoded.is_admin;
         setIsAdmin(isAdmin);
-
       } catch (error) {
         console.error('Error loading badges:', error);
       }
@@ -47,7 +46,7 @@ export default function UserListScreen() {
 
   useEffect(() => {
     console.log('Fetching users for userId:', userId);
-      const fetchUsers = async () => {
+    const fetchUsers = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/users`);
         if (!response.ok) {
@@ -56,10 +55,9 @@ export default function UserListScreen() {
         console.log(userId, isAdmin);
         const data = await response.json();
         setUsers(data.users);
-
       } catch (error) {
         console.error('Error fetching users:', error);
-      } 
+      }
     };
 
     fetchUsers();
@@ -67,35 +65,39 @@ export default function UserListScreen() {
 
   return (
     <SafeAreaView>
-      <StatusBar/>
+      <StatusBar />
       <ScrollView>
         <View>
-          <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>User List</Text>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
-        { users.map((user) => (
-          <TouchableOpacity key={user['id']}>
+        {users.map((user) => (
+          <TouchableOpacity style={styles.user} key={user['id']}>
             <View>
-              <Text style={{ fontSize: 18 }}>{user['first_name']}</Text>
+              <Text style={{ fontSize: 18 }}>{user['display_name']}</Text>
+              <Text style={{ fontSize: 18 }}>{user['email']}</Text>
+              <Text style={{ fontSize: 18 }}>
+                {user['first_name']} {user['last_name']}
+              </Text>
+
               <View style={styles.profileImageContainer}>
-                  {user['profile_image'] ? (
-                      <Image
-                      source={{ uri: `${API_BASE_URL}/uploads/${user['profile_image']}` }}
-                      style={styles.profileImage}
-                      />
-                  ) : (
-                      <Image
-                      source={require('../../assets/images/profile.png')} 
-                      style={styles.profileImage}
-                      />
-                  )}
+                {user['profile_image'] ? (
+                  <Image
+                    source={{ uri: `${API_BASE_URL}/uploads/${user['profile_image']}` }}
+                    style={styles.profileImage}
+                  />
+                ) : (
+                  <Image
+                    source={require('../../assets/images/profile.png')}
+                    style={styles.profileImage}
+                  />
+                )}
               </View>
-              { isAdmin && (
-              <Button
-                title="Ban user"
-                onPress={() => console.log(`Ban user with ID: ${user['id']}`)}
-              />
-              )}
-              {/* <Image source={{ uri: user['profile_image'] }} style={{ width: 50, height: 50, borderRadius: 25 }} /> */}
+              {isAdmin ? (
+                <Button
+                  title="Ban user"
+                  onPress={() => console.log(`Ban user with ID: ${user['id']}`)}
+                />
+              ): null}
             </View>
           </TouchableOpacity>
         ))}
@@ -120,5 +122,10 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  user: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
 });

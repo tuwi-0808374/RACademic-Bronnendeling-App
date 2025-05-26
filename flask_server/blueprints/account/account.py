@@ -16,12 +16,14 @@ def login_api():
     data = request.json
     login_email = data.get('email')
     login_password = data.get('password')
-
     if not login_email or not login_password:
         return jsonify({"message": "Email en wachtwoord zijn vereist"}), 400
 
     account_model = Account()
     user = account_model.get_user_by_email(login_email)
+    
+    if user['is_banned'] != False:
+        return jsonify({"message": "Uw account is geblokkeerd"}), 400
 
     if not user:
         return jsonify({"message": "Gebruiker niet gevonden"}), 404

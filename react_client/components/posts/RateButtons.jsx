@@ -1,12 +1,14 @@
 import React, { useEffect,useState } from 'react';
 import { TouchableOpacity,Text ,StyleSheet } from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import jwt_decode from "jwt-decode";
+import {getApiBaseUrl} from "@/constants/get_ip";
+const API_BASE_URL = getApiBaseUrl();
+
 
 export default function RateButtons(props) {
     const [totalRating, setRating] = useState(props.total_rating);
     const [Rated, setRated] = useState(false);
+
     useEffect(() => {
         setRated(props.user_rating? props.user_rating : false);
     }, [props.user_rating]);
@@ -18,28 +20,15 @@ export default function RateButtons(props) {
         'neg_color': Rated === -1?'#ff0000': '#000000',
         'neg_icon': Rated === -1? 'chevron-down-circle': 'chevron-down-circle-outline'
     };
-
+    if( props.loading ) return <Text>Loading...</Text>;
     const Rate = async (rating) => {
-
             const method = Rated ? "PATCH" : "POST";
-            console.log(method)
-            const url = method === "PATCH" ? `http://localhost:5000/rating/${props.user_id}` : `http://localhost:5000/rating`;
+            const url = `${API_BASE_URL}/rating/${props.userId}`;
             if (method === "POST") {
-                console.log({
-                    url,
-                    method: method,
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({
-                        user_id: props.user_id,
-                        target_id: props.post_id,
-                        rating: rating,
-                        target: "posts"
-                    })
-                })
                 let result = await fetch(url, {
                     method: method,
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({user_id:props.user_id,target_id: props.post_id, rating: rating, target: "posts"}),
+                    body: JSON.stringify({userId:props.userId,target_id: props.post_id, rating: rating, target: "posts"}),
                 });
                 result = await result.json();
                 if (result) {
@@ -50,7 +39,7 @@ export default function RateButtons(props) {
                 let result = await fetch(url, {
                     method: method,
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({user_id:props.user_id,target_id: props.post_id, rating: rating, target: "posts"}),
+                    body: JSON.stringify({userId:props.userId,target_id: props.post_id, rating: rating, target: "posts"}),
                 });
                 result = await result.json();
                 if (result) {

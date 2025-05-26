@@ -5,6 +5,7 @@ import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
 import UserBadges from '../../components/user_badges';
 import { getApiBaseUrl } from '../../constants/get_ip';
+import { useFocusEffect } from 'expo-router';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -31,73 +32,99 @@ interface JwtPayload {
   is_admin: boolean;
 }
 
+interface UserData {
+  is_public: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  profile_image_url?: string;
+}
+
 
 export default function PublicProfileScreen() {
   const [email, setEmail] = useState('');
-  const [first_name, FirstName] = useState('');
+  const [first_name, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [username, setUserName] = useState('');
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [userId, setUserId] = useState<number | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
   
   const router = useRouter();
+  const [isPublic, setIsPublic] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
+
+  const fetchProfile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      if (!token) {
+        console.log('Geen token gevonden.');
+        return;
+      }
+
+      const decoded = jwt_decode<JwtPayload>(token);
+      const currentUserId = decoded.user_id; 
+
+      if (!currentUserId) {
+        console.error('User ID niet gevonden in token:', decoded);
+        return;
+      }
+
+      setUserId(currentUserId); 
+
+      const response = await fetch(`${API_BASE_URL}/profile/${currentUserId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const userData = responseData.data;
+        if (userData) {
+          setUserData(userData);
+          setIsPublic(userData.is_public === 0);
+          setUserName(userData.username || '');
+          
+          if (userData.is_public === 0) {
+            setFirstName(userData.first_name || '');
+            setLastName(userData.last_name || '');
+            setEmail(userData.email || '');
+          } else {
+            setFirstName('');
+            setLastName('');
+            setEmail('');
+          }
+          
+          if (userData.profile_image_url) {
+            setProfileImage(`${userData.profile_image_url}?${Date.now()}`);
+          } else {
+            setProfileImage(null); 
+          }
+        }
+      } else {
+        console.log(`Kan profiel niet ophalen.`);
+        const errorData = await response.text(); 
+        console.log('Foutdetails:', errorData);
+      }
+    } catch (error) {
+      console.log('Fout bij ophalen profiel:', error);
+    }
+  };
+
+    useFocusEffect(
+    React.useCallback(() => {
+      fetchProfile();
+    }, []) 
+  );
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = await AsyncStorage.getItem('authToken');
-        if (!token) {
-          console.log('Geen token gevonden.');
-          return;
-        }
-
-        const decoded = jwt_decode<JwtPayload>(token);
-        const currentUserId = decoded.user_id; 
-
-        if (!currentUserId) {
-          console.error('User ID niet gevonden in token:', decoded);
-          return;
-        }
-
-        setUserId(currentUserId); 
-
-        const response = await fetch(`${API_BASE_URL}/profile/${currentUserId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (response.ok) {
-          const responseData = await response.json();
-          const userData = responseData.data; 
-          if (userData) {
-              FirstName(userData.first_name || '');
-              setLastName(userData.last_name || '');
-              setEmail(userData.email || '');
-              setUserName(userData.username || '');
-
-              if (userData.profile_image_url) {
-                setProfileImage(userData.profile_image_url);
-                console.log('Profiel foto URL:', userData.profile_image_url);
-              }
-              
-          }
-        } else {
-          console.log(`Kan profiel niet ophalen.`);
-          const errorData = await response.text(); 
-          console.log('Foutdetails:', errorData);
-        }
-      } catch (error) {
-        console.log('Fout bij ophalen profiel:', error);
-      }
-    };
-
-    
-    
     fetchProfile();
   }, []);
+
 
 
   return (
@@ -129,14 +156,22 @@ export default function PublicProfileScreen() {
             <Text style={styles.logoTitle}>PROFIEL</Text>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Naam</Text>
+            <Text style={styles.inputLabel}>Naam</Text>
+            {isPublic ? (
               <Text style={styles.input}>{first_name} {lastName}</Text>
-            </View>
+            ) : (
+              <Text style={styles.input}>Privé account</Text>
+            )}
+          </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>E-mail</Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.inputLabel}>E-mail</Text>
+            {isPublic ? (
               <Text style={styles.input}>{email}</Text>
-            </View>
+            ) : (
+              <Text style={styles.input}>Privé account</Text>
+            )}
+          </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Gebruikersnaam</Text>
@@ -156,7 +191,7 @@ export default function PublicProfileScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: COLORS.background,
   },
   keyboardAvoidingContainer: {

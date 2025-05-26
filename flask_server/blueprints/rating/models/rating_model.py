@@ -101,16 +101,14 @@ class Rating:
                     return False
 
             else:
-                print('undo')
                 updated_rating = self.cursor.execute(query, (None, user_id, target_id))
                 select_updated_rating = self.cursor.execute("SELECT is_favorite, is_reported, userRated FROM ratings WHERE user_id = ? AND post_id = ?", (user_id, target_id))
                 if updated_rating:
                     changed_total = self.calculate_post_rating(target_id, rating, old_rating)
 
-                    if select_updated_rating.fetchone():
-                        self.con.commit()
-                        if changed_total:
-                            return True
+                    self.con.commit()
+                    if changed_total:
+                        return True
                     return False
 
     def calculate_post_rating(self, post_id, new_rating, old_rating):

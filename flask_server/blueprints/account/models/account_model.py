@@ -32,7 +32,8 @@ class Account:
                 last_name,
                 first_name || ' ' || last_name AS full_name,
                 username,
-                is_admin
+                is_admin,
+                is_banned
             
                 FROM users
                 WHERE email = ?
@@ -49,6 +50,7 @@ class Account:
                     "full_name": result[5],
                     "username": result[6],
                     "is_admin": result[7],
+                    "is_banned": result[8]
                     
                     
                 }
@@ -73,7 +75,7 @@ class Account:
                 last_name,
                 is_public,
                 username,
-                profile_image
+                profile_image,
                 FROM users
                 WHERE id = ?
                 """,
