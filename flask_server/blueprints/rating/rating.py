@@ -7,28 +7,27 @@ base = Blueprint('base', __name__)
 CORS(rating_bp)
 CORS(base)
 
-@rating_bp.route('/rating', methods=['POST'])
-def create_rating():
+@rating_bp.route('/rating/<int:user_id>', methods=['POST'])
+def create_rating(user_id):
     data = request.get_json()
-
-    return handle_rating_process(data, None, 'POST')
+    return handle_rating_process(data, user_id,'POST')
 
 
 # @rating_bp.route('/rating/<int:user_rated>', methods=['PATCH'])
 @rating_bp.route('/rating/<int:user_id>', methods=['PATCH'])
 def update_rating(user_id):
     data = request.get_json()
-
     return handle_rating_process(data , user_id, 'PATCH')
 
 def handle_rating_process(data ,user_id=None, method=None):
     rating = Rating()
-    required_fields = ['user_id','target_id', 'rating', 'target']
+    required_fields = ['target_id', 'rating', 'target']
     for field in required_fields:
         if data.get(field) is None:
             return jsonify({'status': 'error', 'message': f'Missing {field}'}), 400
+    if not user_id :
+        return jsonify({'status': 'error', 'message': f'Missing user id '}), 400
 
-    user_id = data.get('user_id')
     target_id = data.get("target_id")
     rating_value = data.get("rating")
     target = data.get("target")

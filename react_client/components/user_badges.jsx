@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Button, Image, TouchableOpacity, Alert, Modal, Pressable } from 'react-native';
 import { StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from 'jwt-decode';
-import { getApiBaseUrl } from '../constants/get_ip';
+import { getApiBaseUrl } from '@/constants/get_ip';
 
 const UserBadges = () => {
   const API_BASE_URL = getApiBaseUrl();
@@ -13,29 +11,9 @@ const UserBadges = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modelBadge, setModelBadge] = useState({});
 
-useEffect(() => {
-  const fetchAll = async () => {
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-      if (!token) {
-        console.log('Geen token gevonden.');
-        return;
-      }
-      const decoded_user = jwt_decode(token);
-      const userId = decoded_user.user_id;
-
-      await refreshBadges(userId);
-      await checkForNewBadges(userId);
-    } catch (error) {
-      console.error('Error loading badges:', error);
-    }
-  };
-  fetchAll();
-}, []);
-
   const refreshBadges = async (userId) => {
     try {
-      url = `${API_BASE_URL}/badge/${userId}`;
+      let url = `${API_BASE_URL}/badge/${userId}`;
       const response = await fetch(url, {
         method: 'GET',
       });
@@ -50,7 +28,7 @@ useEffect(() => {
 
   const checkForNewBadges = async (userId) => {
     try {
-      url = `${API_BASE_URL}/badge/check_eligibility/${userId}`;
+      let url = `${API_BASE_URL}/badge/check_eligibility/${userId}`;
       const response = await fetch(url, {
         method: 'GET',
       });
@@ -83,52 +61,52 @@ useEffect(() => {
 
   const modalBadgeInfo = () => {
     return (
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>{modelBadge.title}</Text>
-            {modelBadge.message !== '' && ( <Text style={styles.modalText}>{modelBadge.message}</Text> )}
-            <Image
-              source={{ uri: `${API_BASE_URL}/static/badges/${modelBadge.image_url}` }}
-              style={styles.badge}
-            />
-            <Text style={styles.modalText}>{modelBadge.requirement}</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Sluit bericht</Text>
-            </Pressable>
+        <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              setModalVisible(!modalVisible);
+            }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{modelBadge.title}</Text>
+              {modelBadge.message !== '' && ( <Text style={styles.modalText}>{modelBadge.message}</Text> )}
+              <Image
+                  source={{ uri: `${API_BASE_URL}/static/badges/${modelBadge.image_url}` }}
+                  style={styles.badge}
+              />
+              <Text style={styles.modalText}>{modelBadge.requirement}</Text>
+              <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                <Text style={styles.textStyle}>Sluit bericht</Text>
+              </Pressable>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
     );
   };
 
   return (
-    <View style={styles.badges}>
-      {modalBadgeInfo()}
-      {badges === undefined ? (
-        <Text>Je hebt nog geen badges.</Text>
-      ) : (
-        badges.map((badge, i) => (
-          <Text key={badge.id}>
-            <TouchableOpacity onPress={() => showBadgeInfo(badge.id)}>
-              <Image
-                source={{ uri: `${API_BASE_URL}/static/badges/${badge.image_url}` }}
-                style={styles.badge}
-              />
-            </TouchableOpacity>
-          </Text>
-        ))
-      )}
-    </View>
+      <View style={styles.badges}>
+        {modalBadgeInfo()}
+        {badges === undefined ? (
+            <Text>Je hebt nog geen badges.</Text>
+        ) : (
+            badges.map((badge, i) => (
+                <Text key={badge.id}>
+                  <TouchableOpacity onPress={() => showBadgeInfo(badge.id)}>
+                    <Image
+                        source={{ uri: `${API_BASE_URL}/static/badges/${badge.image_url}` }}
+                        style={styles.badge}
+                    />
+                  </TouchableOpacity>
+                </Text>
+            ))
+        )}
+      </View>
   );
 };
 

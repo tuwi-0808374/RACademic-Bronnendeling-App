@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, View,StyleSheet } from 'react-native';
-import { getApiBaseUrl } from '../../constants/get_ip';
 
-const API_BASE_URL = getApiBaseUrl();
-
-function SearchBar({ setVisible, selectedTags }) {
+function SearchBar({ setVisible, selectedTags, API_BASE_URL, handleInsidePress }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [posts, setPosts] = useState({});
 
@@ -37,22 +34,18 @@ function SearchBar({ setVisible, selectedTags }) {
         }
     }
     return (
-        <View style={styles.container}>
-             <TextInput
-                style={styles.searchInput}
-                placeholder="Search tags"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                onKeyPress={handleOnKeyPress}
-            />
-        </View>
+         <TextInput
+            style={styles.searchInput}
+            placeholder="Search tags"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onKeyPress={handleOnKeyPress}
+            onFocus={() => setVisible(true)}
+        />
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-
-    },
     searchInput: {
         backgroundColor: 'white',
         marginTop: '2%',
