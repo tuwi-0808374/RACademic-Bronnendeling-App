@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Button, Image, TouchableOpacity, Alert, Modal, Pressable } from 'react-native';
 import { StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwt_decode from 'jwt-decode';
 import { getApiBaseUrl } from '@/constants/get_ip';
 
 const UserBadges = () => {
@@ -10,6 +12,26 @@ const UserBadges = () => {
   // Bron voor popup maken: https://reactnative.dev/docs/modal
   const [modalVisible, setModalVisible] = useState(false);
   const [modelBadge, setModelBadge] = useState({});
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        if (!token) {
+          console.log('Geen token gevonden.');
+          return;
+        }
+        const decoded_user = jwt_decode(token);
+        const userId = decoded_user.user_id;
+
+        await refreshBadges(userId);
+        await checkForNewBadges(userId);
+      } catch (error) {
+        console.error('Error loading badges:', error);
+      }
+    };
+    fetchAll();
+  }, []);
 
   const refreshBadges = async (userId) => {
     try {
