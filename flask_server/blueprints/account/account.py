@@ -22,11 +22,12 @@ def login_api():
     account_model = Account()
     user = account_model.get_user_by_email(login_email)
     
+    if not user:
+        return jsonify({"message": "Gebruiker niet gevonden"}), 404
+    
     if user['is_banned'] != False:
         return jsonify({"message": "Uw account is geblokkeerd"}), 400
 
-    if not user:
-        return jsonify({"message": "Gebruiker niet gevonden"}), 404
 
     if bcrypt.checkpw(login_password.encode('utf-8'), user['hashed_password']):
         access_token = create_access_token(
