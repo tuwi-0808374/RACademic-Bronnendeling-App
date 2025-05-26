@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { View, Text, Button, Image, TouchableOpacity, Alert, Modal, Pressable } from 'react-native';
 import { StyleSheet } from 'react-native';
-import { getApiBaseUrl } from '../constants/get_ip';
-import useUser from '../constants/get_user_id';
+import { getApiBaseUrl } from '@/constants/get_ip';
 
 const UserBadges = () => {
   const API_BASE_URL = getApiBaseUrl();
-  const userId = useUser();
   const [badges, setBadges] = useState([]);
   // Bron om toe tevoegen aan state array: https://react.dev/learn/updating-arrays-in-state
   // Bron voor popup maken: https://reactnative.dev/docs/modal
