@@ -1,5 +1,5 @@
 import React, { useState, useEffect, use } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button } from 'react-native';
+import {  View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
@@ -64,7 +64,7 @@ export default function UserListScreen() {
   }, [userId]);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{height: '100%'}}>
       <StatusBar />
       <ScrollView>
         <View>
@@ -127,5 +127,5 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-  },
+  }
 });
