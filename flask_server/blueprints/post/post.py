@@ -19,11 +19,10 @@ def get_examples():
 @post_bp.route('/posts/<int:user_id>', methods=['GET'])
 def get_posts_with_user(user_id):
     post = Post()
-    data = request.get_json(silent=True) or {}
 
     search_query = request.args.get('search_query', None)
     tag_ids = []
-
+    print(search_query,tag_ids)
     if request.args.get('tag_ids'):
         tag_ids = request.args.get('tag_ids').split(',')
     if not user_id:

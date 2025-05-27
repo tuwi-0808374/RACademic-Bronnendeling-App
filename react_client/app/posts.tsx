@@ -23,8 +23,8 @@ function Posts() {
                 ? local.tag_ids.join(',') : local.tag_ids,
 
           });
-          
-          const res = await fetch(`${API_BASE_URL}/posts/${userId}?${queryString}`);
+          const url= queryString ? `${API_BASE_URL}/posts/${userId}` : `${API_BASE_URL}/posts/${userId}?${queryString}`;
+          const res = await fetch(url);
           const data = await res.json();
           setPosts(data.data);
         } catch (error) {
