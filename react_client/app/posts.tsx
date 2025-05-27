@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import { useLocalSearchParams } from "expo-router";
 import RateButtons from "@/components/posts/RateButtons";
 import FavoriteButton from '../components/posts/FavoriteButton';
 import {getApiBaseUrl} from "@/constants/get_ip";
@@ -9,12 +10,21 @@ const API_BASE_URL = getApiBaseUrl();
 function Posts() {
   const [posts, setPosts] = useState([]);
   const { userId, loading } = useUser();
-
+  const local = useLocalSearchParams();
   useEffect(() => {
     const fetchPosts = async () => {
       if (!loading && userId) {
         try {
-          const res = await fetch(`${API_BASE_URL}/posts/${userId}`);
+
+          const queryString = new URLSearchParams({
+            search_query: Array.isArray(local.search_query)
+                ? local.search_query.join(',') : local.search_query,
+            tag_ids: Array.isArray(local.tag_ids)
+                ? local.tag_ids.join(',') : local.tag_ids,
+
+          });
+          
+          const res = await fetch(`${API_BASE_URL}/posts/${userId}?${queryString}`);
           const data = await res.json();
           setPosts(data.data);
         } catch (error) {

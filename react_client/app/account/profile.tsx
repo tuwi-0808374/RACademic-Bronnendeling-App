@@ -134,7 +134,7 @@ export default function PublicProfileScreen() {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <UserBadges />
+          {/*<UserBadges />*/}
           <View style={styles.innerContainer}>
             <View style={styles.profileImageContainer}>
                 {profileImage ? (
@@ -190,11 +190,11 @@ export default function PublicProfileScreen() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    // flex: 1,
+    flex: 1,
     backgroundColor: COLORS.background,
   },
   keyboardAvoidingContainer: {
-    flex: 1,
+    // flex: 1,
   },
   scrollContainer: { 
     flexGrow: 1,
