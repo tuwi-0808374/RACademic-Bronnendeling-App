@@ -24,7 +24,7 @@ def get_posts_with_user(user_id):
     tag_ids = []
     print(search_query,tag_ids)
     if request.args.get('tag_ids'):
-        tag_ids = request.args.get('tag_ids').split(',')
+        tag_ids = request.args.get('tag_ids', None).split(',')
     if not user_id:
         return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
 
