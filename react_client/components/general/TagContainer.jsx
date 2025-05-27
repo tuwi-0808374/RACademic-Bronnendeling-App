@@ -7,7 +7,7 @@ function TagContainer({ visible,selectedTags, setSelectedTags }) {
     const [postTags, setPostTags] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/tags") // Replace with device IP if testing on phone
+        fetch(`${API_BASE_URL}/tags`) // Replace with device IP if testing on phone
             .then((res) => res.json())
             .then((data) => {
                 console.log("Fetched data:", data);

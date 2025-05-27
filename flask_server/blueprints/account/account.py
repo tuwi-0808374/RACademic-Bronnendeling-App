@@ -33,7 +33,8 @@ def login_api():
         access_token = create_access_token(
             identity=login_email,
             additional_claims={
-                "user_id": user["id"]
+                "user_id": user["id"],
+                "is_admin": user["is_admin"],
             }
         )  
         return jsonify({"access_token": access_token}), 200
@@ -213,7 +214,6 @@ def get_users_with_overall_rating():
     return jsonify({'status': 'success', 'data': users}), 200
 
 @account_bp.route('/get_users_with_most_badges', methods=['GET'])
-@cross_origin()
 def get_users_with_most_badges():
     account_model = Account()
     limit = request.args.get('limit', default=5, type=int)
@@ -223,3 +223,13 @@ def get_users_with_most_badges():
         return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
     
     return jsonify({'status': 'success', 'data': users}), 200
+
+@account_bp.route('/users', methods=['GET'])
+def get_users():
+    account_model = Account()
+    users = account_model.get_users()
+    
+    if not users:
+        return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
+    
+    return jsonify({'status': 'success', 'users': users}), 200
