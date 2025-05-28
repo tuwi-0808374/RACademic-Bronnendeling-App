@@ -1,0 +1,15 @@
+meta {
+  name: get_posts_by_user_id
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://localhost:5000/posts_by_user_id/:user_id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  user_id: 1
+}

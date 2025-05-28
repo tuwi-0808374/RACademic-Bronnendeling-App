@@ -12,6 +12,7 @@ function Posts() {
   const { userId, loading } = useUser();
   const local = useLocalSearchParams();
   useEffect(() => {
+    
     const fetchPosts = async () => {
       if (!loading && userId) {
         try {
@@ -60,7 +61,8 @@ function Posts() {
     <ScrollView style={styles.container}>
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts.map((post, i) => (
-        <Text key={i}>
+        <Text key={i} style={styles.postContainer}>
+          <Text style={{ fontWeight: 'bold' }}>Geplaatst door: {post['username']}</Text>
           {'\n'}
           {post['id']}
           {'\n'}
@@ -93,7 +95,13 @@ const styles = StyleSheet.create({
     flex:1,
     padding: 20,
     height: '100%',
-  }
+  },
+  postContainer: {
+    marginBottom: 20,
+    padding: 15,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+  },
 
 })
 export default Posts;

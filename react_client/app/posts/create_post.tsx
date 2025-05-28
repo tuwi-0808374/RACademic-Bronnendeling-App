@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import { CheckBox } from "@/components/input";
+import {useRouter} from "expo-router";
+import { useUser } from '@/constants/get_user_id';
+import {getApiBaseUrl} from "@/constants/get_ip";
+const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
     red: '#C80032',
@@ -23,9 +27,11 @@ export default function Create_post() {
     const [content, setContent] = useState('');
     const [tagid, setTagid] = useState([]);
     const [data, setData] = useState([]);
+    const router = useRouter();
+    const { userId, loading } = useUser();
 
     useEffect(() => {
-        fetch("http://localhost:5000/tags")
+        fetch(`${API_BASE_URL}/tags`)
             .then(res => res.json())
             .then(data => {
                 setData(data.data);
@@ -35,18 +41,25 @@ export default function Create_post() {
 
     //
     const CreatePost = async () => {
-        console.warn(title, content,tagid);
-        const url = "http://localhost:5000/posts"
-        let result = await fetch(url, {
-            method: 'POST',
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({title:title,content:content,tag_ids:tagid}),
-        });
-        result = await  result.json();
-        if(result){
-            console.warn("Bron is saved successfully.")
-        }
+        if (!loading && userId) {
+            try {
+                console.warn(title, content, tagid);
+                const url = `${API_BASE_URL}/posts`
+                let result = await fetch(url, {
+                    method: 'POST',
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({title: title, content: content, tag_ids: tagid,user_id: userId}),
+                });
+                result = await result.json();
+                if (result) {
+                    console.warn("Bron is saved successfully.")
+                    router.push('/posts/user_posts')
+                }
 
+            } catch (error) {
+                console.error('API request failed:', error);
+            }
+        }
     }
 
 
@@ -57,7 +70,7 @@ export default function Create_post() {
                     <Text style={styles.title}>Create Post</Text>
                 </View>
 
-                <ScrollView>
+                <ScrollView style={styles.scrollView}>
                 <View style={styles.form}>
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Titel</Text>
@@ -169,5 +182,8 @@ export default function Create_post() {
         checkbox:{
             justifyContent: "center",
             marginBottom: 15
+        },
+        scrollView:{
+
         }
     })

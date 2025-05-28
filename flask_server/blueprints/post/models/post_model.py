@@ -20,9 +20,10 @@ class Post:
         params = []
         if user_id:
             query = """
-                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating
+                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating, users.username
                     FROM posts
                     LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
+                    JOIN users ON posts.user_id = users.id
                     """
             params.append(user_id)
         else:
@@ -98,10 +99,10 @@ class Post:
         return None
 
     #bron https://docs.python.org/3/library/datetime.html
-    def post_create_post(self, user_id, data):
+    def post_create_post(self, data):
         posted_date = int(datetime.now().timestamp())
         query = "INSERT INTO posts (title, content, user_id, posted_date) VALUES (?,?,?,?)"
-        result = self.cursor.execute(query, (data["title"], data["content"], user_id, posted_date))
+        result = self.cursor.execute(query, (data["title"], data["content"], data["user_id"], posted_date))
         self.con.commit()
         if result:
             return True
@@ -129,10 +130,19 @@ class Post:
     def delete_assigned_post_tags(self, post_id):
         query = "DELETE FROM post_tags WHERE post_id = ?"
         result = self.cursor.execute(query, (post_id,))
-        self.con.commit()
         if result:
             return True
         return False
+
+    def get_posts_by_user_id(self, user_id):
+        query = "SELECT * FROM posts WHERE user_id = ?"
+        self.cursor.execute(query,(user_id,))
+        posts = self.cursor.fetchall()
+
+        if posts:
+            result_dicts = [dict(row) for row in posts]
+            return result_dicts
+        return None
 
     def delete_post(self, post_id):
         query = "DELETE FROM posts WHERE id = ?"
