@@ -6,6 +6,7 @@ import TagContainer from "@/components/general/TagContainer";
 import { getApiBaseUrl } from '@/constants/get_ip';
 import { UserProvider } from '@/constants/get_user_id';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Layout() {
   const [visible, setVisible] = useState(false);
@@ -17,6 +18,7 @@ export default function Layout() {
   const handleClose = () => setVisible(false);
 
   return (
+    <SafeAreaView style={{ flex: 1}}>
       <View style={styles.pageContainer}>
         <View style={styles.navbarContainer}>
           <NavBar
@@ -53,6 +55,7 @@ export default function Layout() {
           </View>
       </UserProvider>
       </View>
+      </SafeAreaView>
   );
 }
 
