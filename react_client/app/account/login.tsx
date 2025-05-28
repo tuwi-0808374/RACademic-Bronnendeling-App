@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvo
 import { Link, useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApiBaseUrl } from '../../constants/get_ip';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -17,9 +18,6 @@ const COLORS = {
   error: "#D32F2F",
 };
 
-
-
-
 const LoginButton = ({ onPress }: { onPress: () => void }) => (
   <TouchableOpacity style={styles.loginButton} onPress={onPress}>
     <Text style={styles.loginButtonText}>Inloggen</Text>
@@ -30,6 +28,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState('');
   
@@ -41,9 +40,7 @@ const LoginScreen = () => {
     }
     
     try {
-      
       const response = await fetch(`${API_BASE_URL}/api/login`, {
-        
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,10 +54,7 @@ const LoginScreen = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Login succesvol', data);
-        
-        // https://medium.com/@paritasampa95/how-asyncstorage-stores-data-in-react-native-102498260af0
         await AsyncStorage.setItem('authToken', data['access_token']);
-        
         router.push('../');
       } else {
         const errorData = await response.json();
@@ -117,7 +111,10 @@ const LoginScreen = () => {
           <Text style={styles.logoTitle}>HOGESCHOOL ROTTERDAM</Text>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>EMAIL</Text>
+            <View style={styles.labelContainer}>
+              <Icon name="mail-outline" size={16} color={COLORS.red} style={styles.labelIcon} />
+              <Text style={styles.inputLabel}>EMAIL</Text>
+            </View>
             <TextInput
               style={[styles.input, styles.inputEmail]}
               placeholder="voorbeeld@hr.nl"
@@ -131,23 +128,39 @@ const LoginScreen = () => {
           </View>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>WACHTWOORD</Text>
-            <TextInput
-              style={[styles.input, styles.inputPassword]}
-              placeholder="********"
-              placeholderTextColor={COLORS.placeholderText}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={true}
-              selectionColor={COLORS.inputLine}
-            />
+            <View style={styles.labelContainer}>
+              <Icon name="lock-closed-outline" size={16} color={COLORS.inputLine} style={styles.labelIcon} />
+              <Text style={styles.inputLabel}>WACHTWOORD</Text>
+            </View>
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={[styles.input, styles.inputPassword]}
+                placeholder="********"
+                placeholderTextColor={COLORS.placeholderText}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                selectionColor={COLORS.inputLine}
+              />
+              <TouchableOpacity 
+                style={styles.eyeIcon} 
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Icon 
+                  name={showPassword ? "eye-outline" : "eye-off-outline"} 
+                  size={20} 
+                  color={COLORS.inputLine} 
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.errorText}>
-          {errorMessage  && (
-            <p className="error"> {errorMessage} </p>
+          
+          {errorMessage && (
+            <View style={styles.errorContainer}>
+              <Icon name="alert-circle-outline" size={16} color={COLORS.error} />
+              <Text style={styles.errorText}>{errorMessage}</Text>
+            </View>
           )}
-          </View>
-
 
           <LoginButton onPress={handleLogin} />
 
@@ -220,11 +233,18 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 35,
   },
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  labelIcon: {
+    marginRight: 5,
+  },
   inputLabel: {
     fontSize: 12,
     fontWeight: 'bold',
     color: COLORS.text,
-    marginBottom: 5,
     textTransform: 'uppercase',
   },
   input: {
@@ -240,6 +260,14 @@ const styles = StyleSheet.create({
   },
   inputPassword: {
     borderBottomColor: COLORS.inputLine,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 0,
   },
   loginButton: {
     backgroundColor: COLORS.red,
@@ -276,12 +304,17 @@ const styles = StyleSheet.create({
     color: COLORS.red, 
     fontWeight: 'bold',
   },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: -20,
+    marginBottom: 20,
+  },
   errorText: {
     color: COLORS.error,
-    textAlign: "center",
-    marginVertical: 10,
+    marginLeft: 5,
     fontSize: 14,
-},
+  },
 });
 
 export default LoginScreen;
