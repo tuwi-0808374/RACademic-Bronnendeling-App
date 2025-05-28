@@ -70,7 +70,7 @@ export default function Create_post() {
                     <Text style={styles.title}>Create Post</Text>
                 </View>
 
-                <ScrollView style={styles.scrollview}>
+                <ScrollView style={styles.scrollView}>
                 <View style={styles.form}>
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Titel</Text>
@@ -183,7 +183,7 @@ export default function Create_post() {
             justifyContent: "center",
             marginBottom: 15
         },
-        scrollview:{
-            flex: 1
+        scrollView:{
+
         }
     })
