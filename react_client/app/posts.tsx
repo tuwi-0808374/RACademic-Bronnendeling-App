@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import { useLocalSearchParams } from "expo-router";
 import RateButtons from "@/components/posts/RateButtons";
 import FavoriteButton from '../components/posts/FavoriteButton';
 import {getApiBaseUrl} from "@/constants/get_ip";
 import { useUser } from '@/constants/get_user_id';
+import {useRouter} from "expo-router";
 const API_BASE_URL = getApiBaseUrl();
 
 function Posts() {
   const [posts, setPosts] = useState([]);
   const { userId, loading } = useUser();
   const local = useLocalSearchParams();
+  const router = useRouter();
   useEffect(() => {
     
     const fetchPosts = async () => {
@@ -62,6 +64,18 @@ function Posts() {
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts.map((post, i) => (
         <Text key={i} style={styles.postContainer}>
+          {post.user_id === userId && (
+      <TouchableOpacity onPress={() => router.push("/posts/edit_post")}>
+        <View style={styles.button}>
+          <Text style={styles.buttontext}>edit post</Text>
+        </View>
+      </TouchableOpacity>
+    )}
+          <TouchableOpacity onPress={() => router.push({ pathname: "/account/profile", params: { user_id: post['id']} })}>
+                                              <View style={styles.button}>
+                                                  <Text style={styles.buttontext}>edit post</Text>
+                                              </View>
+                                          </TouchableOpacity>
           <Text style={{ fontWeight: 'bold' }}>Geplaatst door: {post['username']}</Text>
           {'\n'}
           {post['id']}

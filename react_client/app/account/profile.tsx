@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/Ionicons";
 import UserBadges from "../../components/user_badges";
 import { getApiBaseUrl } from "../../constants/get_ip";
@@ -44,6 +44,7 @@ interface JwtPayload {
 }
 
 interface UserData {
+  id: number;
   is_public: number;
   username: string;
   first_name: string;
@@ -61,6 +62,9 @@ export default function PublicProfileScreen() {
   const [userId, setUserId] = useState<number | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
+
+  const params = useLocalSearchParams();
+  const profileUserId = params.user_id ? parseInt(params.user_id as string) : null;
   const router = useRouter();
   const [isPublic, setIsPublic] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -76,14 +80,10 @@ export default function PublicProfileScreen() {
       const decoded = jwt_decode<JwtPayload>(token);
       const currentUserId = decoded.user_id;
 
-      if (!currentUserId) {
-        console.error("User ID niet gevonden in token:", decoded);
-        return;
-      }
+      const targetUserId = profileUserId || decoded.user_id;
 
-      setUserId(currentUserId);
-
-      const response = await fetch(`${API_BASE_URL}/profile/${currentUserId}`, {
+      
+      const response = await fetch(`${API_BASE_URL}/profile/${targetUserId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -98,8 +98,9 @@ export default function PublicProfileScreen() {
           setUserData(userData);
           setIsPublic(userData.is_public === 0);
           setUserName(userData.username || "");
-
-          if (userData.is_public === 0) {
+          
+          // Modified: Only show private info if viewing own profile or profile is public
+          if (userData.is_public === 0 || targetUserId === decoded.user_id) {
             setFirstName(userData.first_name || "");
             setLastName(userData.last_name || "");
             setEmail(userData.email || "");
@@ -117,19 +118,20 @@ export default function PublicProfileScreen() {
         }
       } else {
         console.log(`Kan profiel niet ophalen.`);
-        const errorData = await response.text();
-        console.log("Foutdetails:", errorData);
       }
     } catch (error) {
       console.log("Fout bij ophalen profiel:", error);
     }
   };
 
+
   useFocusEffect(
     React.useCallback(() => {
       fetchProfile();
-    }, [])
+    }, [profileUserId])
   );
+
+  const isOwnProfile = !profileUserId || (userId !== null && profileUserId === userId);
 
   useEffect(() => {
     fetchProfile();
@@ -143,7 +145,7 @@ export default function PublicProfileScreen() {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-           <UserBadges />
+          <UserBadges />
           <View style={styles.innerContainer}>
             <View style={styles.profileImageContainer}>
               {profileImage ? (
@@ -160,7 +162,7 @@ export default function PublicProfileScreen() {
             </View>
 
             <Text style={styles.logoTitle}>
-              OPENBAAR PROFIEL
+              {isOwnProfile ? "JOUW PROFIEL" : "PROFIEL VAN ${username}"}
             </Text>
 
             <View style={styles.inputGroup}>
@@ -211,19 +213,19 @@ export default function PublicProfileScreen() {
               </View>
               <Text style={styles.input}>{username}</Text>
             </View>
-
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push("/account/edit_profile")}
-            >
-              <Icon
-                name="create-outline"
-                size={20}
-                color={COLORS.textLight}
-                style={styles.buttonIcon}
-              />
-              <Text style={styles.actionButtonText}>Profiel Bewerken</Text>
-            </TouchableOpacity>
+            {isOwnProfile &&(
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={() => router.push("/account/edit_profile")}
+              >
+                <Icon
+                  name="create-outline"
+                  size={20}
+                  color={COLORS.textLight}
+                  style={styles.buttonIcon}
+                />
+                <Text style={styles.actionButtonText}>Profiel Bewerken</Text>
+              </TouchableOpacity>)}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
