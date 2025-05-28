@@ -17,12 +17,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import ImageUploader from "../../components/account/ImageUploader";
 import { useDebouncedCallback } from "use-debounce";
-import { getApiBaseUrl } from '../../constants/get_ip';
+import { getApiBaseUrl } from "../../constants/get_ip";
 import { CheckBox } from "@/components/input";
-import { Switch } from 'react-native';
-import { MaterialIcons, MaterialCommunityIcons  } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import ErrorMessage from '../../components/general/ErrorMessage';
+import { Switch } from "react-native";
+import { useRouter } from "expo-router";
+import ErrorMessage from "../../components/general/ErrorMessage";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -82,7 +82,6 @@ export default function EditProfileScreen() {
 
   const [AccountPublic, setAccountPublic] = useState(false);
   const router = useRouter();
-  
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -113,7 +112,7 @@ export default function EditProfileScreen() {
             },
           }
         );
-        
+
         if (response.ok) {
           const responseData = await response.json();
           const userData = responseData.data;
@@ -123,8 +122,7 @@ export default function EditProfileScreen() {
             setEmail(userData.email || "");
             setUserName(userData.username || "");
             setAccountPublic(!!userData.is_public);
-            
-            
+
             if (userData.profile_image_url) {
               setProfileImage(userData.profile_image_url);
               console.log("Profiel foto URL:", userData.profile_image_url);
@@ -204,81 +202,81 @@ export default function EditProfileScreen() {
   };
 
   const saveProfile = async () => {
-  try {
-    const token = await AsyncStorage.getItem("authToken");
-    if (!token) {
-      console.log("Geen token gevonden.");
-      return;
-    }
-
-    const decoded = jwt_decode<JwtPayload>(token);
-    const currentUserId = decoded.user_id;
-    
-
-    if (!currentUserId) {
-      return;
-    }
-
-    if (emailStatus.available === false || usernameStatus.available === false) {
-      console.log("Kies een beschikbare e-mail en gebruikersnaam");
-      return;
-    }
-
-    const formData: any = {
-      first_name,
-      last_name: lastName,
-      email,
-      username,
-      is_public: Boolean(AccountPublic),
-    };
-    
-
-    if (profileImage === null) {
-      formData.profile_image = "remove"; 
-    } else if (profileImage && profileImage.startsWith('file://')) {
-      const response = await fetch(profileImage);
-      const blob = await response.blob();
-      formData.profile_image = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
-      });
-    } else if (profileImage && profileImage.startsWith('data:')) {
-      formData.profile_image = profileImage; 
-    }
-
-    const response = await fetch(
-      `${API_BASE_URL}/update_profile/${currentUserId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      if (!token) {
+        console.log("Geen token gevonden.");
+        return;
       }
-    );
 
-    if (!response.ok) {
-      const errorData = await response.text();
-      throw new Error(errorData || "Update mislukt");
+      const decoded = jwt_decode<JwtPayload>(token);
+      const currentUserId = decoded.user_id;
+
+      if (!currentUserId) {
+        return;
+      }
+
+      if (
+        emailStatus.available === false ||
+        usernameStatus.available === false
+      ) {
+        console.log("Kies een beschikbare e-mail en gebruikersnaam");
+        return;
+      }
+
+      const formData: any = {
+        first_name,
+        last_name: lastName,
+        email,
+        username,
+        is_public: Boolean(AccountPublic),
+      };
+
+      if (profileImage === null) {
+        formData.profile_image = "remove";
+      } else if (profileImage && profileImage.startsWith("file://")) {
+        const response = await fetch(profileImage);
+        const blob = await response.blob();
+        formData.profile_image = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+      } else if (profileImage && profileImage.startsWith("data:")) {
+        formData.profile_image = profileImage;
+      }
+
+      const response = await fetch(
+        `${API_BASE_URL}/update_profile/${currentUserId}`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(errorData || "Update mislukt");
+      }
+
+      const responseData = await response.json();
+      console.log("Succesvol bijgewerkt:", responseData);
+      setSaveMessage("Profiel succesvol opgeslagen!");
+      setTimeout(() => {
+        setSaveMessage("");
+      }, 3000);
+    } catch (error) {
+      console.error("Fout bij opslaan:", error);
+      setSaveMessage("Er is een fout opgetreden bij het opslaan.");
+      setTimeout(() => {
+        setSaveMessage("");
+      }, 3000);
     }
-
-    const responseData = await response.json();
-    console.log("Succesvol bijgewerkt:", responseData);
-    setSaveMessage("Profiel succesvol opgeslagen!");
-    setTimeout(() => {
-      setSaveMessage("");
-    }, 3000);
-    
-  } catch (error) {
-    console.error("Fout bij opslaan:", error);
-    setSaveMessage("Er is een fout opgetreden bij het opslaan.");
-    setTimeout(() => {
-      setSaveMessage("");
-    }, 3000);
-  }
-};
+  };
 
   const debouncedCheckEmail = useDebouncedCallback((email: string) => {
     if (!email) {
@@ -357,31 +355,38 @@ export default function EditProfileScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
-
-      
-
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.innerContainer}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.navigate("/account/profile")}
+            >
+              <Icon name="arrow-back" size={24} color={COLORS.text} />
+            </TouchableOpacity>
+
             <View style={styles.profileImageContainer}>
               <ImageUploader
                 image={profileImage}
                 onImageSelected={setProfileImage}
               />
             </View>
-            
-            <TouchableOpacity style={styles.backButton} onPress={() => router.navigate('/account/profile')}>
-              <MaterialIcons name="arrow-back" size={24} color={COLORS.text} />
-            </TouchableOpacity>
 
-            
-            <Text style={styles.logoTitle}>MIJN PROFIEL</Text>
+            <Text style={styles.logoTitle}>PROFIEL BEWERKEN</Text>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Voornaam</Text>
+              <View style={styles.labelContainer}>
+                <Icon
+                  name="person-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>Voornaam</Text>
+              </View>
               <TextInput
                 value={first_name}
                 onChangeText={setFirstName}
@@ -390,8 +395,17 @@ export default function EditProfileScreen() {
                 placeholderTextColor={COLORS.placeholderText}
               />
             </View>
+
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Achternaam</Text>
+              <View style={styles.labelContainer}>
+                <Icon
+                  name="people-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>Achternaam</Text>
+              </View>
               <TextInput
                 value={lastName}
                 onChangeText={setLastName}
@@ -400,8 +414,17 @@ export default function EditProfileScreen() {
                 placeholderTextColor={COLORS.placeholderText}
               />
             </View>
+
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>E-mail</Text>
+              <View style={styles.labelContainer}>
+                <Icon
+                  name="mail-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>E-mail</Text>
+              </View>
               <TextInput
                 value={email}
                 onChangeText={(text) => {
@@ -422,7 +445,15 @@ export default function EditProfileScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Gebruikersnaam</Text>
+              <View style={styles.labelContainer}>
+                <Icon
+                  name="at-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>Gebruikersnaam</Text>
+              </View>
               <TextInput
                 value={username}
                 onChangeText={(text) => {
@@ -442,54 +473,89 @@ export default function EditProfileScreen() {
                 </Text>
               ) : null}
             </View>
-              <View style={styles.toggleContainer}>
-            <View style={styles.toggleLabelContainer}>
-              <TouchableOpacity 
-                style={styles.infoIcon} 
-                onPress={() => {
-                  if (Platform.OS === 'web') {
-                    setShowTooltip(!showTooltip);
+
+            <View style={styles.toggleContainer}>
+              <View style={styles.toggleLabelContainer}>
+                <TouchableOpacity
+                  style={styles.infoIcon}
+                  onPress={() => {
+                    if (Platform.OS === "web") {
+                      setShowTooltip(!showTooltip);
+                    }
+                  }}
+                  onPressIn={() =>
+                    Platform.OS !== "web" && setShowTooltip(true)
                   }
-                }}
-                onPressIn={() => Platform.OS !== 'web' && setShowTooltip(true)}
-                onPressOut={() => Platform.OS !== 'web' && setShowTooltip(false)}
-              >
-                <MaterialCommunityIcons name="information-outline" size={20} color={COLORS.text} />
-              </TouchableOpacity>
-              {showTooltip && (
-                <View style={[
-                  styles.tooltip,
-                  Platform.OS === 'web' && styles.tooltipWeb
-                ]}>
-                  <Text style={styles.tooltipText}>
-                    Je naam en e-mailadres worden niet weergegeven op je account.
-                  </Text>
-                </View>
-              )}
-              <Text style={styles.toggleLabel}>Privéaccount</Text>
+                  onPressOut={() =>
+                    Platform.OS !== "web" && setShowTooltip(false)
+                  }
+                >
+                  <Icon
+                    name="information-circle-outline"
+                    size={20}
+                    color={COLORS.text}
+                  />
+                </TouchableOpacity>
+                {showTooltip && (
+                  <View
+                    style={[
+                      styles.tooltip,
+                      Platform.OS === "web" && styles.tooltipWeb,
+                    ]}
+                  >
+                    <Text style={styles.tooltipText}>
+                      Je naam en e-mailadres worden niet weergegeven op je
+                      account.
+                    </Text>
+                  </View>
+                )}
+                <Text style={styles.toggleLabel}>Privéaccount</Text>
+              </View>
+              <Switch
+                value={AccountPublic}
+                onValueChange={(value) => setAccountPublic(value)}
+              />
             </View>
-            <Switch
-              value={AccountPublic}
-              onValueChange={(value) => setAccountPublic(value)}
-            />
-          </View>
 
             {saveMessage ? (
-            <Text style={styles.saveMessage}>{saveMessage}</Text>
-          ) : null}
+              <Text style={styles.saveMessage}>{saveMessage}</Text>
+            ) : null}
 
             <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
+              <Icon
+                name="save-outline"
+                size={20}
+                color={COLORS.textLight}
+                style={styles.buttonIcon}
+              />
               <Text style={styles.actionButtonText}>Profiel Opslaan</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity style={[styles.actionButton, styles.backToProfileButton]} onPress={() => router.navigate('/account/profile')}>
+
+            <TouchableOpacity
+              style={[styles.actionButton, styles.backToProfileButton]}
+              onPress={() => router.navigate("/account/profile")}
+            >
+              <Icon
+                name="person-outline"
+                size={20}
+                color={COLORS.textLight}
+                style={styles.buttonIcon}
+              />
               <Text style={styles.actionButtonText}>Terug naar Profiel</Text>
             </TouchableOpacity>
 
+            <Text style={styles.sectionTitle}>WACHTWOORD WIJZIGEN</Text>
 
-            <Text style={styles.sectionTitle}>Wachtwoord Wijzigen</Text>
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Huidig Wachtwoord</Text>
+              <View style={styles.labelContainer}>
+                <Icon
+                  name="lock-closed-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>Huidig Wachtwoord</Text>
+              </View>
               <TextInput
                 value={oldPassword}
                 onChangeText={setOldPassword}
@@ -499,8 +565,17 @@ export default function EditProfileScreen() {
                 placeholderTextColor={COLORS.placeholderText}
               />
             </View>
+
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Nieuw Wachtwoord</Text>
+              <View style={styles.labelContainer}>
+                <Icon
+                  name="lock-open-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>Nieuw Wachtwoord</Text>
+              </View>
               <TextInput
                 value={newPassword}
                 onChangeText={setNewPassword}
@@ -510,8 +585,17 @@ export default function EditProfileScreen() {
                 placeholderTextColor={COLORS.placeholderText}
               />
             </View>
+
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Bevestig Nieuw Wachtwoord</Text>
+              <View style={styles.labelContainer}>
+                <Icon
+                  name="checkmark-done-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>Bevestig Nieuw Wachtwoord</Text>
+              </View>
               <TextInput
                 value={confirmNewPassword}
                 onChangeText={setConfirmNewPassword}
@@ -522,12 +606,21 @@ export default function EditProfileScreen() {
               />
             </View>
 
-            <ErrorMessage message={passwordChangeMessage} type={passwordChangeMessageType} />
+            <ErrorMessage
+              message={passwordChangeMessage}
+              type={passwordChangeMessageType}
+            />
 
             <TouchableOpacity
               style={[styles.actionButton, styles.changePasswordButton]}
               onPress={handleChangePassword}
             >
+              <Icon
+                name="key-outline"
+                size={20}
+                color={COLORS.textLight}
+                style={styles.buttonIcon}
+              />
               <Text style={styles.actionButtonText}>Wachtwoord Wijzigen</Text>
             </TouchableOpacity>
           </View>
@@ -555,12 +648,6 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingBottom: 20,
   },
-  logo: {
-    width: 120,
-    height: 80,
-    marginBottom: 10,
-    alignSelf: "center",
-  },
   logoTitle: {
     fontSize: 18,
     fontWeight: "bold",
@@ -568,16 +655,26 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 40,
     textTransform: "uppercase",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   inputGroup: {
     width: "100%",
     marginBottom: 25,
   },
+  labelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  labelIcon: {
+    marginRight: 5,
+  },
   inputLabel: {
     fontSize: 12,
     fontWeight: "bold",
     color: COLORS.text,
-    marginBottom: 5,
     textTransform: "uppercase",
   },
   input: {
@@ -587,8 +684,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingBottom: 5,
     color: COLORS.text,
-  },
-  inputStyle: {
     borderBottomColor: COLORS.inputLine,
   },
   actionButton: {
@@ -605,6 +700,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  buttonIcon: {
+    marginRight: 8,
   },
   actionButtonText: {
     color: COLORS.textLight,
@@ -615,27 +715,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    borderWidth: 2,
-    borderColor: COLORS.red,
-  },
   changePasswordButton: {
     marginTop: 10,
     marginBottom: 30,
-  },
-  successText: {
-    color: COLORS.success,
-  },
-  errorText: {
-    color: COLORS.error,
-  },
-  messageText: {
-    textAlign: "center",
-    marginVertical: 10,
-    fontSize: 14,
   },
   sectionTitle: {
     fontSize: 14,
@@ -645,6 +727,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
     textTransform: "uppercase",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   statusMessage: {
     fontSize: 12,
@@ -666,19 +751,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   toggleContainer: {
-   flexDirection: 'row', 
-   alignItems: 'center', 
-   marginBottom: 20,
-   justifyContent: 'flex-start',
-   
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+    justifyContent: "flex-start",
   },
   toggleLabel: {
     fontSize: 16,
     marginRight: 20,
-    
   },
   backButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 40,
     left: 20,
     zIndex: 1,
@@ -688,21 +771,17 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   toggleLabelContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  },
-  infoIconContainer: {
-    position: 'relative',
-    marginLeft: 8,
+    flexDirection: "row",
+    alignItems: "center",
   },
   tooltip: {
-    position: 'absolute',
-    bottom: 30,     
-    backgroundColor: 'white',
+    position: "absolute",
+    bottom: 30,
+    backgroundColor: "white",
     padding: 10,
     borderRadius: 5,
     width: 200,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -714,7 +793,7 @@ const styles = StyleSheet.create({
     color: COLORS.text,
   },
   infoIcon: {
-    paddingRight: 20,
+    paddingRight: 8,
   },
   tooltipWeb: {
     // hier kan andere styling voor web
