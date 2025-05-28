@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  TouchableWithoutFeedback
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
@@ -146,6 +147,7 @@ export default function PublicProfileScreen() {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <UserBadges />
+          <TouchableWithoutFeedback>
           <View style={styles.innerContainer}>
             <View style={styles.profileImageContainer}>
               {profileImage ? (
@@ -227,6 +229,7 @@ export default function PublicProfileScreen() {
                 <Text style={styles.actionButtonText}>Profiel Bewerken</Text>
               </TouchableOpacity>)}
           </View>
+          </TouchableWithoutFeedback>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
