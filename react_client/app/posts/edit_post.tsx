@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import {CheckBox} from "@/components/input";
 import {useLocalSearchParams, useRouter} from "expo-router";
+import {getApiBaseUrl} from "@/constants/get_ip";
+const API_BASE_URL = getApiBaseUrl();
 
 
 
@@ -27,7 +29,7 @@ export default function editpost() {
     const router = useRouter();
 
     useEffect(() => {
-        fetch(`http://localhost:5000/tags_by_post_id/${post_id}`)
+        fetch(`${API_BASE_URL}/tags_by_post_id/${post_id}`)
             .then(res => res.json())
             .then(data => {
                 setTagData(data.data.tags);
@@ -42,7 +44,7 @@ export default function editpost() {
     useEffect(() => {
     const fetchPost = async () => {
     try{
-        const response = await fetch(`http://localhost:5000/post_by_post_id/${post_id}`);
+        const response = await fetch(`${API_BASE_URL}/post_by_post_id/${post_id}`);
         if(!response.ok){
             throw new Error('Failed to fetch posts.');
         }
@@ -60,7 +62,7 @@ export default function editpost() {
     }, []);
 
     const EditPost = async () => {
-        const url = `http://localhost:5000/edit_post/${post_id}`;
+        const url = `${API_BASE_URL}/edit_post/${post_id}`;
         let result = await fetch(url, {
             method: 'PATCH',
             headers: {"Content-Type": "application/json"},
@@ -74,7 +76,7 @@ export default function editpost() {
     }
 
     const DeletePost = async () => {
-        const url = `http://localhost:5000/delete_post/${post_id}`;
+        const url = `${API_BASE_URL}/delete_post/${post_id}`;
         let result = await fetch(url, {
             method: 'DELETE',
             headers: {"Content-Type": "application/json"},

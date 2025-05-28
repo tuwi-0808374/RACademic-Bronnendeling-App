@@ -61,10 +61,9 @@ def get_posts_by_id(id):
 @post_bp.route('/posts', methods=['POST'])
 def create_posts():
     post = Post()
-    user_id = 1
     if request.method == "POST":
         data = request.get_json()
-        created_posts = post.post_create_post(user_id, data)
+        created_posts = post.post_create_post(data)
         if not created_posts:
             return jsonify({'status': 'error', 'message': 'Post not found'}), 404
 

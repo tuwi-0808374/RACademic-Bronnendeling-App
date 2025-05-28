@@ -98,10 +98,10 @@ class Post:
         return None
 
     #bron https://docs.python.org/3/library/datetime.html
-    def post_create_post(self, user_id, data):
+    def post_create_post(self, data):
         posted_date = int(datetime.now().timestamp())
         query = "INSERT INTO posts (title, content, user_id, posted_date) VALUES (?,?,?,?)"
-        result = self.cursor.execute(query, (data["title"], data["content"], user_id, posted_date))
+        result = self.cursor.execute(query, (data["title"], data["content"], data["user_id"], posted_date))
         self.con.commit()
         if result:
             return True

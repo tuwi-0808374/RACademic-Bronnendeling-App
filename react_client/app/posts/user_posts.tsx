@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import {useRouter} from "expo-router";
+import { useUser } from '@/constants/get_user_id';
+import {getApiBaseUrl} from "@/constants/get_ip";
+const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
     red: '#C80032',
@@ -18,17 +21,22 @@ const COLORS = {
 
 export default function UserPosts () {
     const [postdata, setPostdata] = useState([]);
-    const user_id = 1
     const router = useRouter();
+    const { userId, loading } = useUser();
 
 
     useEffect(() => {
-        fetch(`http://localhost:5000/posts_by_user_id/${user_id}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                setPostdata(data.data);
-            })
+        if (!loading && userId) {
+            try {
+                fetch(`${API_BASE_URL}/posts_by_user_id/${userId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+                        setPostdata(data.data);})
+            } catch (error) {
+                console.error('API request failed:', error);
+            }
+        }
     }, []);
 
 
