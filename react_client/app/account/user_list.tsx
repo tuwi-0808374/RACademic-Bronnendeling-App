@@ -1,5 +1,5 @@
 import React, { useState, useEffect, use } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button } from 'react-native';
+import {  View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
@@ -23,8 +23,6 @@ export default function UserListScreen() {
     is_admin: boolean;
   }
 
-  useEffect(() => {
-    console.log('Loading user ID from AsyncStorage');
     const fetchUser = async () => {
       try {
         const token = await AsyncStorage.getItem('authToken');
@@ -41,30 +39,74 @@ export default function UserListScreen() {
         console.error('Error loading badges:', error);
       }
     };
+
+  useEffect(() => {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    console.log('Fetching users for userId:', userId);
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/users`);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        console.log(userId, isAdmin);
-        const data = await response.json();
-        setUsers(data.users);
-      } catch (error) {
-        console.error('Error fetching users:', error);
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/users`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-    };
+      console.log(userId, isAdmin);
+      const data = await response.json();
+      setUsers(data.users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchUsers();
   }, [userId]);
 
+  const banUser = async (userId: number) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/ban_user/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log('User banned:', data);
+
+      fetchUsers();
+
+    } catch (error) {
+      console.error('Error banning user:', error);
+    }
+  }
+
+  const unbanUser = async (userId: number) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/unban_user/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log('User unbanned:', data);
+
+      fetchUsers();
+
+    } catch (error) {
+      console.error('Error unbanning user:', error);
+    }
+  };
+
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{height: '100%'}}>
       <StatusBar />
       <ScrollView>
         <View>
@@ -93,10 +135,19 @@ export default function UserListScreen() {
                 )}
               </View>
               {isAdmin ? (
-                <Button
-                  title="Ban user"
-                  onPress={() => console.log(`Ban user with ID: ${user['id']}`)}
-                />
+                user['is_banned'] ? (
+                  <Button
+                    title="Blokkering opheffen"
+                    color="green"
+                    onPress={() => unbanUser(user['id'])}
+                  />
+                ) : (
+                  <Button
+                    title="Blokkeer gebruiker"
+                    color="red"
+                    onPress={() => banUser(user['id'])}
+                  />
+                )
               ): null}
             </View>
           </TouchableOpacity>
@@ -127,5 +178,5 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-  },
+  }
 });

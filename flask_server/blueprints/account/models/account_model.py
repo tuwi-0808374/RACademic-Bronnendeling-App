@@ -316,4 +316,34 @@ class Account:
             return [dict(row) for row in result]
         finally:
             if con:
-                con.close() 
+                con.close()
+    
+    def ban_user(self, user_id):
+        cursor, con = self.connect_db()
+        try:
+            cursor.execute(
+                "UPDATE users SET is_banned = 1 WHERE id = ?",
+                (user_id,)
+            )
+            con.commit()
+            return True, "User banned successfully"
+        except Exception as e:
+            return False, "Error banning user: " + str(e)
+        finally:
+            if con:
+                con.close()
+    
+    def unban_user(self, user_id):
+        cursor, con = self.connect_db()
+        try:
+            cursor.execute(
+                "UPDATE users SET is_banned = 0 WHERE id = ?",
+                (user_id,)
+            )
+            con.commit()
+            return True, "User unbanned successfully"
+        except Exception as e:
+            return False, "Error unbanning user: " + str(e)
+        finally:
+            if con:
+                con.close()

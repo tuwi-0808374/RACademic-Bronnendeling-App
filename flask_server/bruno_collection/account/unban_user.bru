@@ -1,0 +1,15 @@
+meta {
+  name: unban_user
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:5000/ban_user/:user_id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  user_id: 
+}

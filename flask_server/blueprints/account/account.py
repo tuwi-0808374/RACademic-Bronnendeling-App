@@ -233,3 +233,23 @@ def get_users():
         return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
     
     return jsonify({'status': 'success', 'users': users}), 200
+
+@account_bp.route('/ban_user/<int:user_id>', methods=['PATCH'])
+def ban_user(user_id):
+    account_model = Account()
+    success, message = account_model.ban_user(user_id)
+    
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        return jsonify({'status': 'error', 'message': message}), 400
+
+@account_bp.route('/unban_user/<int:user_id>', methods=['PATCH'])
+def unban_user(user_id):
+    account_model = Account()
+    success, message = account_model.unban_user(user_id)
+    
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        return jsonify({'status': 'error', 'message': message}), 400
