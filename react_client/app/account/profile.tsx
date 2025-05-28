@@ -51,6 +51,7 @@ interface UserData {
   last_name: string;
   email: string;
   profile_image_url?: string;
+  id: number;
 }
 
 export default function PublicProfileScreen() {
@@ -144,7 +145,7 @@ export default function PublicProfileScreen() {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <UserBadges />
+          <UserBadges userID={userData?.id} />
           <TouchableWithoutFeedback>
           <View style={styles.innerContainer}>
             <View style={styles.profileImageContainer}>
