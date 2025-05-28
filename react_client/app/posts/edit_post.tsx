@@ -3,6 +3,8 @@ import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, Scrol
 import {CheckBox} from "@/components/input";
 import {useLocalSearchParams, useRouter} from "expo-router";
 
+
+
 const COLORS = {
     red: '#C80032',
     background: '#F8F4EF',
@@ -154,7 +156,6 @@ const styles = StyleSheet.create({
     container: {
         paddingVertical: 10,
         paddingHorizontal: 30,
-        flex: 1,
     },
     header: {
         marginVertical: 36,

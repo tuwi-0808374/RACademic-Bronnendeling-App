@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Button,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
@@ -19,7 +20,8 @@ import { useDebouncedCallback } from "use-debounce";
 import { getApiBaseUrl } from '../../constants/get_ip';
 import { CheckBox } from "@/components/input";
 import { Switch } from 'react-native';
-
+import { MaterialIcons, MaterialCommunityIcons  } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -73,12 +75,13 @@ export default function EditProfileScreen() {
     message: string;
   }>({ checking: false, message: "" });
 
-
+  const [showTooltip, setShowTooltip] = useState(false);
   const [checkedTags, setCheckedTags] = useState({});
   const [data, setData] = useState([]);
 
   const [AccountPublic, setAccountPublic] = useState(false);
-
+  const router = useRouter();
+  
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -177,9 +180,6 @@ export default function EditProfileScreen() {
         }
       );
 
-      
-     
-
       const responseData = await response.json();
       if (response.ok) {
         setPasswordChangeMessage(
@@ -230,6 +230,7 @@ export default function EditProfileScreen() {
       username,
       is_public: Boolean(AccountPublic),
     };
+    
 
     if (profileImage === null) {
       formData.profile_image = "remove"; 
@@ -355,6 +356,9 @@ export default function EditProfileScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+
+      
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingContainer}
@@ -367,6 +371,10 @@ export default function EditProfileScreen() {
                 onImageSelected={setProfileImage}
               />
             </View>
+            
+            <TouchableOpacity style={styles.backButton} onPress={() => router.navigate('/account/profile')}>
+              <MaterialIcons name="arrow-back" size={24} color={COLORS.text} />
+            </TouchableOpacity>
 
             
             <Text style={styles.logoTitle}>MIJN PROFIEL</Text>
@@ -425,13 +433,6 @@ export default function EditProfileScreen() {
                 selectionColor={COLORS.red}
                 placeholderTextColor={COLORS.placeholderText}
               />
-                    
-
-
-
-              
-                    
-
               {usernameStatus.checking ? (
                 <Text style={usernameStatusStyle}>Controleren...</Text>
               ) : usernameStatus.message ? (
@@ -441,13 +442,36 @@ export default function EditProfileScreen() {
               ) : null}
             </View>
               <View style={styles.toggleContainer}>
-                <Text style={styles.toggleLabel}>Privéaccount</Text>
-                <Switch
-                  value={AccountPublic}
-                  onValueChange={(value) => setAccountPublic(value)}
-                />
-              </View>
-            
+            <View style={styles.toggleLabelContainer}>
+              <TouchableOpacity 
+                style={styles.infoIcon} 
+                onPress={() => {
+                  if (Platform.OS === 'web') {
+                    setShowTooltip(!showTooltip);
+                  }
+                }}
+                onPressIn={() => Platform.OS !== 'web' && setShowTooltip(true)}
+                onPressOut={() => Platform.OS !== 'web' && setShowTooltip(false)}
+              >
+                <MaterialCommunityIcons name="information-outline" size={20} color={COLORS.text} />
+              </TouchableOpacity>
+              {showTooltip && (
+                <View style={[
+                  styles.tooltip,
+                  Platform.OS === 'web' && styles.tooltipWeb
+                ]}>
+                  <Text style={styles.tooltipText}>
+                    Je naam en e-mailadres worden niet weergegeven op je account.
+                  </Text>
+                </View>
+              )}
+              <Text style={styles.toggleLabel}>Privéaccount</Text>
+            </View>
+            <Switch
+              value={AccountPublic}
+              onValueChange={(value) => setAccountPublic(value)}
+            />
+          </View>
 
             {saveMessage ? (
             <Text style={styles.saveMessage}>{saveMessage}</Text>
@@ -456,6 +480,11 @@ export default function EditProfileScreen() {
             <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
               <Text style={styles.actionButtonText}>Profiel Opslaan</Text>
             </TouchableOpacity>
+            
+            <TouchableOpacity style={[styles.actionButton, styles.backToProfileButton]} onPress={() => router.navigate('/account/profile')}>
+              <Text style={styles.actionButtonText}>Terug naar Profiel</Text>
+            </TouchableOpacity>
+
 
             <Text style={styles.sectionTitle}>Wachtwoord Wijzigen</Text>
             <View style={styles.inputGroup}>
@@ -657,5 +686,47 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 20,
     
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    zIndex: 1,
+  },
+  backToProfileButton: {
+    backgroundColor: COLORS.placeholderText,
+    marginTop: 10,
+  },
+  toggleLabelContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  },
+  infoIconContainer: {
+    position: 'relative',
+    marginLeft: 8,
+  },
+  tooltip: {
+    position: 'absolute',
+    bottom: 30,     
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 5,
+    width: 200,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 100,
+  },
+  tooltipText: {
+    fontSize: 12,
+    color: COLORS.text,
+  },
+  infoIcon: {
+    paddingRight: 20,
+  },
+  tooltipWeb: {
+    // hier kan andere styling voor web
   },
 });

@@ -113,7 +113,6 @@ export default function Create_post() {
         container: {
             paddingVertical: 10,
             paddingHorizontal: 30,
-            flex: 1,
         },
         header: {
             marginVertical: 36,

@@ -1,18 +1,10 @@
-import { Text, View} from 'react-native';
-import SearchBar from '../components/general/SearchBar';
-
+import {View, StyleSheet} from 'react-native';
 import { Link } from 'expo-router';
+
 
 export default function Index() {
     return (
-        <View
-            style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-            }}
-        >
-            <SearchBar />
+        <View style={styles.contentContainer}>
             <Link href={'/account/login'}>
                 Login
             </Link>
@@ -40,3 +32,9 @@ export default function Index() {
         </View>
     );
 }
+const styles = StyleSheet.create({
+    contentContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+})

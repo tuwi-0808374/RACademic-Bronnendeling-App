@@ -1,7 +1,7 @@
 from flask import *
 from flask_cors import CORS
-from flask_server.blueprints.post.models.post_model import Post
-from flask_server.blueprints.rating.models.rating_model import Rating
+from blueprints.post.models.post_model import Post
+from blueprints.rating.models.rating_model import Rating
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
 CORS(post_bp)
@@ -11,13 +11,15 @@ CORS(base)
 @post_bp.route('/posts/<int:user_id>', methods=['GET'])
 def get_posts_with_user(user_id):
     post = Post()
-    rating = Rating()
     data = request.get_json(silent=True) or {}
 
-    search_query = data.get('search_query', None)
-    tag_ids = data.get('tags', None)
+    search_query = request.args.get('search_query', None)
+    tag_ids = []
+    if request.args.get('tag_id'):
+        for tag in request.args.getlist('tag_id'):
+            tag_ids.append(tag)
     # user_rating = None
-
+    print(search_query, tag_ids)
     if not user_id:
         return jsonify({'status': 'error', 'message': 'User ID not found'}), 404
 
@@ -55,7 +57,7 @@ def get_posts_by_id(id):
     return jsonify({'status': 'success', 'data': posts}), 200
 
 
-
+# bron https://flask-restful.readthedocs.io/en/latest/quickstart.html#resourceful-routing
 @post_bp.route('/posts', methods=['POST'])
 def create_posts():
     post = Post()

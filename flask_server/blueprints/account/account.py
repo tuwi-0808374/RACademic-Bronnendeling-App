@@ -16,21 +16,26 @@ def login_api():
     data = request.json
     login_email = data.get('email')
     login_password = data.get('password')
-
     if not login_email or not login_password:
         return jsonify({"message": "Email en wachtwoord zijn vereist"}), 400
 
     account_model = Account()
     user = account_model.get_user_by_email(login_email)
+    
+    if user['is_banned'] != False:
+        return jsonify({"message": "Uw account is geblokkeerd"}), 400
 
     if not user:
         return jsonify({"message": "Gebruiker niet gevonden"}), 404
+    
+    print(f"User found: {user['id']}")
 
     if bcrypt.checkpw(login_password.encode('utf-8'), user['hashed_password']):
         access_token = create_access_token(
             identity=login_email,
             additional_claims={
-                "user_id": user["id"]
+                "user_id": user["id"],
+                "is_admin": user["is_admin"],
             }
         )  
         return jsonify({"access_token": access_token}), 200
@@ -210,7 +215,6 @@ def get_users_with_overall_rating():
     return jsonify({'status': 'success', 'data': users}), 200
 
 @account_bp.route('/get_users_with_most_badges', methods=['GET'])
-@cross_origin()
 def get_users_with_most_badges():
     account_model = Account()
     limit = request.args.get('limit', default=5, type=int)
@@ -220,3 +224,13 @@ def get_users_with_most_badges():
         return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
     
     return jsonify({'status': 'success', 'data': users}), 200
+
+@account_bp.route('/users', methods=['GET'])
+def get_users():
+    account_model = Account()
+    users = account_model.get_users()
+    
+    if not users:
+        return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
+    
+    return jsonify({'status': 'success', 'users': users}), 200
