@@ -18,7 +18,7 @@ import jwt_decode from "jwt-decode";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/Ionicons";
 import UserBadges from "../../components/user_badges";
-import { getApiBaseUrl } from "../../constants/get_ip";
+import { getApiBaseUrl } from "@/constants/get_ip";
 import { useFocusEffect } from "expo-router";
 
 const API_BASE_URL = getApiBaseUrl();

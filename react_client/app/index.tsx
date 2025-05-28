@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getApiBaseUrl } from "../constants/get_ip";
+import { getApiBaseUrl } from "@/constants/get_ip";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const API_BASE_URL = getApiBaseUrl();
