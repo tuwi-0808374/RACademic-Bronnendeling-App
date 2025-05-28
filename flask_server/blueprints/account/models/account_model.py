@@ -307,7 +307,7 @@ class Account:
         try:
             result = cursor.execute(
                 """
-                    SELECT id, first_name, last_name, username, email, is_public, profile_image, is_banned
+                    SELECT id, first_name, last_name, username, email, is_public, profile_image, is_banned, is_admin
                     FROM users
                     LIMIT ? OFFSET ?
                 """,
@@ -344,6 +344,35 @@ class Account:
             return True, "User unbanned successfully"
         except Exception as e:
             return False, "Error unbanning user: " + str(e)
+        finally:
+            if con:
+                con.close()
+    def make_admin(self, user_id):
+        cursor, con = self.connect_db()
+        try:
+            cursor.execute(
+                "UPDATE users SET is_admin = 1 WHERE id = ?",
+                (user_id,)
+            )
+            con.commit()
+            return True, "User made admin successfully"
+        except Exception as e:
+            return False, "Error making user admin: " + str(e)
+        finally:
+            if con:
+                con.close()
+                
+    def remove_admin(self, user_id):
+        cursor, con = self.connect_db()
+        try:
+            cursor.execute(
+                "UPDATE users SET is_admin = 0 WHERE id = ?",
+                (user_id,)
+            )
+            con.commit()
+            return True, "Admin removed successfully"
+        except Exception as e:
+            return False, "Error removing admin: " + str(e)
         finally:
             if con:
                 con.close()

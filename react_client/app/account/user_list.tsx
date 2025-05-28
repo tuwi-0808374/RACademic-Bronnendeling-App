@@ -104,9 +104,52 @@ export default function UserListScreen() {
     }
   };
 
+    const makeAdmin = async (userId: number) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/make_admin/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log('User is admin:', data);
+
+      fetchUsers();
+
+    } catch (error) {
+      console.error('Error admin user:', error);
+    }
+  }
+
+  const removeAdmin = async (userId: number) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/remove_admin/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log('User not admin anymore:', data);
+
+      fetchUsers();
+
+    } catch (error) {
+      console.error('Error removing admin user:', error);
+    }
+  };
+
 
   return (
     <SafeAreaView style={{height: '100%'}}>
+      <Button title="Terug" onPress={() => router.push('/')} />
       <StatusBar />
       <ScrollView>
         <View>
@@ -135,20 +178,35 @@ export default function UserListScreen() {
                 )}
               </View>
               {isAdmin ? (
-                user['is_banned'] ? (
-                  <Button
-                    title="Blokkering opheffen"
-                    color="green"
-                    onPress={() => unbanUser(user['id'])}
-                  />
-                ) : (
-                  <Button
-                    title="Blokkeer gebruiker"
-                    color="red"
-                    onPress={() => banUser(user['id'])}
-                  />
-                )
-              ): null}
+                <>
+                  {user['is_banned'] ? (
+                    <Button
+                      title="Blokkering opheffen"
+                      color="green"
+                      onPress={() => unbanUser(user['id'])}
+                    />
+                  ) : (
+                    <Button
+                      title="Blokkeer gebruiker"
+                      color="red"
+                      onPress={() => banUser(user['id'])}
+                    />
+                  )}
+                  {user['is_admin'] ? (
+                    <Button
+                      title="Verwijder admin rechten"
+                      color="red"
+                      onPress={() => { removeAdmin(user['id']) }}
+                    />
+                  ) : (
+                    <Button
+                      title="Maak user admin"
+                      color="green"
+                      onPress={() => { makeAdmin(user['id']) }}
+                    />
+                  )}
+                </>
+              ) : null}
             </View>
           </TouchableOpacity>
         ))}
