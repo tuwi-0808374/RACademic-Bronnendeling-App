@@ -61,6 +61,11 @@ export default function UserPosts () {
                                         <Text style={styles.buttontext}>edit post</Text>
                                     </View>
                                 </TouchableOpacity>
+                                <TouchableOpacity onPress={() => router.push({ pathname: "/posts/post_details", params: { post_id: post['id']} })}>
+                                    <View style={styles.button}>
+                                        <Text style={styles.buttontext}>post details</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         ))}
                     </View>

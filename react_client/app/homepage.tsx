@@ -20,7 +20,6 @@ export default function Index() {
             <Link href={'/posts'}>
                 Posts
             </Link>
-
             <Link href={'/posts/list_favorite'}>
                 List of favorited posts of logged user
             </Link>
