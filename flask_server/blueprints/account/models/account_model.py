@@ -75,7 +75,7 @@ class Account:
                 last_name,
                 is_public,
                 username,
-                profile_image,
+                profile_image
                 FROM users
                 WHERE id = ?
                 """,
