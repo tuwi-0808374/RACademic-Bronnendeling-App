@@ -43,7 +43,9 @@ def get_posts_with_user(user_id):
     #     "posts": posts,
     #     "user_rating": user_rating
     # }
+    print(result[0])
     return jsonify({'status': 'success', 'data': result}), 200
+
 
 
 

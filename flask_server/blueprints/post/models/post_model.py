@@ -20,9 +20,10 @@ class Post:
         params = []
         if user_id:
             query = """
-                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating
+                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating, users.username
                     FROM posts
                     LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
+                    JOIN users ON posts.user_id = users.id
                     """
             params.append(user_id)
         else:
