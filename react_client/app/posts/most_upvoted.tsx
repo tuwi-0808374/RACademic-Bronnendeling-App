@@ -10,20 +10,48 @@ export default function MostUpvoted() {
   const [posts, setPosts] = useState([]);
   const [user_id, setUserId] = useState(0);
 
+    interface JwtPayload {
+    sub: string;
+    user_id: number;
+    full_name?: string;
+    iat: number;
+    exp: number;
+    jti: string;
+    is_admin: boolean;
+  }
+
   useEffect(() => {
-    const fetchPosts = async () => {
+      const fetchProfile = async () => {
       try {
-        const token = await AsyncStorage.getItem('authToken');
+        const token = await AsyncStorage.getItem("authToken");
         if (!token) {
-          console.log('Geen token gevonden.');
+          console.log("Geen token gevonden.");
           return;
         }
 
-        const decoded_user: any = jwt_decode(token);
+        const decoded = jwt_decode<JwtPayload>(token);
+        const currentUserId = decoded.user_id;
 
+        if (!currentUserId) {
+          console.error("User ID niet gevonden in token:", decoded);
+          return;
+        }
+
+        setUserId(currentUserId);
+      } catch (error) {
+        console.error("Error loading user ID:", error);
+      }
+    }
+    fetchProfile();
+    fetchPosts();
+  }, []);
+
+    const fetchPosts = async (userId: Number = 0) => {
+      try {
         let url = `http://localhost:5000/posts/most_upvoted`;
-        let url_user = `http://localhost:5000/posts/most_upvoted/${decoded_user.user_id}`;
-
+        if (userId !== 0) {
+          url = `http://localhost:5000/posts/most_upvoted/${userId}`;
+        }
         const response = await fetch(url)
           .then(response => response.json())
           .then(data => {
@@ -33,9 +61,7 @@ export default function MostUpvoted() {
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
-    };
-    fetchPosts();
-  }, []);
+    };  
 
   // https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples
   // https://jasonwatmore.com/post/2020/01/27/react-fetch-http-get-request-examples
@@ -44,6 +70,8 @@ export default function MostUpvoted() {
   return (
     <View style={{ padding: 20 }}>
       <Button title="Terug" onPress={() => router.push('/')} />
+      <Button color='green' title="Mijn posts" onPress={() => fetchPosts(user_id)} />
+      <Button color='blue' title="Alle posts" onPress={() => fetchPosts(0)} />
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
       {posts.length === 0 ? (
         <Text>No posts available.</Text>
@@ -57,12 +85,6 @@ export default function MostUpvoted() {
             {'\n'}
             {post['total_rating']}
             {'\n'}
-            <FavoriteButton
-              user_id={user_id}
-              post_id={post['id']}
-              is_favorited={post['is_favorite']}
-              onPress={undefined}
-            />
             <hr />
           </Text>
         ))

@@ -22,6 +22,7 @@ import { CheckBox } from "@/components/input";
 import { Switch } from 'react-native';
 import { MaterialIcons, MaterialCommunityIcons  } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import ErrorMessage from '../../components/general/ErrorMessage';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -521,18 +522,7 @@ export default function EditProfileScreen() {
               />
             </View>
 
-            {passwordChangeMessage ? (
-              <Text
-                style={[
-                  styles.messageText,
-                  passwordChangeMessageType === "success"
-                    ? styles.successText
-                    : styles.errorText,
-                ]}
-              >
-                {passwordChangeMessage}
-              </Text>
-            ) : null}
+            <ErrorMessage message={passwordChangeMessage} type={passwordChangeMessageType} />
 
             <TouchableOpacity
               style={[styles.actionButton, styles.changePasswordButton]}

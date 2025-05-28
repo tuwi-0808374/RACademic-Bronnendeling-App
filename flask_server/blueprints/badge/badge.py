@@ -25,7 +25,6 @@ def give_badge_to_user(user_id, badge_id):
 
 @badge_bp.route('/badge/check_eligibility/<int:user_id>', methods=['GET'])
 def check_if_user_is_eligible_for_badges(user_id):
-    print(user_id)
     badge = Badge()
     badges = badge.check_if_user_is_eligible_for_badges(user_id)
     if not badges:

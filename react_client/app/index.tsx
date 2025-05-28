@@ -29,6 +29,9 @@ export default function Index() {
             <Link href={'/posts/most_upvoted'}>
                 List of most upvoted posts
             </Link>
+            <Link href={'/account/user_list'}>
+                List of users
+            </Link>
         </View>
     );
 }

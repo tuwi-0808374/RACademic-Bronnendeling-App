@@ -4,11 +4,11 @@ import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import NavBar from "@/components/general/NavBar";
 import TagContainer from "@/components/general/TagContainer";
 import { getApiBaseUrl } from '@/constants/get_ip';
-import { UserProvider } from '../constants/get_user_id';
+import { UserProvider } from '@/constants/get_user_id';
 
 export default function Layout() {
   const [visible, setVisible] = useState(false);
-  const [selectedTags, setSelectedTags] = useState({});
+  const [selectedTags, setSelectedTags] = useState([]);
   const API_BASE_URL = getApiBaseUrl();
 
   const handleInsidePress = () => setVisible(true);
@@ -18,6 +18,7 @@ export default function Layout() {
       <View style={styles.pageContainer}>
         <View style={styles.navbarContainer}>
           <NavBar
+              visible={visible}
               setVisible={setVisible}
               handleInsidePress={handleInsidePress}
               selectedTags={selectedTags}

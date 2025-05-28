@@ -22,13 +22,12 @@ def login_api():
     account_model = Account()
     user = account_model.get_user_by_email(login_email)
     
-    if user['is_banned'] != False:
-        return jsonify({"message": "Uw account is geblokkeerd"}), 400
-
     if not user:
         return jsonify({"message": "Gebruiker niet gevonden"}), 404
     
-    print(f"User found: {user['id']}")
+    if user['is_banned'] != False:
+        return jsonify({"message": "Uw account is geblokkeerd"}), 400
+
 
     if bcrypt.checkpw(login_password.encode('utf-8'), user['hashed_password']):
         access_token = create_access_token(
@@ -234,3 +233,43 @@ def get_users():
         return jsonify({'status': 'error', 'message': 'Geen gebruikers gevonden'}), 404
     
     return jsonify({'status': 'success', 'users': users}), 200
+
+@account_bp.route('/ban_user/<int:user_id>', methods=['PATCH'])
+def ban_user(user_id):
+    account_model = Account()
+    success, message = account_model.ban_user(user_id)
+    
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        return jsonify({'status': 'error', 'message': message}), 400
+
+@account_bp.route('/unban_user/<int:user_id>', methods=['PATCH'])
+def unban_user(user_id):
+    account_model = Account()
+    success, message = account_model.unban_user(user_id)
+    
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        return jsonify({'status': 'error', 'message': message}), 400
+
+@account_bp.route('/make_admin/<int:user_id>', methods=['PATCH'])
+def make_admin(user_id):
+    account_model = Account()
+    success, message = account_model.make_admin(user_id)
+    
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        return jsonify({'status': 'error', 'message': message}), 400
+
+@account_bp.route('/remove_admin/<int:user_id>', methods=['PATCH'])
+def remove_admin(user_id):
+    account_model = Account()
+    success, message = account_model.remove_admin(user_id)
+    
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        return jsonify({'status': 'error', 'message': message}), 400
