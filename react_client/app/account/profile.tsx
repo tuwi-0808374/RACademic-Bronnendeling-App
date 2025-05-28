@@ -135,7 +135,7 @@ export default function PublicProfileScreen() {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {/*<UserBadges />*/}
+          <UserBadges />
           <View style={styles.innerContainer}>
             <View style={styles.profileImageContainer}>
                 {profileImage ? (

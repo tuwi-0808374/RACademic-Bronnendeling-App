@@ -1,15 +1,17 @@
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { useState } from "react";
-import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import { Button, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import NavBar from "@/components/general/NavBar";
 import TagContainer from "@/components/general/TagContainer";
 import { getApiBaseUrl } from '@/constants/get_ip';
 import { UserProvider } from '@/constants/get_user_id';
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 
 export default function Layout() {
   const [visible, setVisible] = useState(false);
   const [selectedTags, setSelectedTags] = useState([]);
   const API_BASE_URL = getApiBaseUrl();
+  const router = useRouter();
 
   const handleInsidePress = () => setVisible(true);
   const handleClose = () => setVisible(false);
@@ -38,7 +40,18 @@ export default function Layout() {
               <Stack screenOptions={{ headerShown: false }} />
             </View>
           </TouchableWithoutFeedback>
-        </UserProvider>
+          <View style={styles.bottomBar}>
+            <TouchableOpacity onPress={() => router.push('/')}>
+              <MaterialIcons name="home" size={32} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/posts')}>
+              <MaterialIcons name="post-add" size={32} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/account/profile')}>
+              <FontAwesome name="user" size={32} color="black" />
+            </TouchableOpacity>
+          </View>
+      </UserProvider>
       </View>
   );
 }
@@ -67,5 +80,14 @@ const styles = StyleSheet.create({
     elevation: 1,
     zIndex: 1,
     backgroundColor: 'white',
+  },
+    bottomBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    height: 60,
+    backgroundColor: '#eee',
+    borderTopWidth: 1,
+    borderColor: '#ccc',
   }
 })
