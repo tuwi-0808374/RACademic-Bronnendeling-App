@@ -253,3 +253,23 @@ def unban_user(user_id):
         return jsonify({'status': 'success', 'message': message}), 200
     else:
         return jsonify({'status': 'error', 'message': message}), 400
+
+@account_bp.route('/make_admin/<int:user_id>', methods=['PATCH'])
+def make_admin(user_id):
+    account_model = Account()
+    success, message = account_model.make_admin(user_id)
+    
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        return jsonify({'status': 'error', 'message': message}), 400
+
+@account_bp.route('/remove_admin/<int:user_id>', methods=['PATCH'])
+def remove_admin(user_id):
+    account_model = Account()
+    success, message = account_model.remove_admin(user_id)
+    
+    if success:
+        return jsonify({'status': 'success', 'message': message}), 200
+    else:
+        return jsonify({'status': 'error', 'message': message}), 400
