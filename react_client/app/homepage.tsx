@@ -5,9 +5,6 @@ import { Link } from 'expo-router';
 export default function Index() {
     return (
         <View style={styles.contentContainer}>
-            <Link href={'/account/login'}>
-                Login
-            </Link>
             <Link href={'/account/profile'}>
                 Profile
             </Link>
@@ -17,8 +14,8 @@ export default function Index() {
             <Link href={'/posts/create_post'}>
                 Create Post
             </Link>
-            <Link href={'/posts/edit_post'}>
-                edit Post
+            <Link href={'/posts/user_posts'}>
+                Users posts
             </Link>
             <Link href={'/posts'}>
                 Posts
