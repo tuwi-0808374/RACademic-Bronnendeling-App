@@ -10,7 +10,6 @@ CORS(tag_bp)
 def get_tags():
     tag = Tag()
     tags = tag.get_tags()
-    print(tags)
     if not tags:
         return jsonify({'status': 'error', 'message': 'No tags found'}), 404
     return jsonify({'status': 'success', 'data': tags}), 200

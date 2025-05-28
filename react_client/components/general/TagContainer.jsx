@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity ,View} from "react-native";
 import React, { useEffect, useState } from "react";
-import { getApiBaseUrl } from '../../constants/get_ip';
+import { getApiBaseUrl } from '@/constants/get_ip';
 const API_BASE_URL = getApiBaseUrl();
 
 function TagContainer({ visible,selectedTags, setSelectedTags }) {
@@ -10,7 +10,6 @@ function TagContainer({ visible,selectedTags, setSelectedTags }) {
         fetch(`${API_BASE_URL}/tags`) // Replace with device IP if testing on phone
             .then((res) => res.json())
             .then((data) => {
-                console.log("Fetched data:", data);
                 setPostTags(data.data || []); // Make sure it's an array
             })
             .catch((err) => console.error("Error fetching tags:", err));
@@ -18,8 +17,7 @@ function TagContainer({ visible,selectedTags, setSelectedTags }) {
 
     const toggleTag = (id) => {
         setSelectedTags((prev) => ({
-            ...prev,
-            [id]: !prev[id],
+            ...prev, [id] : !prev[id],
         }));
     };
 
@@ -58,7 +56,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "wrap",
         top: 60,
-        width: "35%",
+        width: "85%",
         padding: 5,
         borderRadius: 25,
         elevation: 5,

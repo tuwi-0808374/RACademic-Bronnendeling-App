@@ -1,58 +1,79 @@
 import React, { useState } from 'react';
-import { TextInput, View,StyleSheet } from 'react-native';
+import {TextInput, StyleSheet, View, Keyboard} from 'react-native';
+import { router } from 'expo-router'
+import {Ionicons} from '@expo/vector-icons';
 
-function SearchBar({ setVisible, selectedTags, API_BASE_URL, handleInsidePress }) {
+function SearchBar({ visible, setVisible, selectedTags, API_BASE_URL }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [posts, setPosts] = useState({});
 
     const fetchPosts = () => {
-        const user_id = 1
-        const selectedTagIds = Object.keys(selectedTags).filter((id) => selectedTags[id]);
-        const queryParams = new URLSearchParams();
-        if (searchQuery) queryParams.append('search_query', searchQuery);
-        selectedTagIds.forEach((id) => queryParams.append('tag_id', id));
-        console.log(queryParams.toString());
-        fetch(`${API_BASE_URL}/posts/${user_id}?${queryParams.toString()}`)
-            .then(res => res.json())
-            .then(data => {
-                setPosts(data.data);
-                console.log('Fetched posts:', data.data);
-            })
-            .catch(err => console.error('Error fetching posts:', err));
+        router.push({
+            pathname: '/posts',
+            params: {
+                search_query: searchQuery,
+                tag_ids: Object.keys(selectedTags).filter(key => selectedTags[key] === true).join(","),
+            },
+        });
     };
 
-    // const fetchPosts = () => {
-    //     const selectedTagIds = Object.keys(selectedTags).filter((id) => selectedTags[id]);
-    //     fetch()
-    // }
 
     const handleOnKeyPress = event =>{
         const key = event.nativeEvent.key
         if(key ==="Enter"){
             fetchPosts();
             setVisible(false);
+            Keyboard.dismiss();
         }
     }
+
+    const pressSearch = event =>{
+        fetchPosts();
+        setVisible(false);
+        Keyboard.dismiss();
+    }
+
     return (
-         <TextInput
-            style={styles.searchInput}
-            placeholder="Search tags"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            onKeyPress={handleOnKeyPress}
-            onFocus={() => setVisible(true)}
-        />
+        <View style={styles.searchBarContainer}>
+             <TextInput
+                style={styles.searchInput}
+                placeholder="Zoeken..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                onKeyPress={handleOnKeyPress}
+                onFocus={() => setVisible(true)}
+            />
+            <Ionicons
+                style={styles.icon}
+                name={(visible === true) ? 'arrow-forward' : 'search'}
+                color='black'
+                size={20}
+                onPress={pressSearch}
+            />
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    searchInput: {
-        backgroundColor: 'white',
-        marginTop: '2%',
-        width: '100%',
-        height: '100%',
+    searchBarContainer: {
+        width: '40%',
+        height: '80%',
         padding: 5,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        flexDirection: 'row',
         borderRadius: 25
+    },
+    searchInput: {
+        flex: 1,
+        width: '100%',
+        marginStart: 10,
+        outlineStyle: 'none',
+    },
+    icon: {
+        alignSelf: 'center',
+        paddingRight: 5,
     }
 
 });
