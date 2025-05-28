@@ -5,11 +5,11 @@ meta {
 }
 
 get {
-  url: http://localhost:5000/badge/:user_id
+  url: http://localhost:5000/badge/check_eligibility/:user_id
   body: none
   auth: inherit
 }
 
 params:path {
-  user_id: 
+  user_id: 1
 }

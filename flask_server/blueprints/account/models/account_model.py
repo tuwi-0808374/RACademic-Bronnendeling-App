@@ -32,6 +32,7 @@ class Account:
                 last_name,
                 first_name || ' ' || last_name AS full_name,
                 username,
+                is_admin,
                 is_banned
             
                 FROM users
@@ -48,7 +49,8 @@ class Account:
                     "hashed_password": result[3],
                     "full_name": result[5],
                     "username": result[6],
-                    "is_banned": result[7],
+                    "is_admin": result[7],
+                    "is_banned": result[8]
                     
                     
                 }
@@ -73,7 +75,7 @@ class Account:
                 last_name,
                 is_public,
                 username,
-                profile_image
+                profile_image,
                 FROM users
                 WHERE id = ?
                 """,
@@ -298,3 +300,20 @@ class Account:
         finally:
             if con:
                 con.close()
+    
+    def get_users(self, limit=5, offset=0):
+        # Geeft een lijst van gebruikers met een limiet en offset.
+        cursor, con = self.connect_db()
+        try:
+            result = cursor.execute(
+                """
+                    SELECT id, first_name, last_name, username, email, is_public, profile_image, is_banned
+                    FROM users
+                    LIMIT ? OFFSET ?
+                """,
+                (limit, offset)
+            ).fetchall()
+            return [dict(row) for row in result]
+        finally:
+            if con:
+                con.close() 
