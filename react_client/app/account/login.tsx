@@ -14,7 +14,10 @@ const COLORS = {
   inputLine: '#555555',
   placeholderText: '#666666',
   languageBackground: '#E0E0E0',
+  error: "#D32F2F",
 };
+
+
 
 
 const LoginButton = ({ onPress }: { onPress: () => void }) => (
@@ -28,9 +31,11 @@ const LoginScreen = () => {
   const [password, setPassword] = useState<string>('');
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState('');
   
   const handleLogin = async () => {
     if (!email || !password) {
+      setErrorMessage('Vul beide velden in!');
       console.log('Please fill in both fields.');
       return;
     }
@@ -56,7 +61,7 @@ const LoginScreen = () => {
         // https://medium.com/@paritasampa95/how-asyncstorage-stores-data-in-react-native-102498260af0
         await AsyncStorage.setItem('authToken', data['access_token']);
         
-        router.push('/account/profile');
+        router.push('../');
       } else {
         const errorData = await response.json();
         console.log('Fout bij inloggen:', errorData.message);
@@ -137,6 +142,12 @@ const LoginScreen = () => {
               selectionColor={COLORS.inputLine}
             />
           </View>
+          <View style={styles.errorText}>
+          {errorMessage  && (
+            <p className="error"> {errorMessage} </p>
+          )}
+          </View>
+
 
           <LoginButton onPress={handleLogin} />
 
@@ -265,6 +276,12 @@ const styles = StyleSheet.create({
     color: COLORS.red, 
     fontWeight: 'bold',
   },
+  errorText: {
+    color: COLORS.error,
+    textAlign: "center",
+    marginVertical: 10,
+    fontSize: 14,
+},
 });
 
 export default LoginScreen;
