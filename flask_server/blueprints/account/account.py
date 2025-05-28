@@ -192,6 +192,9 @@ def check_email():
     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
         return jsonify({"available": False, "message": "Ongeldig email formaat"}), 400
     
+    if not email.endswith("@hr.nl"):
+        return jsonify({"available": False, "message": "Alleen @hr.nl adressen zijn toegestaan"}), 400
+    
     account_model = Account()
     existing = account_model.get_user_by_email(email)
     existing_email = account_model.get_user_by_email(email)
