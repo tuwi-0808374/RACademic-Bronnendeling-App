@@ -1,7 +1,7 @@
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import React, { useState, useEffect } from "react";
 import {Link, router, useRouter} from 'expo-router';
-import { getApiBaseUrl } from "../constants/get_ip";
+import { getApiBaseUrl } from "@/constants/get_ip";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -17,7 +17,7 @@ export default function Index() {
         })
     }, []);
 
-    const fetchPosts = (tagId) => {
+    const fetchPosts = (tagId:number) => {
         router.push({
             pathname: '/posts',
             params: {

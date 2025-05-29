@@ -16,7 +16,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import Icon from "react-native-vector-icons/Ionicons";
+import {Ionicons} from '@expo/vector-icons';
 import UserBadges from "../../components/user_badges";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { useFocusEffect } from "expo-router";
@@ -171,7 +171,7 @@ export default function PublicProfileScreen() {
 
             <View style={styles.inputGroup}>
               <View style={styles.labelContainer}>
-                <Icon
+                <Ionicons
                   name="person-outline"
                   size={16}
                   color={COLORS.red}
@@ -190,7 +190,7 @@ export default function PublicProfileScreen() {
 
             <View style={styles.inputGroup}>
               <View style={styles.labelContainer}>
-                <Icon
+                <Ionicons
                   name="mail-outline"
                   size={16}
                   color={COLORS.red}
@@ -207,7 +207,7 @@ export default function PublicProfileScreen() {
 
             <View style={styles.inputGroup}>
               <View style={styles.labelContainer}>
-                <Icon
+                <Ionicons
                   name="at-outline"
                   size={16}
                   color={COLORS.red}
@@ -222,7 +222,7 @@ export default function PublicProfileScreen() {
                 style={styles.actionButton}
                 onPress={() => router.push("/account/edit_profile")}
               >
-                <Icon
+                <Ionicons
                   name="create-outline"
                   size={20}
                   color={COLORS.textLight}
