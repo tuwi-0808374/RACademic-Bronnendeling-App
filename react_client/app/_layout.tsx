@@ -1,6 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
 import { useState } from "react";
-import { Button, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
+import { Platform, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import NavBar from "@/components/general/NavBar";
 import TagContainer from "@/components/general/TagContainer";
 import { getApiBaseUrl } from '@/constants/get_ip';
@@ -42,6 +42,7 @@ export default function Layout() {
               <Stack screenOptions={{ headerShown: false }} />
             </View>
           </TouchableWithoutFeedback>
+          {Platform.OS !== 'web' ?  (
           <View style={styles.bottomBar}>
             <TouchableOpacity onPress={() => router.push('/')}>
               <MaterialIcons name="home" size={32} color="black" />
@@ -53,7 +54,9 @@ export default function Layout() {
               <FontAwesome name="user" size={32} color="black" />
             </TouchableOpacity>
           </View>
-      </UserProvider>
+          ) : null
+          }
+        </UserProvider>
       </View>
       </SafeAreaView>
   );
