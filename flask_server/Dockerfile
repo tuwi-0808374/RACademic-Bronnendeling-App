@@ -1,8 +1,8 @@
 FROM python:3.12-slim
 
-WORKDIR ./flask_server/
+WORKDIR /flask_server
 
-COPY requirements.txt requirements.txt
+COPY ./ /flask_server/
 
 RUN pip install -r requirements.txt
 
@@ -10,6 +10,12 @@ COPY . .
 
 ENV FLASK_APP=main.py
 
-EXPOSE 8000
+EXPOSE 5000
 
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+
+
+# Stappen voor om alleen deze dockerfile te draaien:
+# Dit uitvoeren als je in de map bent waar dit bestand staat
+# docker build -t flask_server .
+# docker run -p 5000:5000 flask_server
