@@ -16,7 +16,6 @@ def get_posts_with_user(user_id):
     tag_ids = []
     if not search_query or search_query == 'undefined':
         search_query = None
-    print(search_query,tag_ids)
     if request.args.get('tag_ids'):
         tag_ids = request.args.get('tag_ids', None).split(',')
     if not user_id:
@@ -24,18 +23,17 @@ def get_posts_with_user(user_id):
 
     if search_query or tag_ids:
         result = post.search_posts(search_query, tag_ids)
-
     else:
         result = post.get_posts(user_id)
 
     if not result:
-        return jsonify({'status': 'success', 'message': 'No posts found'}), 200
+        return jsonify({'status': 'error', 'message': 'No posts found'}), 404
 
     # data = {
     #     "posts": posts,
     #     "user_rating": user_rating
     # }
-    print(result[0])
+    print('test',result[0])
     return jsonify({'status': 'success', 'data': result}), 200
 
 

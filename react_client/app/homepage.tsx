@@ -2,12 +2,11 @@ import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import React, { useState, useEffect } from "react";
 import {Link, router, useRouter} from 'expo-router';
 import { getApiBaseUrl } from "../constants/get_ip";
-import { useUser } from '@/constants/get_user_id';
 
 const API_BASE_URL = getApiBaseUrl();
+
 export default function Index() {
     const[tags, setTags] = useState([])
-    const { userId, loading } = useUser();
     const router = useRouter();
 
     useEffect(() => {
@@ -15,7 +14,6 @@ export default function Index() {
         .then(res => res.json())
         .then(data => {
             setTags(data.data);
-            console.log(data.data);
         })
     }, []);
 
@@ -38,9 +36,7 @@ export default function Index() {
                 >
                     <Text style={styles.textStyle}>{tag['title']}</Text>
                 </TouchableOpacity>
-
             ))}
-
         </View>
     );
 }

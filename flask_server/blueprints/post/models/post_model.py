@@ -20,7 +20,11 @@ class Post:
         params = []
         if user_id:
             query = """
-                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating, users.username
+                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating, 
+                    CASE 
+                        WHEN users.is_public = true THEN users.display_name
+                        ELSE users.username
+                    END AS user_name
                     FROM posts
                     LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
                     JOIN users ON posts.user_id = users.id
@@ -44,7 +48,17 @@ class Post:
     def search_posts(self,search_query, tag_ids):
         tag = Tag()
         params = ()
-        query = "SELECT * FROM posts WHERE 1=1 "
+        query = """
+                SELECT 
+                posts.*,
+                CASE 
+                    WHEN users.is_public = true THEN users.display_name
+                    ELSE users.username
+                END AS user_name
+                FROM posts
+                    JOIN users ON posts.user_id = users.id
+                WHERE 1=1 
+                """
 
         #roept functie om alle post_ids met correcte tags op te halen
         if tag_ids:
@@ -52,7 +66,7 @@ class Post:
             # voegt alle post ids met de juiste tags aan de query toe
             if post_ids:
                 total_params = ','.join(['?'] * len(post_ids))
-                query += f"AND id IN ({total_params}) "
+                query += f"AND posts.id IN ({total_params}) "
                 params += tuple(post_ids)
             else:
                 return False
@@ -65,6 +79,7 @@ class Post:
                 query += "AND (LOWER(content) LIKE ? or LOWER(title) LIKE ?) "
                 params += (str('%' + word.lower() + '%'),str('%' + word.lower() + '%'),)
         query += (str("ORDER BY posted_date DESC"))
+        print(query, params,)
         self.cursor.execute(query, params,)
         posts = self.cursor.fetchall()
 
