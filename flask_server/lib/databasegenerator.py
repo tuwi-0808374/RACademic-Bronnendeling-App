@@ -113,7 +113,7 @@ class DatabaseGenerator:
         CREATE TABLE IF NOT EXISTS tags (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
-            content TEXT NOT NULL
+            color TEXT NOT NULL
         );
         """
         self.__execute_transaction_statement(create_statement)
@@ -276,13 +276,13 @@ Markdown is cool""", "user_id": 6,
     # Insert initial tags into the database
     def insert_initial_tags(self):
         tags = [
-            {"title": "python", "content": "Dit is een Python gerelateerd bericht"},
-            {"title": "c++", "content": "Dit is een C++ gerelateerd bericht"},
-            {"title": "oop", "content": "Object georiënteerd programmeren"},
-            {"title": "c#", "content": "Dit is een C# gerelateerd bericht"}
+            {"title": "python", "color": "#FFD700"},
+            {"title": "c++", "color": "#32CD32"},
+            {"title": "oop", "color": "#FF4500"},
+            {"title": "c#", "color": "#800080"}
         ]
-        list_of_parameters = [(tags["title"], tags["content"]) for tags in tags]
-        create_statement = """INSERT INTO tags (title, content) VALUES (?, ?)"""
+        list_of_parameters = [(tags["title"], tags["color"]) for tags in tags]
+        create_statement = """INSERT INTO tags (title, color) VALUES (?, ?)"""
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
         print("✅ Initial tags inserted")
 

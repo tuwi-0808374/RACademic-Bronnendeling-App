@@ -13,8 +13,8 @@ import {
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getApiBaseUrl } from "../constants/get_ip";
-import Icon from "react-native-vector-icons/Ionicons";
+import { getApiBaseUrl } from "@/constants/get_ip";
+import {Ionicons} from '@expo/vector-icons';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -123,7 +123,7 @@ const LoginScreen = () => {
 
           <View style={styles.inputGroup}>
             <View style={styles.labelContainer}>
-              <Icon
+              <Ionicons
                 name="mail-outline"
                 size={16}
                 color={COLORS.red}
@@ -145,7 +145,7 @@ const LoginScreen = () => {
 
           <View style={styles.inputGroup}>
             <View style={styles.labelContainer}>
-              <Icon
+              <Ionicons
                 name="lock-closed-outline"
                 size={16}
                 color={COLORS.inputLine}
@@ -167,7 +167,7 @@ const LoginScreen = () => {
                 style={styles.eyeIcon}
                 onPress={() => setShowPassword(!showPassword)}
               >
-                <Icon
+                <Ionicons
                   name={showPassword ? "eye-outline" : "eye-off-outline"}
                   size={20}
                   color={COLORS.inputLine}
@@ -178,7 +178,7 @@ const LoginScreen = () => {
 
           {errorMessage && (
             <View style={styles.errorContainer}>
-              <Icon
+              <Ionicons
                 name="alert-circle-outline"
                 size={16}
                 color={COLORS.error}

@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import { useLocalSearchParams } from "expo-router";
 import RateButtons from "@/components/posts/RateButtons";
 import FavoriteButton from '../components/posts/FavoriteButton';
 import {getApiBaseUrl} from "@/constants/get_ip";
 import { useUser } from '@/constants/get_user_id';
+import {useRouter} from "expo-router";
 const API_BASE_URL = getApiBaseUrl();
 
 function Posts() {
   const [posts, setPosts] = useState([]);
   const { userId, loading } = useUser();
   const local = useLocalSearchParams();
+  const router = useRouter();
   useEffect(() => {
+    
     const fetchPosts = async () => {
       if (!loading && userId) {
         try {
@@ -40,9 +43,10 @@ function Posts() {
           const res = await fetch(url);
           const data = await res.json();
           setPosts(data.data);
+          console.log('data',data);
+          console.log('posts',posts)
         } catch (error) {
           console.error('API request failed:', error);
-          return <Text>posts not found</Text>;
         }
       }
     };
@@ -55,27 +59,44 @@ function Posts() {
   if (loading && !userId) {
     return <Text>Loading...</Text>;
   }
+  if (!posts) {
+    return (
+        <View style={styles.container}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
+          <Text>No posts found</Text>
+        </View>
+    )
+  }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Posts:</Text>
+
+    <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }} style={styles.container}>
       {posts.map((post, i) => (
-        <Text key={i}>
+        <Text key={i} style={styles.postContainer}>
+          <Text style={{ fontSize: 10 }}>
+            {post['user_name']? post['user_name']:'anonymous user'}
+          </Text>
           {'\n'}
-          {post['id']}
+          <Text style={styles.title}>{post['title']}</Text>
+
+          {post['user_id'] === userId && (
+              <TouchableOpacity onPress={() => router.push("/posts/edit_post")}>
+                <View>
+                  <Text>edit post</Text>
+                </View>
+              </TouchableOpacity>
+          )}
           {'\n'}
-          {post['title']}
-          {'\n'}
+          <View style={styles.content_container}></View>
           {post['content']}
           {'\n'}
           <RateButtons
-              post_id={post['id']}
-              total_rating={ post['total_rating']}
-              user_rating={post['rating']}
-              userId={userId}
-              loading={loading}
+          post_id={post['id']}
+          total_rating={ post['total_rating']}
+          user_rating={post['rating']}
+          userId={userId}
+          loading={loading}
           />
-          {'\n'}
           <FavoriteButton
               post_id = {post['id']}
               is_favorited = {post['is_favorite']}
@@ -93,6 +114,22 @@ const styles = StyleSheet.create({
     flex:1,
     padding: 20,
     height: '100%',
+  },
+  postContainer: {
+    width: '50%',
+    borderWidth: 1,
+    borderColor: 'gray',
+    marginBottom: 5,
+    padding: 15,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+  },
+  title: {
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  content_container: {
+    flexDirection: 'row',
   }
 
 })

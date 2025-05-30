@@ -156,7 +156,7 @@ export default function UserListScreen() {
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
         {users.map((user) => (
-          <TouchableOpacity style={styles.user} key={user['id']}>
+          <TouchableOpacity style={styles.user} key={user['id']} onPress={() => router.push({ pathname: '/account/profile', params: { user_id: user['id'] } })}>
             <View>
               <Text style={{ fontSize: 18 }}>{user['display_name']}</Text>
               <Text style={{ fontSize: 18 }}>{user['email']}</Text>

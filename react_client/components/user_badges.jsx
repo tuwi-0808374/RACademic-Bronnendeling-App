@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { getApiBaseUrl } from '@/constants/get_ip';
 
-const UserBadges = () => {
+const UserBadges = ({userID = 0}) => {
   const API_BASE_URL = getApiBaseUrl();
   const [badges, setBadges] = useState([]);
   // Bron om toe tevoegen aan state array: https://react.dev/learn/updating-arrays-in-state
@@ -16,6 +16,13 @@ const UserBadges = () => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
+
+        if (userID !== 0) {
+          await refreshBadges(userID);
+          await checkForNewBadges(userID);
+          return;
+        } 
+
         const token = await AsyncStorage.getItem('authToken');
         if (!token) {
           console.log('Geen token gevonden.');
