@@ -8,7 +8,7 @@ import { UserProvider } from '@/constants/get_user_id';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SideBar from "@/components/general/SideBar";
-import {Ionicons} from '@expo/vector-icons';
+// import {Ionicons} from '@expo/vector-icons';
 
 
 export default function Layout() {
