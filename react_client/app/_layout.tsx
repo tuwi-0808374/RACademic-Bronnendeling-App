@@ -7,18 +7,36 @@ import { getApiBaseUrl } from '@/constants/get_ip';
 import { UserProvider } from '@/constants/get_user_id';
 import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SideBar from "@/components/general/SideBar";
+import {Ionicons} from '@expo/vector-icons';
+
 
 export default function Layout() {
   const [visible, setVisible] = useState(false);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [sideBarState, setSideBarState] = useState(false);
   const API_BASE_URL = getApiBaseUrl();
   const router = useRouter();
+
 
   const handleInsidePress = () => setVisible(true);
   const handleClose = () => setVisible(false);
 
+  const handleSideBarState = () => {
+    if (sideBarState) {
+      setSideBarState(false);
+    } else {
+      setSideBarState(true);
+    }
+    console.log(sideBarState);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1}}>
+      <SideBar
+          sideBarState={sideBarState}
+          setSideBarState={setSideBarState}
+      />
       <View style={styles.pageContainer}>
         <View style={styles.navbarContainer}>
           <NavBar
@@ -27,6 +45,8 @@ export default function Layout() {
               handleInsidePress={handleInsidePress}
               selectedTags={selectedTags}
               API_BASE_URL={API_BASE_URL}
+              sideBarState={sideBarState}
+              handleSideBarState={handleSideBarState}
           />
           <TagContainer
               visible={visible}

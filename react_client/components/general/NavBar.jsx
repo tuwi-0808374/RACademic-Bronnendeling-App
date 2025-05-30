@@ -1,19 +1,25 @@
 // import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import SearchBar from './SearchBar';
+import {Ionicons} from "@expo/vector-icons";
 // import { Link } from 'expo-router';
 
-export default function NavBar(visible) {
+export default function NavBar(props) {
     return(
         <View style={styles.navbarContent}>
 
-                <SearchBar
-                    visible={visible.visible}
-                    setVisible={visible.setVisible}
-                    selectedTags={visible.selectedTags}
-                    API_BASE_URL={visible.API_BASE_URL}
-                    handleInsidePress={visible.handleInsidePress}
-                />
+            <TouchableOpacity onPress={props.handleSideBarState}>
+                <Ionicons name={'menu'} color={'#fff'}/>
+            </TouchableOpacity>
+
+
+            <SearchBar
+                visible={props.visible}
+                setVisible={props.setVisible}
+                selectedTags={props.selectedTags}
+                API_BASE_URL={props.API_BASE_URL}
+                handleInsidePress={props.handleInsidePress}
+            />
 
         {/*    profile knop enzo */}
         </View>
