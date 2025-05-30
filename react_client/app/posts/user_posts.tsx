@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
-import {useRouter} from "expo-router";
-import { useUser } from '@/constants/get_user_id';
 import {getApiBaseUrl} from "@/constants/get_ip";
+import { useUser } from '@/constants/get_user_id';
+import {useRouter} from "expo-router";
 const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
@@ -39,6 +39,15 @@ export default function UserPosts () {
         }
     }, []);
 
+    if (!postdata) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Your posts</Text>
+                <Text style={styles.textContent}>No posts found</Text>
+            </View>
+        )
+    }
+
 
         return (
             <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
@@ -48,8 +57,8 @@ export default function UserPosts () {
                         <Text style={styles.title}>Your posts</Text>
                     </View>
 
-
                 <ScrollView style={styles.scrollview} >
+                    <TouchableOpacity>
                     <View style={styles.header}>
                         {postdata.map((post) => (
                             <View key={post['id']} style={styles.postbox} >
@@ -69,7 +78,9 @@ export default function UserPosts () {
                             </View>
                         ))}
                     </View>
+                    </TouchableOpacity>
                 </ScrollView>
+
 
                 </View>
             </SafeAreaView>

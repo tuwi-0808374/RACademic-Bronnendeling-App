@@ -57,14 +57,18 @@ export default function post_details() {
                         <Text style={styles.textContent}>{postData['content']}</Text>
                         <Text style={styles.textContent}>{postData['posted_date']}</Text>
 
+                        <Text style={styles.title}>Tags</Text>
+                        <View style={styles.contentContainer}>
                         {tagData.tags
                             ?.filter(tag => tagData.tag_ids.includes(tag.id))
                             .map(tag => (
-                                <View key={tag.id}>
-                                    <Text style={styles.textContent}>{tag.title}</Text>
+                                <View key={tag.id} style={[styles.tagContainer, { backgroundColor: tag['color'] }]}>
+                                    <Text style={styles.textStyle}>{tag.title}</Text>
                                 </View>
                             ))}
+                        </View>
                     </View>
+
 
 
                     <Text style={styles.title}>Comments</Text>
@@ -182,6 +186,28 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         flexDirection: 'column',
     },
-
-
+    contentContainer: {
+        marginTop: 50,
+        alignItems: "center",
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
+    },
+    tagContainer: {
+        width: 80,              // fixed width
+        height: 55,              // fixed height
+        borderRadius: 8,
+        marginRight: 8,
+        marginBottom: 8,
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',      // prevent content from overflowing
+    },
+    textStyle: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: 'white',
+        textAlign: 'center',
+        paddingHorizontal: 4,
+    }
 })
