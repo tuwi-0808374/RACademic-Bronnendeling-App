@@ -47,6 +47,7 @@ export default function Layout() {
               API_BASE_URL={API_BASE_URL}
               sideBarState={sideBarState}
               handleSideBarState={handleSideBarState}
+              router={router}
           />
           <TagContainer
               visible={visible}

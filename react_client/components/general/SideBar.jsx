@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import { Stack, useRouter } from 'expo-router';
-
 import {Ionicons} from '@expo/vector-icons';
+
 function SideBar({sideBarState, setSideBarState}) {
     const router = useRouter();
 
@@ -10,18 +10,11 @@ function SideBar({sideBarState, setSideBarState}) {
     }
     return(
         <View style={[styles.SideBar, Platform.OS === 'web' ? {width: '20%'}: {width: '75%'}]}>
-            <TouchableOpacity onPress={() => setSideBarState(false)}>
-                <Ionicons name="chevron-back" size={30} color='white' style={styles.BackIcon} />
+            <TouchableOpacity onPress={() => setSideBarState(false)}  style={styles.backIconContainer}>
+                <Ionicons name="chevron-back" size={30} color='white' style={styles.backIcon} />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => {
-                setSideBarState(false);
-                router.push('/');
-                }} style={styles.routeContainer}
-            >
-                <Ionicons name="exit" size={32} style={styles.Icon} />
-                <Text style={styles.SideText}>logout</Text>
-            </TouchableOpacity>
+
 
             <TouchableOpacity onPress={() => {
                 setSideBarState(false);
@@ -45,7 +38,7 @@ function SideBar({sideBarState, setSideBarState}) {
                 style={styles.routeContainer}
             >
                 <Ionicons name="person-outline" size={32} style={styles.Icon} />
-                <Text style={styles.SideText}>Profile</Text>
+                <Text style={styles.SideText}>Profiel</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => {
@@ -56,6 +49,16 @@ function SideBar({sideBarState, setSideBarState}) {
             >
                 <Ionicons name="star-outline" size={32} style={styles.Icon} />
                 <Text style={styles.SideText}>Favorieten</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => {
+                setSideBarState(false);
+                router.push('/posts/user_posts')
+                }}
+                style={styles.routeContainer}
+            >
+                <Ionicons name="share-outline" size={32} style={styles.Icon} />
+                <Text style={styles.SideText}>Eigen posts</Text>
             </TouchableOpacity>
 
             <View style={styles.spacer}/>
@@ -76,7 +79,12 @@ const styles = StyleSheet.create({
     Icon: {
         color: 'white',
     },
-    BackIcon: {
+    backIconContainer: {
+        width: '100%',
+        alignItems: 'flex-end',
+    },
+    backIcon: {
+      marginRight: 18,
     },
     routeContainer: {
         marginLeft: 20,
@@ -92,7 +100,6 @@ const styles = StyleSheet.create({
     },
     spacer:{
         height: '30%',
-        backgroundColor: 'red',
     }
 })
 

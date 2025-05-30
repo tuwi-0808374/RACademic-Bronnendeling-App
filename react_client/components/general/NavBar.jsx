@@ -1,5 +1,5 @@
 // import React, { useState, useEffect } from 'react';
-import {View, StyleSheet, TouchableOpacity, Platform} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Platform, Text} from 'react-native';
 import SearchBar from './SearchBar';
 import {Ionicons} from "@expo/vector-icons";
 // import { Link } from 'expo-router';
@@ -12,7 +12,6 @@ export default function NavBar(props) {
                 <Ionicons name={'menu'} color={'#fff'} size={30} style={styles.icon}/>
             </TouchableOpacity>
 
-
             <SearchBar
                 visible={props.visible}
                 setVisible={props.setVisible}
@@ -20,7 +19,15 @@ export default function NavBar(props) {
                 API_BASE_URL={props.API_BASE_URL}
                 handleInsidePress={props.handleInsidePress}
             />
-            <View style={styles.spacer}/>
+
+            <View style={styles.spacer}>
+                <TouchableOpacity onPress={() => props.router.push('/account/profile')}>
+                    <Ionicons name="person" size={32} color="white"  style={styles.icon} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => props.router.push('/')} style={styles.routeContainer}>
+                    <Ionicons name="exit" size={32} color="white"  style={styles.icon} />
+                </TouchableOpacity>
+            </View>
         {/*    profile knop enzo */}
         </View>
     );
@@ -40,8 +47,10 @@ const styles = StyleSheet.create({
     },
     icon: {
         margin: 15,
+        color: 'white',
     },
     spacer: {
-        width: 40,
+        flexDirection: 'row',
+        // width: 40,
     }
 })
