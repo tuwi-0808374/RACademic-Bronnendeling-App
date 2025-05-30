@@ -10,7 +10,7 @@ function SideBar({sideBarState, setSideBarState}) {
     }
     return(
         <View style={styles.SideBar}>
-            <TouchableOpacity onPress={() => router.push('/')}>
+            <TouchableOpacity onPress={() => setSideBarState(false)}>
                 <Ionicons name="chevron-back" size={32} color="black"/>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push('/')}>
