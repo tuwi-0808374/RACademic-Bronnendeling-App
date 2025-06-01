@@ -12,15 +12,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 
 interface JwtPayload {
-  sub: string;
   user_id: number;
-  full_name?: string;
-  iat: number;
-  exp: number;
-  jti: string;
-  is_admin: boolean;
 }
 
+// https://react.dev/reference/react/useContext
+// https://forum.freecodecamp.org/t/react-context-api-pass-data-to-parent/467261
 export const UserStatusContext = createContext<(loggedIn: boolean) => void>(() => {});
 
 export default function Layout() {
@@ -36,35 +32,31 @@ export default function Layout() {
   }, []);
 
   const fetchUSerProfile = async () => {
-  try {
-    const token = await AsyncStorage.getItem("authToken");
-    if (!token) {
-      throw new Error("No token found");
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const decoded = jwt_decode<JwtPayload>(token);
+      const targetUserId = decoded.user_id;
+      const response = await fetch(`${API_BASE_URL}/profile/${targetUserId}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      setUserLoggedIn(true);
+
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
     }
-
-    const decoded = jwt_decode<JwtPayload>(token);
-    const targetUserId = decoded.user_id;
-    const response = await fetch(`${API_BASE_URL}/profile/${targetUserId}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-    setUserLoggedIn(true);
-    // const data = await response.json();
-    // setUserData(data);
-    // console.log("User profile fetched successfully:", data);
-
-  }catch (error) {
-    console.error("Error fetching user profile:", error);
-  }
-};
-
+  };
 
   const handleInsidePress = () => setVisible(true);
   const handleClose = () => setVisible(false);
@@ -79,15 +71,16 @@ export default function Layout() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1}}>    
-      <SideBar
+    <SafeAreaView style={{ flex: 1 }}>
+      <UserStatusContext.Provider value={setUserLoggedIn}>
+        <SideBar
           sideBarState={sideBarState}
           setSideBarState={setSideBarState}
-      />  
-      <View style={styles.pageContainer}>
-        { userLoggedIn && (
-        <View style={styles.navbarContainer}>
-            <NavBar
+        />
+        <View style={styles.pageContainer}>
+          {userLoggedIn && (
+            <View style={styles.navbarContainer}>
+              <NavBar
                 visible={visible}
                 setVisible={setVisible}
                 handleInsidePress={handleInsidePress}
@@ -96,50 +89,47 @@ export default function Layout() {
                 sideBarState={sideBarState}
                 handleSideBarState={handleSideBarState}
                 router={router}
-            />
-          <TagContainer
-              visible={visible}
-              selectedTags={selectedTags}
-              setSelectedTags={setSelectedTags}
-          />             
-        </View>
-        )}
-        <UserProvider>
-          <TouchableWithoutFeedback onPress={handleClose}>
-            <UserStatusContext.Provider value={() =>setUserLoggedIn(true)}>
+              />
+              <TagContainer
+                visible={visible}
+                selectedTags={selectedTags}
+                setSelectedTags={setSelectedTags}
+              />
+            </View>
+          )}
+          <UserProvider>
+            <TouchableWithoutFeedback onPress={handleClose}>
               <View style={styles.contentContainer}>
-                <Stack screenOptions={{ headerShown: false }}/>
+                <Stack screenOptions={{ headerShown: false }} />
               </View>
-            </UserStatusContext.Provider>
-          </TouchableWithoutFeedback>
-          {Platform.OS !== 'web' && userLoggedIn ?  (
-          <View style={styles.bottomBar}>
-            <TouchableOpacity onPress={() => router.push('/')}>
-              <MaterialIcons name="home" size={32} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/posts')}>
-              <MaterialIcons name="post-add" size={32} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/account/profile')}>
-              <FontAwesome name="user" size={32} color="black" />
-            </TouchableOpacity>
-          </View>
-          ) : null
-          }
-        </UserProvider>
-      </View>
-      </SafeAreaView>
+            </TouchableWithoutFeedback>
+            {Platform.OS !== 'web' && userLoggedIn ? (
+              <View style={styles.bottomBar}>
+                <TouchableOpacity onPress={() => router.push('/')}>
+                  <MaterialIcons name="home" size={32} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/posts')}>
+                  <MaterialIcons name="post-add" size={32} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => router.push('/account/profile')}>
+                  <FontAwesome name="user" size={32} color="black" />
+                </TouchableOpacity>
+              </View>
+            ) : null}
+          </UserProvider>
+        </View>
+      </UserStatusContext.Provider>
+    </SafeAreaView>
   );
 }
 
-
 const styles = StyleSheet.create({
-  pageContainer:{
+  pageContainer: {
     flex: 1,
     width: '100%',
     position: 'relative',
-    elevation:0,
-    zIndex:0,
+    elevation: 0,
+    zIndex: 0,
     backgroundColor: 'red',
   },
   navbarContainer: {
@@ -152,12 +142,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainer: {
-    flex:1,
+    flex: 1,
     elevation: 1,
     zIndex: 1,
     backgroundColor: 'white',
   },
-    bottomBar: {
+  bottomBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -166,4 +156,4 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#ccc',
   }
-})
+});

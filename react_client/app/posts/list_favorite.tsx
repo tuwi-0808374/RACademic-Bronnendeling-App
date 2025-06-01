@@ -97,10 +97,8 @@ export default function Test() {
 
   return (
     <View style={{ padding: 20 }}>
-      <Button title="Terug" onPress={() => router.push('/')} />
       { undoID.length > 0 ? 
       <>
-      {/* <Button color='green' title="Opslaan" onPress={refresh} ></Button> */}
       <Button title="Maak ongedaan" onPress={undoDeleteFavorite} ></Button>
       </>
        : null }
