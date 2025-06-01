@@ -1,7 +1,7 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import jwt_decode from "jwt-decode";
-
+import jwt_decode from "jwt-decode"
+import { UserStatusContext } from "../app/_layout";
 
 const UserContext = createContext();
 
@@ -23,12 +23,18 @@ const get_user_id = async () => {
 export const UserProvider = ({ children }) => {
     const [userId, setUserId] = useState('');
     const [loading, setLoading] = useState(true);
+    const setUserLoggedIn = useContext(UserStatusContext);
 
     useEffect(() => {
         const fetchUserId = async () => {
             const id = await get_user_id();
             if (id) {
                 setUserId(id);
+                setUserLoggedIn(true); 
+            }
+            else 
+            {
+                setUserLoggedIn(false);
             }
             setLoading(false);
         };
