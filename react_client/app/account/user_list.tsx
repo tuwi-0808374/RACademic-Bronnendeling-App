@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button, TouchableWithoutFeedback } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
@@ -159,11 +159,11 @@ export default function UserListScreen() {
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
         {users.map((user) => (
-          <TouchableOpacity
-            style={styles.user}
+          <TouchableWithoutFeedback
+
             key={user['id']}
           >
-            <View>
+            <View style={styles.user}>
               <Text style={{ fontSize: 18 }}>{user['display_name']}</Text>
               <Text style={{ fontSize: 18 }}>{user['email']}</Text>
               <Text style={{ fontSize: 18 }}>
@@ -258,7 +258,7 @@ export default function UserListScreen() {
                 </>
               ) : null}
             </View>
-          </TouchableOpacity>
+          </TouchableWithoutFeedback>
         ))}
       </ScrollView>
     </SafeAreaView>
