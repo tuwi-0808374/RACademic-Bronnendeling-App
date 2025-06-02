@@ -35,8 +35,11 @@ export default function Layout() {
     try {
       const token = await AsyncStorage.getItem("authToken");
       if (!token) {
+        router.push('/')
         throw new Error("No token found");
       }
+
+      
 
       const decoded = jwt_decode<JwtPayload>(token);
       const targetUserId = decoded.user_id;
