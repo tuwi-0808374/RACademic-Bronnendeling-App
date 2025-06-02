@@ -4,6 +4,8 @@ import FavoriteButton from '../../components/posts/FavoriteButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import {getApiBaseUrl} from "@/constants/get_ip";
+const API_BASE_URL = getApiBaseUrl();
 
 export default function MostUpvoted() {
   const router = useRouter();
@@ -55,9 +57,9 @@ export default function MostUpvoted() {
 
     const fetchPosts = async (userId: Number = 0) => {
       try {
-        let url = `http://localhost:5000/posts/most_upvoted`;
+        let url = `${API_BASE_URL}/posts/most_upvoted`;
         if (userId !== 0) {
-          url = `http://localhost:5000/posts/most_upvoted/${userId}`;
+          url = `${API_BASE_URL}/posts/most_upvoted/${userId}`;
         }
         const response = await fetch(url)
           .then(response => response.json())
