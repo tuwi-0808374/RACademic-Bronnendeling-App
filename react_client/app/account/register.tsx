@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, ScrollView, Switch } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import ImageUploader from '../../components/account/ImageUploader';
 import { useDebouncedCallback } from 'use-debounce';
 import { getApiBaseUrl } from '../../constants/get_ip';
+import Icon from "react-native-vector-icons/Ionicons";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -45,6 +46,8 @@ const RegisterScreen = () => {
   const [image, setImage] = useState<string | null>(null);
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
+  const [AccountPublic, setAccountPublic] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   const usernameStatusStyle = [
     styles.usernameStatus,
@@ -328,14 +331,57 @@ const RegisterScreen = () => {
                 selectionColor={COLORS.inputLine}
               />
             </View>
+            <View style={styles.toggleContainer}>
+                          <View style={styles.toggleLabelContainer}>
+                            <TouchableOpacity
+                              style={styles.infoIcon}
+                              onPress={() => {
+                                if (Platform.OS === "web") {
+                                  setShowTooltip(!showTooltip);
+                                }
+                              }}
+                              onPressIn={() =>
+                                Platform.OS !== "web" && setShowTooltip(true)
+                              }
+                              onPressOut={() =>
+                                Platform.OS !== "web" && setShowTooltip(false)
+                              }
+                            >
+                              <Icon
+                                name="information-circle-outline"
+                                size={20}
+                                color={COLORS.text}
+                              />
+                            </TouchableOpacity>
+                            {showTooltip && (
+                              <View
+                                style={[
+                                  styles.tooltip,
+                                  Platform.OS === "web" && styles.tooltipWeb,
+                                ]}
+                              >
+                                <Text style={styles.tooltipText}>
+                                  Je naam en e-mailadres worden niet weergegeven op je
+                                  account.
+                                </Text>
+                              </View>
+                            )}
+                            <Text style={styles.toggleLabel}>Privéaccount</Text>
+                          </View>
+                          <Switch
+                            value={AccountPublic}
+                            onValueChange={(value) => setAccountPublic(value)}
+                          />
+                        </View>
 
             <PrimaryButton onPress={handleRegister} title="Registreren" />
 
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>Heb je al een account? </Text>
-              <Link href={'/account/login'}> 
-                 <Text style={styles.loginLink}>Login</Text>
-              </Link>
+              <TouchableOpacity
+                onPress={() => router.navigate("/")}>
+                  <Text style={styles.loginLink}>Login</Text>
+                </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
@@ -528,6 +574,44 @@ const styles = StyleSheet.create({
   },
   usernameChecking: {
     color: COLORS.placeholderText,
+  },
+   toggleContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 20,
+    justifyContent: "flex-start",
+  },
+  toggleLabel: {
+    fontSize: 16,
+    marginRight: 20,
+  },
+  toggleLabelContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  tooltip: {
+    position: "absolute",
+    bottom: 30,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    width: 200,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 100,
+  },
+  tooltipText: {
+    fontSize: 12,
+    color: COLORS.text,
+  },
+  infoIcon: {
+    paddingRight: 8,
+  },
+  tooltipWeb: {
+    // hier kan andere styling voor web
   },
   
 });
