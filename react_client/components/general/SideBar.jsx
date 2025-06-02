@@ -51,6 +51,16 @@ function SideBar({sideBarState, setSideBarState}) {
                 <Text style={styles.SideText}>Favorieten</Text>
             </TouchableOpacity>
 
+                        <TouchableOpacity onPress={() => {
+                setSideBarState(false);
+                router.push('/account/user_list')
+                }}
+                style={styles.routeContainer}
+            >
+                <Ionicons name="people-circle-outline" size={32} style={styles.Icon} />
+                <Text style={styles.SideText}>Gebruikers</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={() => {
                 setSideBarState(false);
                 router.push('/posts/user_posts')

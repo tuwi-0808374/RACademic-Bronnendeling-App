@@ -149,7 +149,6 @@ export default function UserListScreen() {
 
   return (
     <SafeAreaView style={{height: '100%'}}>
-      <Button title="Terug" onPress={() => router.push('/')} />
       <StatusBar />
       <ScrollView>
         <View>
