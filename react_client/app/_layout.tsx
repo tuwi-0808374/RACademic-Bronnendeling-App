@@ -1,11 +1,11 @@
 import { Stack, useRouter } from 'expo-router';
-import { useEffect, useState, createContext, useContext, use } from "react";
+import React, { useEffect, useState, createContext, useContext, use } from "react";
 import { Platform, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import NavBar from "@/components/general/NavBar";
 import TagContainer from "@/components/general/TagContainer";
 import { getApiBaseUrl } from '@/constants/get_ip';
 import { UserProvider } from '@/constants/get_user_id';
-import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
+import {MaterialIcons, FontAwesome, Ionicons} from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SideBar from "@/components/general/SideBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -72,7 +72,6 @@ export default function Layout() {
     } else {
       setSideBarState(true);
     }
-    console.log(sideBarState);
   };
 
   return (
@@ -110,8 +109,8 @@ export default function Layout() {
             </TouchableWithoutFeedback>
             {Platform.OS !== 'web' && userLoggedIn ? (
               <View style={styles.bottomBar}>
-                <TouchableOpacity onPress={() => router.push('/')}>
-                  <MaterialIcons name="home" size={32} color="black" />
+                <TouchableOpacity onPress={handleSideBarState}>
+                  <Ionicons name={'menu'} color={'#fff'} size={30} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/posts')}>
                   <MaterialIcons name="post-add" size={32} color="black" />
