@@ -43,7 +43,7 @@ export default function UserPosts () {
         return (
             <View style={styles.container}>
                 <Text style={styles.title}>Your posts</Text>
-                <Text style={styles.textContent}>No posts found</Text>
+                <Text style={styles.textContent}>Geen posts gevonden</Text>
             </View>
         )
     }
@@ -54,7 +54,7 @@ export default function UserPosts () {
                 <View style={styles.container}>
 
                     <View style={styles.header}>
-                        <Text style={styles.title}>Your posts</Text>
+                        <Text style={styles.title}>Jouw posts</Text>
                     </View>
 
                 <ScrollView style={styles.scrollview} >
