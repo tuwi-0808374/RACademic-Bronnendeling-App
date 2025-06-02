@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import UserBadges from '../../components/user_badges';
 import { getApiBaseUrl } from '../../constants/get_ip';
 
+
 export default function UserListScreen() {
   const [users, setUsers] = useState([]);
   const router = useRouter();
@@ -151,6 +152,10 @@ export default function UserListScreen() {
     <SafeAreaView style={{height: '100%'}}>
       <StatusBar />
       <ScrollView>
+        <Button onPress={() => router.push("/account/admin_account")}
+          title="Admin account toevoegen"
+          color="green"
+        />
         <View>
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
