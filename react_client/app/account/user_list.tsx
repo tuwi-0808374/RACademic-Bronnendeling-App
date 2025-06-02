@@ -189,7 +189,7 @@ export default function UserListScreen() {
                   onPress={() =>
                     router.push({
                       pathname: '/account/profile',
-                      params: { id: user['id'] },
+                      params: { user_id: user['id'] },
                     })}
                 >
                   Naar profiel van user

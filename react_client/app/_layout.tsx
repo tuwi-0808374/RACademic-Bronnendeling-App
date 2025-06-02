@@ -35,6 +35,7 @@ export default function Layout() {
     try {
       const token = await AsyncStorage.getItem("authToken");
       if (!token) {
+        setUserLoggedIn(false);
         router.push('/')
         throw new Error("No token found");
       }
@@ -52,6 +53,7 @@ export default function Layout() {
       });
 
       if (!response.ok) {
+        setUserLoggedIn(false);
         throw new Error("Network response was not ok");
       }
       setUserLoggedIn(true);
