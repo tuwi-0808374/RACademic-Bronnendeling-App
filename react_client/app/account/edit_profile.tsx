@@ -123,6 +123,8 @@ export default function EditProfileScreen() {
             setUserName(userData.username || "");
             setAccountPublic(!!userData.is_public);
 
+            
+            
             if (userData.profile_image_url) {
               setProfileImage(userData.profile_image_url);
               console.log("Profiel foto URL:", userData.profile_image_url);
@@ -224,13 +226,13 @@ export default function EditProfileScreen() {
         return;
       }
 
-      const formData: any = {
-        first_name,
-        last_name: lastName,
-        email,
-        username,
-        is_public: Boolean(AccountPublic),
-      };
+    const formData: any = {
+      first_name,
+      last_name: lastName,
+      email,
+      username,
+      is_public: Boolean(AccountPublic),
+    };
 
       if (profileImage === null) {
         formData.profile_image = "remove";
