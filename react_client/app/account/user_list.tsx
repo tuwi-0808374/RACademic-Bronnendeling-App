@@ -1,5 +1,5 @@
 import React, { useState, useEffect, use } from 'react';
-import {  View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
@@ -23,22 +23,22 @@ export default function UserListScreen() {
     is_admin: boolean;
   }
 
-    const fetchUser = async () => {
-      try {
-        const token = await AsyncStorage.getItem('authToken');
-        if (!token) {
-          console.log('Geen token gevonden.');
-          return;
-        }
-        const decoded = jwt_decode<JwtPayload>(token);
-        const userID = decoded.user_id;
-        setUserId(userID);
-        const isAdmin = decoded.is_admin;
-        setIsAdmin(isAdmin);
-      } catch (error) {
-        console.error('Error loading badges:', error);
+  const fetchUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      if (!token) {
+        console.log('Geen token gevonden.');
+        return;
       }
-    };
+      const decoded = jwt_decode<JwtPayload>(token);
+      const userID = decoded.user_id;
+      setUserId(userID);
+      const isAdmin = decoded.is_admin;
+      setIsAdmin(isAdmin);
+    } catch (error) {
+      console.error('Error loading badges:', error);
+    }
+  };
 
   useEffect(() => {
     fetchUser();
@@ -81,7 +81,7 @@ export default function UserListScreen() {
     } catch (error) {
       console.error('Error banning user:', error);
     }
-  }
+  };
 
   const unbanUser = async (userId: number) => {
     try {
@@ -104,7 +104,7 @@ export default function UserListScreen() {
     }
   };
 
-    const makeAdmin = async (userId: number) => {
+  const makeAdmin = async (userId: number) => {
     try {
       const response = await fetch(`${API_BASE_URL}/make_admin/${userId}`, {
         method: 'PATCH',
@@ -123,7 +123,7 @@ export default function UserListScreen() {
     } catch (error) {
       console.error('Error admin user:', error);
     }
-  }
+  };
 
   const removeAdmin = async (userId: number) => {
     try {
@@ -146,17 +146,24 @@ export default function UserListScreen() {
     }
   };
 
-
   return (
-    <SafeAreaView style={{height: '100%'}}>
-      <Button title="Terug" onPress={() => router.push('/')} />
+    <SafeAreaView style={{ height: '100%' }}>
       <StatusBar />
       <ScrollView>
         <View>
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
         {users.map((user) => (
-          <TouchableOpacity style={styles.user} key={user['id']} onPress={() => router.push({ pathname: '/account/profile', params: { user_id: user['id'] } })}>
+          <TouchableOpacity
+            style={styles.user}
+            key={user['id']}
+            onPress={() =>
+              router.push({
+                pathname: '/account/profile',
+                params: { user_id: user['id'] },
+              })
+            }
+          >
             <View>
               <Text style={{ fontSize: 18 }}>{user['display_name']}</Text>
               <Text style={{ fontSize: 18 }}>{user['email']}</Text>
@@ -180,30 +187,51 @@ export default function UserListScreen() {
               {isAdmin ? (
                 <>
                   {user['is_banned'] ? (
-                    <Button
-                      title="Blokkering opheffen"
-                      color="green"
-                      onPress={() => unbanUser(user['id'])}
-                    />
+                    <View style={styles.button_green}>
+                      <Text
+                        style={styles.buttontext}
+                        onPress={() => {
+                          unbanUser(user['id']);
+                        }}
+                      >
+                        Blokkering opheffen
+                      </Text>
+                    </View>
                   ) : (
-                    <Button
-                      title="Blokkeer gebruiker"
-                      color="red"
-                      onPress={() => banUser(user['id'])}
-                    />
+                    <View style={styles.button_red}>
+                      <Text
+                        style={styles.buttontext}
+                        onPress={() => {
+                          banUser(user['id']);
+                        }}
+                      >
+                        Blokkeer gebruiker
+                      </Text>
+                    </View>
                   )}
+
                   {user['is_admin'] ? (
-                    <Button
-                      title="Verwijder admin rechten"
-                      color="red"
-                      onPress={() => { removeAdmin(user['id']) }}
-                    />
+                    <View style={styles.button_red}>
+                      <Text
+                        style={styles.buttontext}
+                        onPress={() => {
+                          removeAdmin(user['id']);
+                        }}
+                      >
+                        Verwijder admin rechten
+                      </Text>
+                    </View>
                   ) : (
-                    <Button
-                      title="Maak user admin"
-                      color="green"
-                      onPress={() => { makeAdmin(user['id']) }}
-                    />
+                    <View style={styles.button_green}>
+                      <Text
+                        style={styles.buttontext}
+                        onPress={() => {
+                          makeAdmin(user['id']);
+                        }}
+                      >
+                        Maak user admin
+                      </Text>
+                    </View>
                   )}
                 </>
               ) : null}
@@ -214,6 +242,16 @@ export default function UserListScreen() {
     </SafeAreaView>
   );
 }
+
+const COLORS = {
+  red: '#C80032',
+  background: '#F8F4EF',
+  backgroundDark: '#535353',
+  text: '#333333',
+  textLight: '#FFFFFF',
+  inputLine: '#555555',
+  placeholderText: '#666666',
+};
 
 const styles = StyleSheet.create({
   profileImageContainer: {
@@ -236,5 +274,33 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-  }
+  },
+  button_red: {
+    backgroundColor: COLORS.red,
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: COLORS.text,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  button_green: {
+    backgroundColor: 'green',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: COLORS.text,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+
+  buttontext: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.textLight,
+  },
 });
