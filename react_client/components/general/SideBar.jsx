@@ -4,6 +4,8 @@ import { useRouter } from 'expo-router';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from '@expo/vector-icons';
 import { UserStatusContext } from "@/app/_layout";
+import { useFonts } from 'expo-font';
+import Animated, { SlideInLeft,SlideOutLeft } from 'react-native-reanimated';
 
 function SideBar({ sideBarState, setSideBarState }) {
     const router = useRouter();
@@ -15,16 +17,25 @@ function SideBar({ sideBarState, setSideBarState }) {
         setUserLoggedIn(false);
         router.push('/');
     };
-
+    const [fontsLoaded] = useFonts({
+        BebasNeue: require('@/assets/fonts/BebasNeue-Regular.ttf'),
+    });
+    console.log("Fonts loaded?", fontsLoaded);
+    if (!fontsLoaded) {
+        console.log('No fontsLoaded');
+        return null;
+    }
     if (!sideBarState) {
         return null;
     }
 
     return (
-        <View
+        <Animated.View
+            entering={SlideInLeft.duration(500)}
+            exiting={SlideOutLeft.duration(500)}
             style={[
                 styles.SideBar,
-                Platform.OS === 'web' ? { width: '20%' } : { width: '75%' },
+                Platform.OS === 'web' ? { width: '20%' } : { width: '100%', height:'110%' },
             ]}
         >
             <TouchableOpacity
@@ -112,7 +123,7 @@ function SideBar({ sideBarState, setSideBarState }) {
             </TouchableOpacity>
 
             <View style={styles.spacer} />
-        </View>
+        </Animated.View>
     );
 }
 
@@ -144,7 +155,8 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 14,
+        fontSize: 20,
+        fontFamily: 'BebasNeue',
     },
     spacer: {
         height: '30%',

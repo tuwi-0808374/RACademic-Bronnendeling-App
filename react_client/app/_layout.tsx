@@ -110,14 +110,14 @@ export default function Layout() {
             </TouchableWithoutFeedback>
             {Platform.OS !== 'web' && userLoggedIn ? (
               <View style={styles.bottomBar}>
-                <TouchableOpacity onPress={handleSideBarState}>
-                  <Ionicons name={'menu'} color={'#fff'} size={30} />
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/posts')}>
                   <MaterialIcons name="post-add" size={32} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/account/profile')}>
                   <FontAwesome name="user" size={32} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSideBarState}>
+                  <Ionicons name={'menu'} size={30} color="black" />
                 </TouchableOpacity>
               </View>
             ) : null}

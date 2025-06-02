@@ -1,6 +1,6 @@
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import React, { useState, useEffect } from "react";
-import {Link, router, useRouter} from 'expo-router';
+import {useRouter} from 'expo-router';
 import { getApiBaseUrl } from "@/constants/get_ip";
 
 const API_BASE_URL = getApiBaseUrl();
@@ -50,14 +50,14 @@ const styles = StyleSheet.create({
         gap: 8,
     },
     tagContainer: {
-        width: 90,              // fixed width
-        height: 90,              // fixed height
+        width: 90,
+        height: 90,
         borderRadius: 8,
         marginRight: 8,
         marginBottom: 8,
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden',      // prevent content from overflowing
+        overflow: 'hidden',
     },
     textStyle: {
         fontSize: 16,

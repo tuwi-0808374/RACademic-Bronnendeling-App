@@ -27,7 +27,6 @@ export default function NavBar(props) {
             visible={props.visible}
             setVisible={props.setVisible}
             selectedTags={props.selectedTags}
-            API_BASE_URL={props.API_BASE_URL}
             handleInsidePress={props.handleInsidePress}
         />
         {Platform.OS === 'web' ? (
