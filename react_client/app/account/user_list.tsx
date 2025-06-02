@@ -151,13 +151,15 @@ export default function UserListScreen() {
     <SafeAreaView style={{ height: '100%' }}>
       <StatusBar />
       <ScrollView>
-        <Button onPress={() => router.push("/account/admin_account")}
-          title="Admin account toevoegen"
-          color="green"
-        />
         <View>
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
+        {isAdmin && ( 
+          <Button onPress={() => router.push("/account/admin_account")}
+          title="Admin account toevoegen"
+          color="green"
+        />
+        )}
         {users.map((user) => (
           <TouchableOpacity
             style={styles.user}
