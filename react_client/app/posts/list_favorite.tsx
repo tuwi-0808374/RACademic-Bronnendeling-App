@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import FavoriteButton from '../../components/posts/FavoriteButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
@@ -99,7 +99,11 @@ export default function Test() {
     <View style={{ padding: 20 }}>
       { undoID.length > 0 ? 
       <>
-      <Button title="Maak ongedaan" onPress={undoDeleteFavorite} ></Button>
+      <View style={styles.button_green}>
+        <Text style={styles.buttontext} onPress={() => { undoDeleteFavorite() }} >
+          Maak ongedaan
+        </Text>
+      </View>
       </>
        : null }
       
@@ -123,3 +127,55 @@ export default function Test() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  profileImageContainer: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 25,
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  user: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  button_red: {
+    backgroundColor: '#C80032',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#333333',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  button_green: {
+    backgroundColor: 'green',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#333333',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+
+  buttontext: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+});

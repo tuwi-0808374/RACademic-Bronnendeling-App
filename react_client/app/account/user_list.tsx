@@ -243,16 +243,6 @@ export default function UserListScreen() {
   );
 }
 
-const COLORS = {
-  red: '#C80032',
-  background: '#F8F4EF',
-  backgroundDark: '#535353',
-  text: '#333333',
-  textLight: '#FFFFFF',
-  inputLine: '#555555',
-  placeholderText: '#666666',
-};
-
 const styles = StyleSheet.create({
   profileImageContainer: {
     width: 50,
@@ -276,10 +266,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   button_red: {
-    backgroundColor: COLORS.red,
+    backgroundColor: '#C80032',
     borderRadius: 8,
     borderBottomWidth: 1,
-    borderColor: COLORS.text,
+    borderColor: '#333333',
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 20,
@@ -290,7 +280,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
     borderRadius: 8,
     borderBottomWidth: 1,
-    borderColor: COLORS.text,
+    borderColor: '#333333',
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 20,
@@ -301,6 +291,6 @@ const styles = StyleSheet.create({
   buttontext: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.textLight,
+    color: '#FFFFFF',
   },
 });
