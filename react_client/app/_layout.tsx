@@ -54,6 +54,7 @@ export default function Layout() {
 
       if (!response.ok) {
         setUserLoggedIn(false);
+        router.push('/')
         throw new Error("Network response was not ok");
       }
       setUserLoggedIn(true);

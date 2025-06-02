@@ -27,8 +27,7 @@ export default function Test() {
 
       const decoded_user: any = jwt_decode(token);
       setUserId(decoded_user.user_id);
-
-      fetch(`${API_BASE_URL}/${decoded_user.user_id}`)
+      fetch(`${API_BASE_URL}/posts/favorite/${decoded_user.user_id}`)
       .then((response) => {
         if (response.status === 401) {
           console.log("Unauthorized access. Redirecting to login.");

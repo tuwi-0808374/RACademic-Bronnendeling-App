@@ -192,7 +192,7 @@ export default function UserListScreen() {
                       params: { user_id: user['id'] },
                     })}
                 >
-                  Naar profiel van user
+                  Naar profiel van gebruiker
                 </Text>
               </View>
               <View style={styles.button_orange}>
@@ -204,7 +204,7 @@ export default function UserListScreen() {
                       params: { id: user['id'], username: user['display_name'] },
                     })}
                 >
-                  Bronnen van user bekijken
+                  Bronnen van gebruiker bekijken
                 </Text>
               </View>
               {isAdmin ? (
