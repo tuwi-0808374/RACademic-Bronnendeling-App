@@ -74,7 +74,7 @@ function Posts() {
       {posts.map((post, i) => (
         <Text key={i} style={styles.postContainer}>
           <Text style={{ fontSize: 10 }}>
-            <TouchableOpacity onPress={() => router.push({ pathname: "/account/profile", params: { user_id: post['id']} })}>
+            <TouchableOpacity onPress={() => router.push({ pathname: "/account/profile", params: { user_id: post['user_id']} })}>
           <Text style={{ fontWeight: 'bold' }}>Geplaatst door: {post['user_name']}</Text>
                                               
                                           </TouchableOpacity>

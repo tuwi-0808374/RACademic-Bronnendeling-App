@@ -172,7 +172,7 @@ class Account:
                 
             is_public = bool(is_public) if is_public is not None else False
             cursor.execute(
-                "UPDATE users SET first_name=?, last_name=?, email=?, username=?, is_public=? profile_image=? WHERE id=?",
+                "UPDATE users SET first_name=?, last_name=?, email=?, username=?, is_public=?, profile_image=? WHERE id=?",
                 (first_name, last_name, email, username, is_public, new_image_filename, user_id)
             )
             con.commit()
