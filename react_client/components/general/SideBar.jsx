@@ -107,7 +107,7 @@ function SideBar({ sideBarState, setSideBarState }) {
                 }}
                 style={styles.routeContainer}
             >
-                <Ionicons name="share-outline" size={32} style={styles.Icon} />
+                <Ionicons name="create-outline" size={32} style={styles.Icon} />
                 <Text style={styles.SideText}>Nieuwe post aanmaken</Text>
             </TouchableOpacity>
 
