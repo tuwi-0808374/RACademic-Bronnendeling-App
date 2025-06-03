@@ -26,7 +26,7 @@ const PrimaryButton = ({ onPress, title }: { onPress: () => void, title: string 
   </TouchableOpacity>
 );
 
-const RegisterScreen = () => {
+const AdminRegisterScreen = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [username, setUsername] = useState<string>('');
@@ -48,6 +48,7 @@ const RegisterScreen = () => {
   const router = useRouter();
   const [AccountPublic, setAccountPublic] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const usernameStatusStyle = [
     styles.usernameStatus,
@@ -158,7 +159,8 @@ const RegisterScreen = () => {
         username,
         last_name: lastName,
         password,
-        is_public: true,
+        is_public: AccountPublic,
+        is_admin: isAdmin,
         profile_image: base64Image, 
       };
   
@@ -378,6 +380,15 @@ const RegisterScreen = () => {
                 value={AccountPublic}
                 onValueChange={(value) => setAccountPublic(value)}
                 />
+                <View style={styles.toggleContainer}>
+                <View style={styles.toggleLabelContainer}>
+                  <Text style={styles.toggleLabel}>Admin account</Text>
+                </View>
+                <Switch
+                  value={isAdmin}
+                  onValueChange={(value) => setIsAdmin(value)}
+                />
+              </View>
             </View>
 
             <PrimaryButton onPress={handleRegister} title="Registreren" />
@@ -622,4 +633,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default RegisterScreen;
+export default AdminRegisterScreen;

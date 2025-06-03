@@ -147,6 +147,7 @@ def register():
                 "last_name": data.get("last_name", ""),
                 "password": password,
                 "is_public": data.get("is_public", False),
+                "is_admin": data.get("is_admin", False),
                 "profile_image": data.get("profile_image", None)  
             }
 

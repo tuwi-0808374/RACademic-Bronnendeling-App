@@ -221,8 +221,9 @@ class Account:
                     last_name, 
                     password, 
                     is_public,  
-                    profile_image
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    profile_image,
+                    is_admin
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     user_data["email"],
@@ -232,7 +233,8 @@ class Account:
                     user_data["last_name"],
                     hashed_password,
                     user_data["is_public"],
-                    image_filename  
+                    image_filename,
+                    user_data.get("is_admin", False)   
                 )
             )
             con.commit()
