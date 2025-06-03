@@ -28,19 +28,18 @@ export default function Layout() {
   const [userLoggedIn, setUserLoggedIn] = useState<Boolean>(false);
 
   useEffect(() => {
-    fetchUSerProfile();
+    fetchUserProfile();
   }, []);
 
-  const fetchUSerProfile = async () => {
+  const fetchUserProfile = async () => {
     try {
       const token = await AsyncStorage.getItem("authToken");
       if (!token) {
         setUserLoggedIn(false);
-        router.push('/')
+        router.push('/');
         throw new Error("No token found");
       }
 
-      
 
       const decoded = jwt_decode<JwtPayload>(token);
       const targetUserId = decoded.user_id;
@@ -89,6 +88,7 @@ export default function Layout() {
                 visible={visible}
                 setVisible={setVisible}
                 handleInsidePress={handleInsidePress}
+                handleClose={handleClose}
                 selectedTags={selectedTags}
                 API_BASE_URL={API_BASE_URL}
                 sideBarState={sideBarState}

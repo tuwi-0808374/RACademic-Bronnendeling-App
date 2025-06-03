@@ -178,12 +178,29 @@ class Post:
 
 
     def get_favorite_posts(self, user_id):
-        query = """
-                SELECT posts.*, ratings.is_favorite FROM posts
-                JOIN ratings ON posts.id = ratings.post_id
-                WHERE ratings.user_id = ? AND ratings.is_favorite = 1
-                """
-        self.cursor.execute(query, (user_id,))
+        # query = """
+        #         SELECT posts.*, ratings.is_favorite FROM posts
+        #         JOIN ratings ON posts.id = ratings.post_id
+        #         WHERE ratings.user_id = ? AND ratings.is_favorite = 1
+        #         """
+        # params = []
+        if user_id:
+            query = """
+                    SELECT posts.*, ratings.is_favorite, ratings.userRated, ratings.rating,
+                       CASE 
+                         WHEN users.is_public = 1 THEN users.display_name
+                         ELSE users.username
+                       END AS user_name
+                    FROM posts
+                    LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
+                    JOIN users ON posts.user_id = users.id
+                    WHERE ratings.user_id = ? AND ratings.is_favorite = 1
+                    """
+            # params.append(user_id)
+        else:
+            query = "SELECT * FROM posts"
+
+        self.cursor.execute(query, (user_id, user_id))
         favorite_posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in favorite_posts]
         return result_dicts

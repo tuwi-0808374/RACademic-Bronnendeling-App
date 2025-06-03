@@ -208,12 +208,16 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+
     backgroundColor: COLORS.background,
   },
   keyboardAvoidingContainer: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   innerContainer: {
+    width:'100%',
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -259,7 +263,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   inputGroup: {
-    width: "100%",
+    width: Platform.OS === 'web' ?  '50%' : '100%',
     marginBottom: 35,
   },
   labelContainer: {
@@ -303,7 +307,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    width: "100%",
+      width: Platform.OS === 'web' ?  '25%' : '100%',
     alignItems: "center",
     marginTop: 20,
     marginBottom: 30,
