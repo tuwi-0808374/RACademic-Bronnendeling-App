@@ -75,6 +75,7 @@ export default function Create_post() {
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Titel</Text>
                             <TextInput
+                                maxLength={200}
                                 style={styles.inputcontroltitel}
                                 placeholder="Titel van de bron"
                                 placeholderTextColor={COLORS.placeholderText}
@@ -86,6 +87,8 @@ export default function Create_post() {
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Content van de bron</Text>
                             <TextInput
+                                multiline={true}
+                                maxLength={1000}
                                 style={styles.inputcontrolcontent}
                                 placeholder="print(Hello World)"
                                 placeholderTextColor={COLORS.placeholderText}

@@ -9,7 +9,7 @@ const API_BASE_URL = getApiBaseUrl();
 // https://docs.expo.dev/tutorial/build-a-screen/
 // https://medium.com/@yildizfatma/using-custom-components-in-react-native-expo-702a0116fd23
 
-const FavoriteButton = ({ post_id, is_favorited, onPress, user_id,loading}) => {
+const FavoriteButton = ({ post_id, is_favorited, onPress, user_id,loading = false}) => {
   const [isFilled, setIsFilled] = useState(is_favorited);
 
   const handlePress = async () => {

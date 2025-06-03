@@ -19,7 +19,6 @@ const UserBadges = ({userID = 0}) => {
 
         if (userID !== 0) {
           await refreshBadges(userID);
-          await checkForNewBadges(userID);
           return;
         } 
 

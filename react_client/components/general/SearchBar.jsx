@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {TextInput, StyleSheet, View, Keyboard} from 'react-native';
+import {TextInput, StyleSheet, View, Keyboard, Platform} from 'react-native';
 import { router } from 'expo-router'
 import {Ionicons} from '@expo/vector-icons';
 
@@ -34,7 +34,7 @@ function SearchBar({ visible, setVisible, selectedTags, API_BASE_URL }) {
     }
 
     return (
-        <View style={styles.searchBarContainer}>
+        <View style={Platform.OS === 'web' ?  (styles.searchBarContainer) : (styles.searchBarContainerPhone)}>
              <TextInput
                 style={styles.searchInput}
                 placeholder="Zoeken..."
@@ -57,7 +57,17 @@ function SearchBar({ visible, setVisible, selectedTags, API_BASE_URL }) {
 const styles = StyleSheet.create({
     searchBarContainer: {
         width: '40%',
-        height: '80%',
+        height: '70%',
+        padding: 5,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        borderRadius: 25
+    },
+    searchBarContainerPhone: {
+        width: '50%',
+        height: '70%',
         padding: 5,
         alignSelf: 'center',
         justifyContent: 'center',

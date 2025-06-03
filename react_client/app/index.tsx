@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import {Ionicons} from '@expo/vector-icons';
+import { UserStatusContext } from "./_layout";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -42,8 +43,10 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
+  const setUserLoggedIn = useContext(UserStatusContext);
 
   const handleLogin = async () => {
+
     if (!email || !password) {
       setErrorMessage("Vul beide velden in!");
       console.log("Please fill in both fields.");
@@ -65,6 +68,7 @@ const LoginScreen = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Login succesvol", data);
+        setUserLoggedIn(true);
         await AsyncStorage.setItem("authToken", data["access_token"]);
         router.push("/homepage");
       } else {
