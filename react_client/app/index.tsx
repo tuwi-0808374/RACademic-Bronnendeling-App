@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import {Ionicons} from '@expo/vector-icons';
 import { UserStatusContext } from "./_layout";
+import Container from '../components/general/Container';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -83,10 +84,12 @@ const LoginScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+      
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingContainer}
       >
+       <View style={styles.mainContainer}>
         <View style={styles.innerContainer}>
           <View style={styles.languageSelector}>
             <TouchableOpacity onPress={() => setActiveLanguage("EN")}>
@@ -99,6 +102,8 @@ const LoginScreen = () => {
                 EN
               </Text>
             </TouchableOpacity>
+            
+
             <TouchableOpacity onPress={() => setActiveLanguage("NL")}>
               <View
                 style={[
@@ -198,8 +203,9 @@ const LoginScreen = () => {
             <Link href={"/account/register"}>
               <Text style={styles.registerLink}>Registreren</Text>
             </Link>
+            </View>
           </View>
-        </View>
+          </View> 
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -219,7 +225,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 30,
     paddingTop: 40,
-    paddingBottom: 20,
+    paddingBottom: 20, 
   },
   languageSelector: {
     position: "absolute",
@@ -344,6 +350,15 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 14,
   },
+  mainContainer: {
+  flex: 1,
+  width: "100%",
+  maxWidth: 650, 
+  alignSelf: "center",
+  
+},
+
+
 });
 
 export default LoginScreen;

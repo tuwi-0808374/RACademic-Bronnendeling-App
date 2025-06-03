@@ -5,6 +5,7 @@ import ImageUploader from '../../components/account/ImageUploader';
 import { useDebouncedCallback } from 'use-debounce';
 import { getApiBaseUrl } from '../../constants/get_ip';
 import Icon from "react-native-vector-icons/Ionicons";
+import Container from '../../components/general/Container';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -189,6 +190,7 @@ const RegisterScreen = () => {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Container>
           <View style={styles.innerContainer}>
             <View style={styles.languageSelector}>
               <TouchableOpacity onPress={() => setActiveLanguage('EN')}>
@@ -384,6 +386,7 @@ const RegisterScreen = () => {
                 </TouchableOpacity>
             </View>
           </View>
+          </Container>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

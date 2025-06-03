@@ -20,6 +20,7 @@ import {Ionicons} from '@expo/vector-icons';
 import UserBadges from "../../components/user_badges";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { useFocusEffect } from "expo-router";
+import Container from '../../components/general/Container';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -101,7 +102,7 @@ export default function PublicProfileScreen() {
           setIsPublic(userData.is_public === 0);
           setUserName(userData.username || "");
           
-          // Modified: Only show private info if viewing own profile or profile is public
+          // Bron: ChatGPT
           if (userData.is_public === 0 || targetUserId === decoded.user_id) {
             setFirstName(userData.first_name || "");
             setLastName(userData.last_name || "");
@@ -147,6 +148,7 @@ export default function PublicProfileScreen() {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Container>
           { profileUserId ? (
               <UserBadges userID={profileUserId} ></UserBadges>
             ): <UserBadges userID={0} ></UserBadges>}
@@ -234,6 +236,7 @@ export default function PublicProfileScreen() {
             )}
           </View>
           </TouchableWithoutFeedback>
+          </Container>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
