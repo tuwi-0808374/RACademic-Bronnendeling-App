@@ -103,7 +103,18 @@ function SideBar({ sideBarState, setSideBarState }) {
             <TouchableOpacity
                 onPress={() => {
                     setSideBarState(false);
-                    router.push('/posts//create_post');
+                    router.push('/posts/create_post');
+                }}
+                style={styles.routeContainer}
+            >
+                <Ionicons name="create-outline" size={32} style={styles.Icon} />
+                <Text style={styles.SideText}>Nieuwe tag aanmaken</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={() => {
+                    setSideBarState(false);
+                    router.push('/tags/create_tag');
                 }}
                 style={styles.routeContainer}
             >
