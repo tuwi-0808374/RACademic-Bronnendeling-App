@@ -23,6 +23,7 @@ import { Switch } from "react-native";
 import { useRouter } from "expo-router";
 import ErrorMessage from "../../components/general/ErrorMessage";
 import Icon from "react-native-vector-icons/Ionicons";
+import Container from '../../components/general/Container';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -362,6 +363,7 @@ export default function EditProfileScreen() {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Container>
           <View style={styles.innerContainer}>
             <TouchableOpacity
               style={styles.backButton}
@@ -626,6 +628,7 @@ export default function EditProfileScreen() {
               <Text style={styles.actionButtonText}>Wachtwoord Wijzigen</Text>
             </TouchableOpacity>
           </View>
+          </Container>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

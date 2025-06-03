@@ -56,6 +56,7 @@ export default function NavBar(props) {
 }
 
 const styles = StyleSheet.create({
+
   navbarContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -65,8 +66,12 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     zIndex: 1,
-    elevation: 1,
-
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    backgroundColor: '#222', 
   },
   navbarContentPhone: {
     justifyItems: 'center',
@@ -76,7 +81,12 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     zIndex: 1,
-    elevation: 1,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    backgroundColor: '#222',
   },
   icon: {
     margin: 15,
@@ -84,6 +94,6 @@ const styles = StyleSheet.create({
   },
   spacer: {
     flexDirection: 'row',
-    // width: 40,
   }
 });
+

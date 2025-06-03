@@ -151,13 +151,23 @@ export default function UserListScreen() {
     <SafeAreaView style={{ height: '100%' }}>
       <StatusBar />
       <ScrollView>
-        <Button onPress={() => router.push("/account/admin_account")}
-          title="Admin account toevoegen"
-          color="green"
-        />
         <View>
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
+        {isAdmin && ( 
+          <TouchableOpacity 
+            style={styles.button_darkgreen}
+            onPress={() =>
+              router.push({
+                pathname: '/account/admin_account',                     
+              })}
+          >
+            <Text style={styles.buttontext}>
+              Gebruiker toevoegen
+            </Text>
+          </TouchableOpacity>
+        )}
+        
         {users.map((user) => (
           <TouchableWithoutFeedback
 
@@ -346,5 +356,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#FFFFFF',
+  },
+  button_darkgreen: {
+    backgroundColor: '#006400',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#333333',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
 });

@@ -114,6 +114,17 @@ function SideBar({ sideBarState, setSideBarState }) {
             <TouchableOpacity
                 onPress={() => {
                     setSideBarState(false);
+                    router.push('/posts//create_post');
+                }}
+                style={styles.routeContainer}
+            >
+                <Ionicons name="create-outline" size={32} style={styles.Icon} />
+                <Text style={styles.SideText}>Nieuwe post aanmaken</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={() => {
+                    setSideBarState(false);
                     exitLogout();
                 }}
                 style={styles.routeContainer}
