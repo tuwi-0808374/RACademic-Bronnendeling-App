@@ -1,10 +1,11 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
 import UserBadges from '../../components/user_badges';
 import { getApiBaseUrl } from '../../constants/get_ip';
+
 
 export default function UserListScreen() {
   const [users, setUsers] = useState([]);
@@ -150,6 +151,10 @@ export default function UserListScreen() {
     <SafeAreaView style={{ height: '100%' }}>
       <StatusBar />
       <ScrollView>
+        <Button onPress={() => router.push("/account/admin_account")}
+          title="Admin account toevoegen"
+          color="green"
+        />
         <View>
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
@@ -157,12 +162,6 @@ export default function UserListScreen() {
           <TouchableOpacity
             style={styles.user}
             key={user['id']}
-            onPress={() =>
-              router.push({
-                pathname: '/account/profile',
-                params: { user_id: user['id'] },
-              })
-            }
           >
             <View>
               <Text style={{ fontSize: 18 }}>{user['display_name']}</Text>
@@ -183,6 +182,30 @@ export default function UserListScreen() {
                     style={styles.profileImage}
                   />
                 )}
+              </View>
+              <View style={styles.button_blue}>
+                <Text
+                  style={styles.buttontext}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/account/profile',
+                      params: { user_id: user['id'] },
+                    })}
+                >
+                  Naar profiel van gebruiker
+                </Text>
+              </View>
+              <View style={styles.button_orange}>
+                <Text
+                  style={styles.buttontext}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/posts/most_upvoted',
+                      params: { id: user['id'], username: user['display_name'] },
+                    })}
+                >
+                  Bronnen van gebruiker bekijken
+                </Text>
               </View>
               {isAdmin ? (
                 <>
@@ -209,9 +232,8 @@ export default function UserListScreen() {
                       </Text>
                     </View>
                   )}
-
                   {user['is_admin'] ? (
-                    <View style={styles.button_red}>
+                    <View style={styles.button_purple}>
                       <Text
                         style={styles.buttontext}
                         onPress={() => {
@@ -243,16 +265,6 @@ export default function UserListScreen() {
   );
 }
 
-const COLORS = {
-  red: '#C80032',
-  background: '#F8F4EF',
-  backgroundDark: '#535353',
-  text: '#333333',
-  textLight: '#FFFFFF',
-  inputLine: '#555555',
-  placeholderText: '#666666',
-};
-
 const styles = StyleSheet.create({
   profileImageContainer: {
     width: 50,
@@ -276,10 +288,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   button_red: {
-    backgroundColor: COLORS.red,
+    backgroundColor: '#C80032',
     borderRadius: 8,
     borderBottomWidth: 1,
-    borderColor: COLORS.text,
+    borderColor: '#333333',
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 20,
@@ -287,20 +299,52 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   button_green: {
-    backgroundColor: 'green',
+    backgroundColor: '#34C759',
     borderRadius: 8,
     borderBottomWidth: 1,
-    borderColor: COLORS.text,
+    borderColor: '#333333',
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
-
+  button_blue: {
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#333333',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  button_orange: {
+    backgroundColor: '#FF9500',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#333333',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  button_purple: {
+    backgroundColor: '#AF52DE',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#333333',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
   buttontext: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.textLight,
+    color: '#FFFFFF',
   },
 });

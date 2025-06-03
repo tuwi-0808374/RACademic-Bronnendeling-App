@@ -80,6 +80,7 @@ export default function PublicProfileScreen() {
 
       const decoded = jwt_decode<JwtPayload>(token);
       const currentUserId = decoded.user_id;
+      setUserId(currentUserId);
 
       const targetUserId = profileUserId || decoded.user_id;
 
@@ -166,7 +167,7 @@ export default function PublicProfileScreen() {
             </View>
 
             <Text style={styles.logoTitle}>
-              {isOwnProfile ? "JOUW PROFIEL" : "PROFIEL VAN ${username}"}
+              {userId === profileUserId || !profileUserId ? "JOUW PROFIEL" : `PROFIEL VAN ${username}`}
             </Text>
 
             <View style={styles.inputGroup}>
@@ -217,7 +218,7 @@ export default function PublicProfileScreen() {
               </View>
               <Text style={styles.input}>{username}</Text>
             </View>
-            {isOwnProfile &&(
+            {(userId === profileUserId || !profileUserId) && (
               <TouchableOpacity
                 style={styles.actionButton}
                 onPress={() => router.push("/account/edit_profile")}
@@ -229,7 +230,8 @@ export default function PublicProfileScreen() {
                   style={styles.buttonIcon}
                 />
                 <Text style={styles.actionButtonText}>Profiel Bewerken</Text>
-              </TouchableOpacity>)}
+              </TouchableOpacity>
+            )}
           </View>
           </TouchableWithoutFeedback>
         </ScrollView>

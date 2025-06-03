@@ -74,13 +74,18 @@ function Posts() {
       {posts.map((post, i) => (
         <Text key={i} style={styles.postContainer}>
           <Text style={{ fontSize: 10 }}>
+            <TouchableOpacity onPress={() => router.push({ pathname: "/account/profile", params: { user_id: post['user_id']} })}>
+          <Text style={{ fontWeight: 'bold' }}>Geplaatst door: {post['user_name']}</Text>
+                                              
+                                          </TouchableOpacity>
+          {'\n'}
             {post['user_name']? post['user_name']:'anonymous user'}
           </Text>
           {'\n'}
           <Text style={styles.title}>{post['title']}</Text>
-
+          {'\n'}
           {post['user_id'] === userId && (
-              <TouchableOpacity onPress={() => router.push("/posts/edit_post")}>
+              <TouchableOpacity onPress={() => router.push({ pathname: "/posts/edit_post", params: { post_id: post['id']} })}>
                 <View>
                   <Text>edit post</Text>
                 </View>
