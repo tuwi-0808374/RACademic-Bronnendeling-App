@@ -102,6 +102,7 @@ export default function editpost() {
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Titel</Text>
                             <TextInput
+                                maxLength={200}
                                 style={styles.inputcontroltitel}
                                 placeholderTextColor={COLORS.placeholderText}
                                 value={title}
@@ -112,6 +113,8 @@ export default function editpost() {
                     <View style={styles.input}>
                         <Text style={styles.inputlabel}>Content</Text>
                         <TextInput
+                            multiline={true}
+                            maxLength={1000}
                             style={styles.inputcontroltitel}
                             placeholderTextColor={COLORS.placeholderText}
                             value={content}

@@ -307,7 +307,7 @@ class Account:
         try:
             result = cursor.execute(
                 """
-                    SELECT id, first_name, last_name, username, email, is_public, profile_image, is_banned, is_admin
+                    SELECT id, first_name, last_name, display_name, username, email, is_public, profile_image, is_banned, is_admin
                     FROM users
                     LIMIT ? OFFSET ?
                 """,

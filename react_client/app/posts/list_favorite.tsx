@@ -4,6 +4,8 @@ import FavoriteButton from '../../components/posts/FavoriteButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
+import {getApiBaseUrl} from "@/constants/get_ip";
+const API_BASE_URL = getApiBaseUrl();
 
 export default function Test() {
   const router = useRouter();
@@ -25,8 +27,7 @@ export default function Test() {
 
       const decoded_user: any = jwt_decode(token);
       setUserId(decoded_user.user_id);
-
-      fetch(`http://127.0.0.1:5000/posts/favorite/${decoded_user.user_id}`)
+      fetch(`${API_BASE_URL}/posts/favorite/${decoded_user.user_id}`)
       .then((response) => {
         if (response.status === 401) {
           console.log("Unauthorized access. Redirecting to login.");

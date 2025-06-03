@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaView, StatusBar, KeyboardAvoidingView, Platform, ScrollView, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
@@ -164,12 +164,6 @@ export default function UserListScreen() {
           <TouchableOpacity
             style={styles.user}
             key={user['id']}
-            onPress={() =>
-              router.push({
-                pathname: '/account/profile',
-                params: { user_id: user['id'] },
-              })
-            }
           >
             <View>
               <Text style={{ fontSize: 18 }}>{user['display_name']}</Text>
@@ -190,6 +184,30 @@ export default function UserListScreen() {
                     style={styles.profileImage}
                   />
                 )}
+              </View>
+              <View style={styles.button_blue}>
+                <Text
+                  style={styles.buttontext}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/account/profile',
+                      params: { user_id: user['id'] },
+                    })}
+                >
+                  Naar profiel van gebruiker
+                </Text>
+              </View>
+              <View style={styles.button_orange}>
+                <Text
+                  style={styles.buttontext}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/posts/most_upvoted',
+                      params: { id: user['id'], username: user['display_name'] },
+                    })}
+                >
+                  Bronnen van gebruiker bekijken
+                </Text>
               </View>
               {isAdmin ? (
                 <>
@@ -216,9 +234,8 @@ export default function UserListScreen() {
                       </Text>
                     </View>
                   )}
-
                   {user['is_admin'] ? (
-                    <View style={styles.button_red}>
+                    <View style={styles.button_purple}>
                       <Text
                         style={styles.buttontext}
                         onPress={() => {
@@ -284,7 +301,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   button_green: {
-    backgroundColor: 'green',
+    backgroundColor: '#34C759',
     borderRadius: 8,
     borderBottomWidth: 1,
     borderColor: '#333333',
@@ -294,7 +311,39 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
-
+  button_blue: {
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#333333',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  button_orange: {
+    backgroundColor: '#FF9500',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#333333',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  button_purple: {
+    backgroundColor: '#AF52DE',
+    borderRadius: 8,
+    borderBottomWidth: 1,
+    borderColor: '#333333',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
   buttontext: {
     fontSize: 20,
     fontWeight: 'bold',
