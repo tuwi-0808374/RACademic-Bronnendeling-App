@@ -6,6 +6,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { getApiBaseUrl } from '../../constants/get_ip';
 import Icon from "react-native-vector-icons/Ionicons";
 import Container from '../../components/general/Container';
+import ErrorMessage from '../../components/general/ErrorMessage';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -49,6 +50,7 @@ const RegisterScreen = () => {
   const router = useRouter();
   const [AccountPublic, setAccountPublic] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [generalError, setGeneralError] = useState<string>('');
 
   const usernameStatusStyle = [
     styles.usernameStatus,
@@ -128,14 +130,17 @@ const RegisterScreen = () => {
   const handleRegister = async () => {
     if ((!usernameStatus.available && username) || (!emailStatus.available && email)) {
       console.log('Kies een beschikbare gebruikersnaam en email');
+      setGeneralError('Kies een beschikbare gebruikersnaam en email');
       return;
     }
     if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
       console.log('Vul alle velden in.');
+      setGeneralError('Vul alle velden in.');
       return;
     }
     if (password !== confirmPassword) {
       console.log('Wachtwoorden komen niet overeen.');
+      setGeneralError('Wachtwoorden komen niet overeen.');
       return;
     }
   
@@ -172,6 +177,7 @@ const RegisterScreen = () => {
       const data = await response.json();
       if (response.ok) router.push('/');
       else console.log('Registration failed:', data.error);
+      setGeneralError(data.error || 'Registratie mislukt');
     } catch (error) {
       console.log('Error:', error);
     }
@@ -375,6 +381,10 @@ const RegisterScreen = () => {
                             onValueChange={(value) => setAccountPublic(value)}
                           />
                         </View>
+                        <ErrorMessage 
+                          message={generalError} 
+                          type="error"
+                        />
 
             <PrimaryButton onPress={handleRegister} title="Registreren" />
 
