@@ -47,39 +47,40 @@ const LoginScreen = () => {
   const setUserLoggedIn = useContext(UserStatusContext);
 
   const handleLogin = async () => {
+  if (!email || !password) {
+    setErrorMessage("Vul beide velden in!");
+    return;
+  }
 
-    if (!email || !password) {
-      setErrorMessage("Vul beide velden in!");
-      console.log("Please fill in both fields.");
-      return;
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : {};
+
+    if (!response.ok) {
+      throw new Error(data.message || "Inloggen mislukt");
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
+    console.log("Login succesvol", data);
+    setUserLoggedIn(true);
+    await AsyncStorage.setItem("authToken", data["access_token"]);
+    router.push("/homepage");
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login succesvol", data);
-        setUserLoggedIn(true);
-        await AsyncStorage.setItem("authToken", data["access_token"]);
-        router.push("/homepage");
-      } else {
-        const errorData = await response.json();
-        console.log("Fout bij inloggen:", errorData.message);
-      }
-    } catch (error) {
-      console.log("Er is een fout opgetreden:", error);
-    }
-  };
+  } catch (error) {
+    setErrorMessage(error.message || "Er is een fout opgetreden");
+    console.error("Login error:", error);
+  }
+};
 
   return (
     <SafeAreaView style={styles.safeArea}>
