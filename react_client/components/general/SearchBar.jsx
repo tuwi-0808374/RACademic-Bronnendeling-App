@@ -3,9 +3,8 @@ import {TextInput, StyleSheet, View, Keyboard, Platform} from 'react-native';
 import { router } from 'expo-router'
 import {Ionicons} from '@expo/vector-icons';
 
-function SearchBar({ visible, setVisible, selectedTags, API_BASE_URL }) {
+function SearchBar({ visible, setVisible, selectedTags }) {
     const [searchQuery, setSearchQuery] = useState('');
-    const [posts, setPosts] = useState({});
 
     const fetchPosts = () => {
         router.push({
@@ -68,7 +67,6 @@ const styles = StyleSheet.create({
     searchBarContainerPhone: {
         width: '50%',
         height: '70%',
-        padding: 5,
         alignSelf: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',

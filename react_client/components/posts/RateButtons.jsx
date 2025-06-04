@@ -1,5 +1,5 @@
 import React, { useEffect,useState } from 'react';
-import { TouchableOpacity,Text ,StyleSheet } from 'react-native';
+import { TouchableOpacity,Text,View, StyleSheet } from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {getApiBaseUrl} from "@/constants/get_ip";
 const API_BASE_URL = getApiBaseUrl();
@@ -61,20 +61,20 @@ export default function RateButtons(props) {
     };
 
     return (
-        <>
-            <TouchableOpacity style={[styles.button]} onPress={() => Rate(1)}>
+        <View style={{flexDirection:'row', justifyContent:'center', alignItems: 'center'}}>
+        <TouchableOpacity style={[styles.button]} onPress={() => Rate(1)}>
             <Ionicons
                 name={buttonSettings.pos_icon}
                 size={24}
                 color={buttonSettings.pos_color}/>
-            </TouchableOpacity>
-            <Text>{totalRating}</Text>
-            <TouchableOpacity style={[styles.button]} onPress={() => Rate(-1)}>
+        </TouchableOpacity>
+        <Text>{totalRating}</Text>
+        <TouchableOpacity style={[styles.button]} onPress={() => Rate(-1)}>
             <Ionicons
                 name={buttonSettings.neg_icon}
                 size={24}
                 color={buttonSettings.neg_color}/>
-        </TouchableOpacity></>
+        </TouchableOpacity></View>
     )
 }
 
