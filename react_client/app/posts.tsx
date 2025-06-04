@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Platform,
@@ -24,9 +24,10 @@ function Posts() {
   const { userId, loading } = useUser();
   const local = useLocalSearchParams();
   const router = useRouter();
+  // const[tags, setTags] = useState([])
 
   useEffect(() => {
-    
+
     const fetchPosts = async () => {
       if (!loading && userId) {
         try {
@@ -55,6 +56,14 @@ function Posts() {
         }
       }
     };
+    // useEffect(() => {
+    //   fetch(`${API_BASE_URL}/tags`)
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     setTags(data.data);
+    //   })
+    // }, []);
+
 
     if (userId) {
       fetchPosts();
@@ -80,7 +89,16 @@ function Posts() {
         <TagBar />
       </View>
           : null}
-      {local.tag_ids || local.tag_ids !== 'undefined'}
+      {/*{local.tag_ids || local.tag_ids !== 'undefined'}*/}
+      {/*{ tags.map((tag, i) => {*/}
+      {/*  <View key={i}*/}
+      {/*        style={[styles.tagContainer,*/}
+      {/*          { backgroundColor: tag['color'] }]}*/}
+      {/*  >*/}
+
+      {/*    <Text style={styles.textStyle}>{tag['title']}</Text>*/}
+      {/*  </View>*/}
+      {/*}}*/}
       <View style={[Platform.OS === 'web'? {width: '49%'} : {width: '100%'},{alignSelf: 'center'} ]}>
 
       </View>

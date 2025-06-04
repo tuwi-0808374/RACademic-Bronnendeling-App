@@ -45,26 +45,19 @@ class Post:
         result_dicts = [dict(row) for row in posts]
         return result_dicts
 
-    def search_posts(self,search_query, tag_ids):
+    def search_posts(self, user_id, search_query, tag_ids):
         tag = Tag()
         params = ()
         query = """
-                SELECT
-                  posts.*,
-                  CASE
+                SELECT 
+                posts.*,
+                CASE 
                     WHEN users.is_public = true THEN users.display_name
                     ELSE users.username
-                  END AS user_name,
-                  ratings.is_favorite,
-                  ratings.userRated,
-                  ratings.rating,
-                  GROUP_CONCAT(tags.id ORDER BY tags.id) AS tags
+                END AS user_name
                 FROM posts
-                LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
-                JOIN users ON posts.user_id = users.id
-                LEFT JOIN post_tags ON posts.id = post_tags.post_id
-                LEFT JOIN tags ON post_tags.tag_id = tags.id
-                GROUP BY posts.id
+                    JOIN users ON posts.user_id = users.id
+                WHERE 1=1 
                 """
 
         #roept functie om alle post_ids met correcte tags op te halen
@@ -83,9 +76,10 @@ class Post:
             words = search_query.split()
             for word in words:
                 # checked voor content en title
-                query += "AND (LOWER(content) LIKE ? or LOWER(title) LIKE ?) "
+                query += "AND (LOWER(posts.content) LIKE ? or LOWER(posts.title) LIKE ?) "
                 params += (str('%' + word.lower() + '%'),str('%' + word.lower() + '%'),)
-        query += (str("ORDER BY posted_date DESC"))
+        query += (str("ORDER BY posts.posted_date DESC"))
+        # params +=  user_id,
         print(query, params,)
         self.cursor.execute(query, params,)
         posts = self.cursor.fetchall()
