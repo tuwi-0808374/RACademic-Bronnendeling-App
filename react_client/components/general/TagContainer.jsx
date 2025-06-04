@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
-        top: 60,
+        top: 75,
         width: "85%",
         padding: 5,
         borderRadius: 25,
-        elevation: 5,
+        elevation: 999,
         backgroundColor: "white",
     },
     tag: {

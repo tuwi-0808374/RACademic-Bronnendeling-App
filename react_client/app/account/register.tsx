@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, StatusBar, ScrollView, Switch } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import ImageUploader from '../../components/account/ImageUploader';
 import { useDebouncedCallback } from 'use-debounce';
 import { getApiBaseUrl } from '../../constants/get_ip';
+import Icon from "react-native-vector-icons/Ionicons";
+import Container from '../../components/general/Container';
+import ErrorMessage from '../../components/general/ErrorMessage';
+import {Ionicons} from '@expo/vector-icons';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -42,9 +46,13 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
+  const [AccountPublic, setAccountPublic] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [generalError, setGeneralError] = useState<string>('');
 
   const usernameStatusStyle = [
     styles.usernameStatus,
@@ -124,14 +132,17 @@ const RegisterScreen = () => {
   const handleRegister = async () => {
     if ((!usernameStatus.available && username) || (!emailStatus.available && email)) {
       console.log('Kies een beschikbare gebruikersnaam en email');
+      setGeneralError('Kies een beschikbare gebruikersnaam en email');
       return;
     }
     if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
       console.log('Vul alle velden in.');
+      setGeneralError('Vul alle velden in.');
       return;
     }
     if (password !== confirmPassword) {
       console.log('Wachtwoorden komen niet overeen.');
+      setGeneralError('Wachtwoorden komen niet overeen.');
       return;
     }
   
@@ -168,6 +179,7 @@ const RegisterScreen = () => {
       const data = await response.json();
       if (response.ok) router.push('/');
       else console.log('Registration failed:', data.error);
+      setGeneralError(data.error || 'Registratie mislukt');
     } catch (error) {
       console.log('Error:', error);
     }
@@ -186,6 +198,7 @@ const RegisterScreen = () => {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Container>
           <View style={styles.innerContainer}>
             <View style={styles.languageSelector}>
               <TouchableOpacity onPress={() => setActiveLanguage('EN')}>
@@ -305,15 +318,27 @@ const RegisterScreen = () => {
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>WACHTWOORD</Text>
+              <View style={styles.passwordContainer}>
               <TextInput
                 style={[styles.input, styles.inputStandard]}
                 placeholder="********"
                 placeholderTextColor={COLORS.placeholderText}
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry={true}
+                secureTextEntry={!showPassword}
                 selectionColor={COLORS.inputLine}
               />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={20}
+                  color={COLORS.inputLine}
+                />
+              </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.inputGroup}>
@@ -328,16 +353,64 @@ const RegisterScreen = () => {
                 selectionColor={COLORS.inputLine}
               />
             </View>
+            <View style={styles.toggleContainer}>
+                          <View style={styles.toggleLabelContainer}>
+                            <TouchableOpacity
+                              style={styles.infoIcon}
+                              onPress={() => {
+                                if (Platform.OS === "web") {
+                                  setShowTooltip(!showTooltip);
+                                }
+                              }}
+                              onPressIn={() =>
+                                Platform.OS !== "web" && setShowTooltip(true)
+                              }
+                              onPressOut={() =>
+                                Platform.OS !== "web" && setShowTooltip(false)
+                              }
+                            >
+                              <Icon
+                                name="information-circle-outline"
+                                size={20}
+                                color={COLORS.text}
+                              />
+                            </TouchableOpacity>
+                            {showTooltip && (
+                              <View
+                                style={[
+                                  styles.tooltip,
+                                  Platform.OS === "web" && styles.tooltipWeb,
+                                ]}
+                              >
+                                <Text style={styles.tooltipText}>
+                                  Je naam en e-mailadres worden niet weergegeven op je
+                                  account.
+                                </Text>
+                              </View>
+                            )}
+                            <Text style={styles.toggleLabel}>Privéaccount</Text>
+                          </View>
+                          <Switch
+                            value={AccountPublic}
+                            onValueChange={(value) => setAccountPublic(value)}
+                          />
+                        </View>
+                        <ErrorMessage 
+                          message={generalError} 
+                          type="error"
+                        />
 
             <PrimaryButton onPress={handleRegister} title="Registreren" />
 
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>Heb je al een account? </Text>
-              <Link href={'/account/login'}> 
-                 <Text style={styles.loginLink}>Login</Text>
-              </Link>
+              <TouchableOpacity
+                onPress={() => router.navigate("/")}>
+                  <Text style={styles.loginLink}>Login</Text>
+                </TouchableOpacity>
             </View>
           </View>
+          </Container>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -528,6 +601,48 @@ const styles = StyleSheet.create({
   },
   usernameChecking: {
     color: COLORS.placeholderText,
+  },
+   toggleContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 20,
+    justifyContent: "flex-start",
+  },
+  toggleLabel: {
+    fontSize: 16,
+    marginRight: 20,
+  },
+  toggleLabelContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  tooltip: {
+    position: "absolute",
+    bottom: 30,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    width: 200,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    zIndex: 100,
+  },
+  tooltipText: {
+    fontSize: 12,
+    color: COLORS.text,
+  },
+  infoIcon: {
+    paddingRight: 8,
+  },
+  tooltipWeb: {
+    // hier kan andere styling voor web
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 0,
   },
   
 });

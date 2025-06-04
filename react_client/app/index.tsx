@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import {Ionicons} from '@expo/vector-icons';
 import { UserStatusContext } from "./_layout";
+import Container from '../components/general/Container';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -70,7 +71,7 @@ const LoginScreen = () => {
         console.log("Login succesvol", data);
         setUserLoggedIn(true);
         await AsyncStorage.setItem("authToken", data["access_token"]);
-        router.push("/homepage");
+        router.push("/posts");
       } else {
         const errorData = await response.json();
         console.log("Fout bij inloggen:", errorData.message);
@@ -83,10 +84,12 @@ const LoginScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+      
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingContainer}
       >
+       <View style={styles.mainContainer}>
         <View style={styles.innerContainer}>
           <View style={styles.languageSelector}>
             <TouchableOpacity onPress={() => setActiveLanguage("EN")}>
@@ -99,6 +102,8 @@ const LoginScreen = () => {
                 EN
               </Text>
             </TouchableOpacity>
+            
+
             <TouchableOpacity onPress={() => setActiveLanguage("NL")}>
               <View
                 style={[
@@ -198,8 +203,9 @@ const LoginScreen = () => {
             <Link href={"/account/register"}>
               <Text style={styles.registerLink}>Registreren</Text>
             </Link>
+            </View>
           </View>
-        </View>
+          </View> 
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -208,18 +214,22 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+
     backgroundColor: COLORS.background,
   },
   keyboardAvoidingContainer: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   innerContainer: {
+    width:'100%',
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 30,
     paddingTop: 40,
-    paddingBottom: 20,
+    paddingBottom: 20, 
   },
   languageSelector: {
     position: "absolute",
@@ -259,7 +269,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   inputGroup: {
-    width: "100%",
+    width: Platform.OS === 'web' ?  '50%' : '100%',
     marginBottom: 35,
   },
   labelContainer: {
@@ -303,7 +313,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    width: "100%",
+      width: Platform.OS === 'web' ?  '25%' : '100%',
     alignItems: "center",
     marginTop: 20,
     marginBottom: 30,
@@ -344,6 +354,15 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontSize: 14,
   },
+  mainContainer: {
+  flex: 1,
+  width: "100%",
+  maxWidth: 650, 
+  alignSelf: "center",
+  
+},
+
+
 });
 
 export default LoginScreen;

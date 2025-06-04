@@ -49,15 +49,22 @@ class Post:
         tag = Tag()
         params = ()
         query = """
-                SELECT 
-                posts.*,
-                CASE 
+                SELECT
+                  posts.*,
+                  CASE
                     WHEN users.is_public = true THEN users.display_name
                     ELSE users.username
-                END AS user_name
+                  END AS user_name,
+                  ratings.is_favorite,
+                  ratings.userRated,
+                  ratings.rating,
+                  GROUP_CONCAT(tags.id ORDER BY tags.id) AS tags
                 FROM posts
-                    JOIN users ON posts.user_id = users.id
-                WHERE 1=1 
+                LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
+                JOIN users ON posts.user_id = users.id
+                LEFT JOIN post_tags ON posts.id = post_tags.post_id
+                LEFT JOIN tags ON post_tags.tag_id = tags.id
+                GROUP BY posts.id
                 """
 
         #roept functie om alle post_ids met correcte tags op te halen
@@ -178,12 +185,29 @@ class Post:
 
 
     def get_favorite_posts(self, user_id):
-        query = """
-                SELECT posts.*, ratings.is_favorite FROM posts
-                JOIN ratings ON posts.id = ratings.post_id
-                WHERE ratings.user_id = ? AND ratings.is_favorite = 1
-                """
-        self.cursor.execute(query, (user_id,))
+        # query = """
+        #         SELECT posts.*, ratings.is_favorite FROM posts
+        #         JOIN ratings ON posts.id = ratings.post_id
+        #         WHERE ratings.user_id = ? AND ratings.is_favorite = 1
+        #         """
+        # params = []
+        if user_id:
+            query = """
+                    SELECT posts.*, ratings.is_favorite, ratings.userRated, ratings.rating,
+                       CASE 
+                         WHEN users.is_public = 1 THEN users.display_name
+                         ELSE users.username
+                       END AS user_name
+                    FROM posts
+                    LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
+                    JOIN users ON posts.user_id = users.id
+                    WHERE ratings.user_id = ? AND ratings.is_favorite = 1
+                    """
+            # params.append(user_id)
+        else:
+            query = "SELECT * FROM posts"
+
+        self.cursor.execute(query, (user_id, user_id))
         favorite_posts = self.cursor.fetchall()
         result_dicts = [dict(row) for row in favorite_posts]
         return result_dicts
