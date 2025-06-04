@@ -128,6 +128,7 @@ export default function Create_post() {
         container: {
             paddingVertical: 10,
             paddingHorizontal: 30,
+            height: '100%'
         },
         header: {
             marginVertical: 36,

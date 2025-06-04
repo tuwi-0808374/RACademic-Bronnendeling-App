@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import {CheckBox} from "@/components/input";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import {getApiBaseUrl} from "@/constants/get_ip";
@@ -92,66 +92,67 @@ export default function editpost() {
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>Edit Post</Text>
-                </View>
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <Text style={styles.title}>Edit Post</Text>
+                    </View>
 
-                <ScrollView>
-                <View style={styles.form}>
-                    <View style={styles.input}>
-                        <Text style={styles.inputlabel}>Titel</Text>
+                    <ScrollView>
+                    <View style={styles.form}>
+                        <View style={styles.input}>
+                            <Text style={styles.inputlabel}>Titel</Text>
+                                <TextInput
+                                    maxLength={200}
+                                    style={styles.inputcontroltitel}
+                                    placeholderTextColor={COLORS.placeholderText}
+                                    value={title}
+                                    onChangeText={(text)=> setTitle(text)}
+                                />
+                        </View>
+
+                        <View style={styles.input}>
+                            <Text style={styles.inputlabel}>Content</Text>
                             <TextInput
-                                maxLength={200}
+                                multiline={true}
+                                maxLength={1000}
                                 style={styles.inputcontroltitel}
                                 placeholderTextColor={COLORS.placeholderText}
-                                value={title}
-                                onChangeText={(text)=> setTitle(text)}
+                                value={content}
+                                onChangeText={(text)=> setContent(text)}
                             />
+                        </View>
+
+
+                        <View style={styles.input}>
+                            <Text style={styles.inputlabel}>Tags</Text>
+                            <CheckBox
+                                options={tagData}
+                                CheckedValues={selected_tags}
+                                onChange={setSelectedTagId}
+                                />
+                        </View>
+
+                        <View style={styles.create}>
+                            <TouchableOpacity onPress={EditPost}>
+                                <View style={styles.button}>
+                                    <Text style={styles.buttontext}>edit post</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.create}>
+                            <TouchableOpacity onPress={DeletePost}>
+                                <View style={styles.button}>
+                                    <Text style={styles.buttontext}>Delete post</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+
                     </View>
-
-                    <View style={styles.input}>
-                        <Text style={styles.inputlabel}>Content</Text>
-                        <TextInput
-                            multiline={true}
-                            maxLength={1000}
-                            style={styles.inputcontroltitel}
-                            placeholderTextColor={COLORS.placeholderText}
-                            value={content}
-                            onChangeText={(text)=> setContent(text)}
-                        />
-                    </View>
-
-
-                    <View style={styles.input}>
-                        <Text style={styles.inputlabel}>Tags</Text>
-                        <CheckBox
-                            options={tagData}
-                            CheckedValues={selected_tags}
-                            onChange={setSelectedTagId}
-                            />
-                    </View>
-
-                    <View style={styles.create}>
-                        <TouchableOpacity onPress={EditPost}>
-                            <View style={styles.button}>
-                                <Text style={styles.buttontext}>edit post</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.create}>
-                        <TouchableOpacity onPress={DeletePost}>
-                            <View style={styles.button}>
-                                <Text style={styles.buttontext}>Delete post</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-
-
+                    </ScrollView>
                 </View>
-                </ScrollView>
-            </View>
+
         </SafeAreaView>
     )
 
@@ -161,6 +162,7 @@ const styles = StyleSheet.create({
     container: {
         paddingVertical: 10,
         paddingHorizontal: 30,
+        height: '100%'
     },
     header: {
         marginVertical: 36,
