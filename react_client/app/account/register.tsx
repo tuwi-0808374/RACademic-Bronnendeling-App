@@ -7,6 +7,7 @@ import { getApiBaseUrl } from '../../constants/get_ip';
 import Icon from "react-native-vector-icons/Ionicons";
 import Container from '../../components/general/Container';
 import ErrorMessage from '../../components/general/ErrorMessage';
+import {Ionicons} from '@expo/vector-icons';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -45,6 +46,7 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
@@ -316,15 +318,27 @@ const RegisterScreen = () => {
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>WACHTWOORD</Text>
+              <View style={styles.passwordContainer}>
               <TextInput
                 style={[styles.input, styles.inputStandard]}
                 placeholder="********"
                 placeholderTextColor={COLORS.placeholderText}
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry={true}
+                secureTextEntry={!showPassword}
                 selectionColor={COLORS.inputLine}
               />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={20}
+                  color={COLORS.inputLine}
+                />
+              </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.inputGroup}>
@@ -625,6 +639,10 @@ const styles = StyleSheet.create({
   },
   tooltipWeb: {
     // hier kan andere styling voor web
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 0,
   },
   
 });

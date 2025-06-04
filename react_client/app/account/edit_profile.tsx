@@ -23,6 +23,7 @@ import { Switch } from "react-native";
 import { useRouter } from "expo-router";
 import ErrorMessage from "../../components/general/ErrorMessage";
 import Icon from "react-native-vector-icons/Ionicons";
+import {Ionicons} from '@expo/vector-icons';
 import Container from '../../components/general/Container';
 
 const API_BASE_URL = getApiBaseUrl();
@@ -62,6 +63,8 @@ export default function EditProfileScreen() {
   const [passwordChangeMessageType, setPasswordChangeMessageType] = useState<
     "success" | "error" | ""
   >("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const [saveMessage, setSaveMessage] = useState("");
 
@@ -560,14 +563,26 @@ export default function EditProfileScreen() {
                 />
                 <Text style={styles.inputLabel}>Huidig Wachtwoord</Text>
               </View>
+              <View style={styles.passwordContainer}>
               <TextInput
                 value={oldPassword}
                 onChangeText={setOldPassword}
                 style={styles.input}
-                secureTextEntry
+                secureTextEntry={!showPassword}
                 selectionColor={COLORS.red}
                 placeholderTextColor={COLORS.placeholderText}
               />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={20}
+                  color={COLORS.inputLine}
+                />
+              </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.inputGroup}>
@@ -580,15 +595,29 @@ export default function EditProfileScreen() {
                 />
                 <Text style={styles.inputLabel}>Nieuw Wachtwoord</Text>
               </View>
+              <View style={styles.passwordContainer}>
               <TextInput
                 value={newPassword}
                 onChangeText={setNewPassword}
                 style={styles.input}
-                secureTextEntry
+                secureTextEntry={!showNewPassword}
                 selectionColor={COLORS.red}
                 placeholderTextColor={COLORS.placeholderText}
               />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowNewPassword(!showNewPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={20}
+                  color={COLORS.inputLine}
+                />
+              </TouchableOpacity>
+              </View>
             </View>
+
+            
 
             <View style={styles.inputGroup}>
               <View style={styles.labelContainer}>
@@ -802,5 +831,13 @@ const styles = StyleSheet.create({
   },
   tooltipWeb: {
     // hier kan andere styling voor web
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 0,
   },
 });
