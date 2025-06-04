@@ -47,16 +47,17 @@ class Post:
 
     def search_posts(self, user_id, search_query, tag_ids):
         tag = Tag()
-        params = ()
+        params = (user_id,)
         query = """
                 SELECT 
-                posts.*,
+                posts.*,ratings.is_favorite , ratings.userRated , ratings.rating, 
                 CASE 
                     WHEN users.is_public = true THEN users.display_name
                     ELSE users.username
                 END AS user_name
                 FROM posts
                     JOIN users ON posts.user_id = users.id
+                    LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
                 WHERE 1=1 
                 """
 
