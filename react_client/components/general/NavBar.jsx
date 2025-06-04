@@ -9,7 +9,6 @@ export default function NavBar(props) {
   const setUserLoggedIn = useContext(UserStatusContext);
 
   const exitLogout = async (props) => {
-    console.log('Logging out...');
     await AsyncStorage.removeItem('authToken');
     setUserLoggedIn(false);
     props.router.push('/');

@@ -37,7 +37,8 @@ export default function Layout() {
       if (!token) {
         setUserLoggedIn(false);
         router.push('/');
-        throw new Error("No token found");
+        console.log("No token found");
+        return;
       }
 
 
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
   navbarContainer: {
     backgroundColor: 'black',
     width: '100%',
-    height: '9%',
+    height: Platform.OS === "web" ? '9%' : 70,
     elevation: 2,
     zIndex: 2,
     justifyContent: 'center',

@@ -49,15 +49,22 @@ class Post:
         tag = Tag()
         params = ()
         query = """
-                SELECT 
-                posts.*,
-                CASE 
+                SELECT
+                  posts.*,
+                  CASE
                     WHEN users.is_public = true THEN users.display_name
                     ELSE users.username
-                END AS user_name
+                  END AS user_name,
+                  ratings.is_favorite,
+                  ratings.userRated,
+                  ratings.rating,
+                  GROUP_CONCAT(tags.id ORDER BY tags.id) AS tags
                 FROM posts
-                    JOIN users ON posts.user_id = users.id
-                WHERE 1=1 
+                LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
+                JOIN users ON posts.user_id = users.id
+                LEFT JOIN post_tags ON posts.id = post_tags.post_id
+                LEFT JOIN tags ON post_tags.tag_id = tags.id
+                GROUP BY posts.id
                 """
 
         #roept functie om alle post_ids met correcte tags op te halen

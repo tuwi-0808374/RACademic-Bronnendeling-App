@@ -193,77 +193,86 @@ export default function UserListScreen() {
                   />
                 )}
               </View>
-              <View style={styles.button_blue}>
+              <TouchableOpacity style={styles.button_blue}
+                    onPress={() =>
+                        router.push({
+                          pathname: '/account/profile',
+                          params: { user_id: user['id'] },
+                        })}
+              >
                 <Text
                   style={styles.buttontext}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/account/profile',
-                      params: { user_id: user['id'] },
-                    })}
                 >
                   Naar profiel van gebruiker
                 </Text>
-              </View>
-              <View style={styles.button_orange}>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.button_orange}
+                    onPress={() =>
+                        router.push({
+                          pathname: '/posts/most_upvoted',
+                          params: { id: user['id'], username: user['display_name'] },
+                        })}
+              >
                 <Text
                   style={styles.buttontext}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/posts/most_upvoted',
-                      params: { id: user['id'], username: user['display_name'] },
-                    })}
                 >
                   Bronnen van gebruiker bekijken
                 </Text>
-              </View>
+              </TouchableOpacity>
               {isAdmin ? (
                 <>
                   {user['is_banned'] ? (
-                    <View style={styles.button_green}>
+                    <TouchableOpacity style={styles.button_green}
+                                      onPress={() => {
+                                        unbanUser(user['id']);
+                                      }}
+                    >
                       <Text
                         style={styles.buttontext}
-                        onPress={() => {
-                          unbanUser(user['id']);
-                        }}
+
                       >
                         Blokkering opheffen
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : (
-                    <View style={styles.button_red}>
+                    <TouchableOpacity style={styles.button_red}
+                          onPress={() => {
+                            banUser(user['id']);
+                          }}
+                    >
                       <Text
                         style={styles.buttontext}
-                        onPress={() => {
-                          banUser(user['id']);
-                        }}
+
                       >
                         Blokkeer gebruiker
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   )}
                   {user['is_admin'] ? (
-                    <View style={styles.button_purple}>
+                    <TouchableOpacity style={styles.button_purple}
+                          onPress={() => {
+                            removeAdmin(user['id']);
+                          }}
+                    >
                       <Text
-                        style={styles.buttontext}
-                        onPress={() => {
-                          removeAdmin(user['id']);
-                        }}
+                          style={styles.buttontext}
                       >
                         Verwijder admin rechten
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   ) : (
-                    <View style={styles.button_green}>
+                    <TouchableOpacity style={styles.button_green}
+                                      onPress={() => {
+                                        makeAdmin(user['id']);
+                                      }}
+                    >
                       <Text
                         style={styles.buttontext}
-                        onPress={() => {
-                          makeAdmin(user['id']);
-                        }}
+
                       >
                         Maak user admin
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   )}
                 </>
               ) : null}

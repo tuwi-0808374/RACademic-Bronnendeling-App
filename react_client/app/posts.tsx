@@ -15,6 +15,8 @@ import FavoriteButton from '@/components/posts/FavoriteButton';
 import {getApiBaseUrl} from "@/constants/get_ip";
 import { useUser } from '@/constants/get_user_id';
 import {useRouter} from "expo-router";
+import TagBar from '@/components/general/TagBar'
+
 const API_BASE_URL = getApiBaseUrl();
 
 function Posts() {
@@ -44,22 +46,10 @@ function Posts() {
           }
 
           const queryString = params.toString();
-          const url = queryString
-              ? `${API_BASE_URL}/posts/${userId}?${queryString}`
-              : `${API_BASE_URL}/posts/${userId}`;
-
+          const url= queryString ? `${API_BASE_URL}/posts/${userId}?${queryString}` : `${API_BASE_URL}/posts/${userId}`;
           const res = await fetch(url);
           const data = await res.json();
-          const rawPosts = data.data;
-
-          const postsWithTags = await Promise.all(
-              rawPosts.map(async (post: any) => {
-                const tags = await fetchTags(post.id);
-                return { ...post, tags };
-              })
-          );
-          if (posts)
-          setPosts(postsWithTags);
+          setPosts(data.data);
         } catch (error) {
           console.error('API request failed:', error);
         }
@@ -85,6 +75,15 @@ function Posts() {
 
   return (
     <SafeAreaView style={{height: '100%'}}>
+      {!local.tag_ids || local.tag_ids === 'undefined' ?
+      <View style={[Platform.OS === 'web'? {width: '49%'} : {width: '100%'},{alignSelf: 'center'} ]}>
+        <TagBar />
+      </View>
+          : null}
+      {local.tag_ids || local.tag_ids !== 'undefined'}
+      <View style={[Platform.OS === 'web'? {width: '49%'} : {width: '100%'},{alignSelf: 'center'} ]}>
+
+      </View>
       <ScrollView style={styles.container}>
 
         {posts.map((post, i) => (
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     padding: 15,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: 'white',
     borderRadius: 8,
   },
   title: {

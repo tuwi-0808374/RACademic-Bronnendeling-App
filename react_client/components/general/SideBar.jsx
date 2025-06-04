@@ -45,16 +45,16 @@ function SideBar({ sideBarState, setSideBarState }) {
                 <Ionicons name="chevron-back" size={30} color="white" style={styles.backIcon} />
             </TouchableOpacity>
 
-            <TouchableOpacity
-                onPress={() => {
-                    setSideBarState(false);
-                    router.push('/homepage');
-                }}
-                style={styles.routeContainer}
-            >
-                <Ionicons name="home" size={32} style={styles.Icon} />
-                <Text style={styles.SideText}>Home</Text>
-            </TouchableOpacity>
+            {/*<TouchableOpacity*/}
+            {/*    onPress={() => {*/}
+            {/*        setSideBarState(false);*/}
+            {/*        router.push('/homepage');*/}
+            {/*    }}*/}
+            {/*    style={styles.routeContainer}*/}
+            {/*>*/}
+            {/*    <Ionicons name="home" size={32} style={styles.Icon} />*/}
+            {/*    <Text style={styles.SideText}>Home</Text>*/}
+            {/*</TouchableOpacity>*/}
 
             <TouchableOpacity
                 onPress={() => {
@@ -145,7 +145,11 @@ const styles = StyleSheet.create({
         zIndex: 2,
         elevation: 2,
         height: '100%',
-        backgroundColor: 'black',
+        shadowColor: '#000',
+        shadowOffset: { width: 2, height: 0 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        backgroundColor: '#222',
     },
     Icon: {
         color: 'white',

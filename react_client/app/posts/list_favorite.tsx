@@ -34,7 +34,6 @@ export default function favourites() {
   const fetchPosts = async () => {
     try {
       if (!loading && userId) {
-        console.log(userId);
         fetch(`${API_BASE_URL}/posts/favorite/${userId}`)
         .then((response) => {
           if (response.status === 401) {
