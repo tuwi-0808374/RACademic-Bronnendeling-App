@@ -108,7 +108,7 @@ function SideBar({ sideBarState, setSideBarState }) {
                 style={styles.routeContainer}
             >
                 <Ionicons name="create-outline" size={32} style={styles.Icon} />
-                <Text style={styles.SideText}>Nieuwe tag aanmaken</Text>
+                <Text style={styles.SideText}>Nieuwe post aanmaken</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -119,7 +119,7 @@ function SideBar({ sideBarState, setSideBarState }) {
                 style={styles.routeContainer}
             >
                 <Ionicons name="create-outline" size={32} style={styles.Icon} />
-                <Text style={styles.SideText}>Nieuwe post aanmaken</Text>
+                <Text style={styles.SideText}>Nieuwe tag aanmaken</Text>
             </TouchableOpacity>
 
             <TouchableOpacity

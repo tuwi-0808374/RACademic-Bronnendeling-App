@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
-import { CheckBox } from "@/components/input";
+import ColorPicker from "react-native-wheel-color-picker";
 import {useRouter} from "expo-router";
 import { useUser } from '@/constants/get_user_id';
 import {getApiBaseUrl} from "@/constants/get_ip";
 const API_BASE_URL = getApiBaseUrl();
+
 
 const COLORS = {
     red: '#C80032',
@@ -33,7 +34,7 @@ export default function Create_post() {
 
     //
     const Createtag = async () => {
-        if (!loading && userId) {
+        if (title && color) {
             try {
                 console.warn(title, color, );
                 const url = `${API_BASE_URL}/tag`
@@ -45,12 +46,17 @@ export default function Create_post() {
                 result = await result.json();
                 if (result) {
                     console.warn("tag is saved successfully.")
-                    router.push('/posts/user_posts')
+                    router.push('/homepage')
                 }
 
             } catch (error) {
                 console.error('API request failed:', error);
+
             }
+        }
+        if (!title || !color) {
+            console.error('Vul alle velden in.');
+            return;
         }
     }
 
@@ -78,6 +84,10 @@ export default function Create_post() {
 
                         <View style={styles.input}>
                             <Text style={styles.inputlabel}>De kleur van de tag</Text>
+                            <ColorPicker
+                            onColorChange={(color) => setColor(color)}
+                            />
+
 
                         </View>
 
