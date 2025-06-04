@@ -74,31 +74,14 @@ const LoginScreen = () => {
     console.log("Login succesvol", data);
     setUserLoggedIn(true);
     await AsyncStorage.setItem("authToken", data["access_token"]);
-    router.push("/homepage");
+    router.push("/posts");
 
-<<<<<<< HEAD
   } catch (error) {
     setErrorMessage(error.message || "Er is een fout opgetreden");
     console.error("Login error:", error);
   }
 };
-=======
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Login succesvol", data);
-        setUserLoggedIn(true);
-        await AsyncStorage.setItem("authToken", data["access_token"]);
-        router.push("/posts");
-      } else {
-        const errorData = await response.json();
-        console.log("Fout bij inloggen:", errorData.message);
-      }
-    } catch (error) {
-      console.log("Er is een fout opgetreden:", error);
-    }
-  };
->>>>>>> dev
-
+      
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
