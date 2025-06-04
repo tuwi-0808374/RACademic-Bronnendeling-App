@@ -11,16 +11,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import {Ionicons} from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import UserBadges from "../../components/user_badges";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { useFocusEffect } from "expo-router";
-import Container from '../../components/general/Container';
+import Container from "../../components/general/Container";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -64,9 +64,10 @@ export default function PublicProfileScreen() {
   const [userId, setUserId] = useState<number | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-
   const params = useLocalSearchParams();
-  const profileUserId = params.user_id ? parseInt(params.user_id as string) : null;
+  const profileUserId = params.user_id
+    ? parseInt(params.user_id as string)
+    : null;
   const router = useRouter();
   const [isPublic, setIsPublic] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -85,7 +86,6 @@ export default function PublicProfileScreen() {
 
       const targetUserId = profileUserId || decoded.user_id;
 
-      
       const response = await fetch(`${API_BASE_URL}/profile/${targetUserId}`, {
         method: "GET",
         headers: {
@@ -101,7 +101,7 @@ export default function PublicProfileScreen() {
           setUserData(userData);
           setIsPublic(userData.is_public === 0);
           setUserName(userData.username || "");
-          
+
           // Bron: ChatGPT
           if (userData.is_public === 0 || targetUserId === decoded.user_id) {
             setFirstName(userData.first_name || "");
@@ -127,14 +127,14 @@ export default function PublicProfileScreen() {
     }
   };
 
-
   useFocusEffect(
     React.useCallback(() => {
       fetchProfile();
     }, [profileUserId])
   );
 
-  const isOwnProfile = !profileUserId || (userId !== null && profileUserId === userId);
+  const isOwnProfile =
+    !profileUserId || (userId !== null && profileUserId === userId);
 
   useEffect(() => {
     fetchProfile();
@@ -149,95 +149,101 @@ export default function PublicProfileScreen() {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Container>
-          { profileUserId ? (
+            {profileUserId ? (
               <View>
-                <UserBadges userID={profileUserId} ></UserBadges>
+                <UserBadges userID={profileUserId}></UserBadges>
               </View>
-            ): <UserBadges userID={0} ></UserBadges>}
-          <TouchableWithoutFeedback>
-          <View style={styles.innerContainer}>
-            <View style={styles.profileImageContainer}>
-              {profileImage ? (
-                <Image
-                  source={{ uri: profileImage }}
-                  style={styles.profileImage}
-                />
-              ) : (
-                <Image
-                  source={require("../../assets/images/profile.png")}
-                  style={styles.profileImage}
-                />
-              )}
-            </View>
-
-            <Text style={styles.logoTitle}>
-              {userId === profileUserId || !profileUserId ? "JOUW PROFIEL" : `PROFIEL VAN ${username}`}
-            </Text>
-
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Ionicons
-                  name="person-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>Naam</Text>
-              </View>
-              {isPublic ? (
-                <Text style={styles.input}>
-                  {first_name} {lastName}
-                </Text>
-              ) : (
-                <Text style={styles.input}>Privé account</Text>
-              )}
-            </View>
-
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Ionicons
-                  name="mail-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>E-mail</Text>
-              </View>
-              {isPublic ? (
-                <Text style={styles.input}>{email}</Text>
-              ) : (
-                <Text style={styles.input}>Privé account</Text>
-              )}
-            </View>
-
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Ionicons
-                  name="at-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>Gebruikersnaam</Text>
-              </View>
-              <Text style={styles.input}>{username}</Text>
-            </View>
-            {(userId === profileUserId || !profileUserId) && (
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => router.push("/account/edit_profile")}
-              >
-                <Ionicons
-                  name="create-outline"
-                  size={20}
-                  color={COLORS.textLight}
-                  style={styles.buttonIcon}
-                />
-                <Text style={styles.actionButtonText}>Profiel Bewerken</Text>
-              </TouchableOpacity>
+            ) : (
+              <UserBadges userID={0}></UserBadges>
             )}
-          </View>
-          </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback>
+              <View style={styles.innerContainer}>
+                <View style={styles.profileImageContainer}>
+                  {profileImage ? (
+                    <Image
+                      source={{ uri: profileImage }}
+                      style={styles.profileImage}
+                    />
+                  ) : (
+                    <Image
+                      source={require("../../assets/images/profile.png")}
+                      style={styles.profileImage}
+                    />
+                  )}
+                </View>
+
+                <Text style={styles.logoTitle}>
+                  {userId === profileUserId || !profileUserId
+                    ? "JOUW PROFIEL"
+                    : `PROFIEL VAN ${username}`}
+                </Text>
+
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelContainer}>
+                    <Ionicons
+                      name="person-outline"
+                      size={16}
+                      color={COLORS.red}
+                      style={styles.labelIcon}
+                    />
+                    <Text style={styles.inputLabel}>Naam</Text>
+                  </View>
+                  {isPublic ? (
+                    <Text style={styles.input}>
+                      {first_name} {lastName}
+                    </Text>
+                  ) : (
+                    <Text style={styles.input}>Privé account</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelContainer}>
+                    <Ionicons
+                      name="mail-outline"
+                      size={16}
+                      color={COLORS.red}
+                      style={styles.labelIcon}
+                    />
+                    <Text style={styles.inputLabel}>E-mail</Text>
+                  </View>
+                  {isPublic ? (
+                    <Text style={styles.input}>{email}</Text>
+                  ) : (
+                    <Text style={styles.input}>Privé account</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelContainer}>
+                    <Ionicons
+                      name="at-outline"
+                      size={16}
+                      color={COLORS.red}
+                      style={styles.labelIcon}
+                    />
+                    <Text style={styles.inputLabel}>Gebruikersnaam</Text>
+                  </View>
+                  <Text style={styles.input}>{username}</Text>
+                </View>
+                {(userId === profileUserId || !profileUserId) && (
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() => router.push("/account/edit_profile")}
+                  >
+                    <Ionicons
+                      name="create-outline"
+                      size={20}
+                      color={COLORS.textLight}
+                      style={styles.buttonIcon}
+                    />
+                    <Text style={styles.actionButtonText}>
+                      Profiel Bewerken
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </TouchableWithoutFeedback>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -261,7 +267,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    width: '100%',
+    width: "100%",
     paddingHorizontal: 30,
     paddingTop: 40,
     paddingBottom: 20,
@@ -278,7 +284,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputGroup: {
-    width: Platform.OS === 'web' ?  '75%' : '100%',
+    width: Platform.OS === "web" ? "75%" : "100%",
     marginBottom: 25,
   },
   labelContainer: {
@@ -309,7 +315,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    width: Platform.OS === 'web' ?  '25%' : '100%',
+    width: Platform.OS === "web" ? "25%" : "100%",
     alignItems: "center",
     marginTop: 30,
     marginBottom: 30,

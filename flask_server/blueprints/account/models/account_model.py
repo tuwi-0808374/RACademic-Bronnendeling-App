@@ -1,17 +1,17 @@
-import sqlite3
-import os
-from flask_jwt_extended import *
-import bcrypt
-import uuid
 import base64
-from werkzeug.utils import secure_filename
+import os
+import sqlite3
+import uuid
+
+import bcrypt
+from flask_jwt_extended import *
 
 
 class Account:
     def __init__(self):
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.path = os.path.join(base_dir, '../../../databases/database.db')
-        self.upload_folder = os.path.join(base_dir, '../../../uploads')
+        self.path = os.path.join(base_dir, "../../../databases/database.db")
+        self.upload_folder = os.path.join(base_dir, "../../../uploads")
         os.makedirs(self.upload_folder, exist_ok=True)
 
     def connect_db(self):
@@ -38,7 +38,7 @@ class Account:
                 FROM users
                 WHERE email = ?
                 """,
-                (email,)
+                (email,),
             ).fetchone()
 
             if result:
@@ -50,20 +50,18 @@ class Account:
                     "full_name": result[5],
                     "username": result[6],
                     "is_admin": result[7],
-                    "is_banned": result[8]
-                    
-                    
+                    "is_banned": result[8],
                 }
             return None
         finally:
             if con:
                 con.close()
-    
+
     def get_user_id_from_token(self, token):
         decoded = decode_token(token)
-        user_id = decoded['user_id']
+        user_id = decoded["user_id"]
         return user_id
-    
+
     def get_user_by_id(self, user_id):
         cursor, con = self.connect_db()
         try:
@@ -79,62 +77,62 @@ class Account:
                 FROM users
                 WHERE id = ?
                 """,
-                (user_id,)
+                (user_id,),
             ).fetchone()
 
             if result:
-                return dict(result) 
+                return dict(result)
             return None
         finally:
             if con:
-                con.close() 
-       
-    # Bron: 
-    #     ChatGPT, 
-    #     https://medium.com/@blturner3527/storing-images-in-your-database-with-base64-react-682f5f3921c2         
+                con.close()
+
+    # Bron:
+    #     ChatGPT,
+    #     https://medium.com/@blturner3527/storing-images-in-your-database-with-base64-react-682f5f3921c2
     def save_base64_image(self, base64_str):
         if not base64_str:
             return None
 
         try:
-            if ',' in base64_str:
-                base64_str = base64_str.split(',')[1]
+            if "," in base64_str:
+                base64_str = base64_str.split(",")[1]
 
             image_data = base64.b64decode(base64_str)
 
             filename = f"{uuid.uuid4().hex}.jpg"
             filepath = os.path.join(self.upload_folder, filename)
 
-            with open(filepath, 'wb') as f:
+            with open(filepath, "wb") as f:
                 f.write(image_data)
 
-            return filename  
+            return filename
 
         except Exception as e:
             print(f"Fout bij opslaan afbeelding: {e}")
             return None
-        
+
     def change_password(self, user_id, old_password, new_password):
         cursor, con = self.connect_db()
         try:
             user_query_result = cursor.execute(
-                "SELECT password FROM users WHERE id = ?",
-                (user_id,)
+                "SELECT password FROM users WHERE id = ?", (user_id,)
             ).fetchone()
 
             if not user_query_result:
                 return False, "Gebruiker niet gevonden."
 
-            stored_hashed_password = user_query_result['password']
+            stored_hashed_password = user_query_result["password"]
 
-            if not bcrypt.checkpw(old_password.encode('utf-8'), stored_hashed_password):
+            if not bcrypt.checkpw(old_password.encode("utf-8"), stored_hashed_password):
                 return False, "Huidige wachtwoord is incorrect."
 
-
-            new_hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            new_hashed_password = bcrypt.hashpw(
+                new_password.encode("utf-8"), bcrypt.gensalt()
+            )
             cursor.execute(
                 "UPDATE users SET password = ? WHERE id = ?",
-                (new_hashed_password, user_id)
+                (new_hashed_password, user_id),
             )
             con.commit()
             return True, "Wachtwoord succesvol gewijzigd."
@@ -144,39 +142,54 @@ class Account:
         finally:
             if con:
                 con.close()
-                
-    def update_profile(self, user_id, first_name=None, last_name=None, email=None, username=None, is_public=None, profile_image=None):
+
+    def update_profile(
+        self,
+        user_id,
+        first_name=None,
+        last_name=None,
+        email=None,
+        username=None,
+        is_public=None,
+        profile_image=None,
+    ):
         cursor, con = self.connect_db()
         try:
             current_user = cursor.execute(
-                "SELECT profile_image FROM users WHERE id = ?", 
-                (user_id,)
+                "SELECT profile_image FROM users WHERE id = ?", (user_id,)
             ).fetchone()
-            current_image = current_user['profile_image'] if current_user else None
+            current_image = current_user["profile_image"] if current_user else None
 
             new_image_filename = None
-            
-            if profile_image == "remove":
 
+            if profile_image == "remove":
                 if current_image:
                     if self.delete_old_image(current_image):
                         print("Bestand succesvol verwijderd")
                     else:
                         print("Kon bestand niet verwijderen")
                 new_image_filename = None
-                
-            elif isinstance(profile_image, str) and profile_image.startswith('data:'):
+
+            elif isinstance(profile_image, str) and profile_image.startswith("data:"):
                 if current_image:
                     self.delete_old_image(current_image)
                 new_image_filename = self.save_base64_image(profile_image)
-                
+
             is_public = bool(is_public) if is_public is not None else False
             cursor.execute(
                 "UPDATE users SET first_name=?, last_name=?, email=?, username=?, is_public=?, profile_image=? WHERE id=?",
-                (first_name, last_name, email, username, is_public, new_image_filename, user_id)
+                (
+                    first_name,
+                    last_name,
+                    email,
+                    username,
+                    is_public,
+                    new_image_filename,
+                    user_id,
+                ),
             )
             con.commit()
-            
+
             return True
 
         except Exception as e:
@@ -185,32 +198,33 @@ class Account:
         finally:
             if con:
                 con.close()
-                
+
     def delete_old_image(self, filename):
         if not filename:
             return False
-            
+
         try:
             filepath = os.path.join(self.upload_folder, filename)
-            
+
             if not os.path.exists(filepath):
                 return False
-                
+
             os.remove(filepath)
             return True
-            
+
         except Exception as e:
             print(f"Error: {str(e)}")
             return False
-        
+
     def register_user(self, user_data):
         cursor, con = self.connect_db()
         try:
-            hashed_password = bcrypt.hashpw(user_data["password"].encode('utf-8'), bcrypt.gensalt())
+            hashed_password = bcrypt.hashpw(
+                user_data["password"].encode("utf-8"), bcrypt.gensalt()
+            )
 
             image_filename = self.save_base64_image(user_data.get("profile_image"))
-            
-           
+
             cursor.execute(
                 """
                 INSERT INTO users (
@@ -234,8 +248,8 @@ class Account:
                     hashed_password,
                     user_data["is_public"],
                     image_filename,
-                    user_data.get("is_admin", False)   
-                )
+                    user_data.get("is_admin", False),
+                ),
             )
             con.commit()
             return cursor.lastrowid
@@ -251,17 +265,17 @@ class Account:
         try:
             query = "SELECT id, username FROM users WHERE username = ?"
             params = [username]
-            
+
             if exclude_user_id:
                 query += " AND id != ?"
                 params.append(exclude_user_id)
-                
+
             result = cursor.execute(query, params).fetchone()
             return dict(result) if result else None
         finally:
             if con:
                 con.close()
-                
+
     def get_users_with_overall_rating(self, limit=5):
         # Geeft de top 5 gebruikers met de hoogste totale rating,
         # dit op basis van de som van hun ratings op hun posts.
@@ -276,13 +290,13 @@ class Account:
                     ORDER BY overall_rating DESC
                     LIMIT ?           
                 """,
-                (limit,)
+                (limit,),
             ).fetchall()
             return [dict(row) for row in result]
         finally:
             if con:
                 con.close()
-                
+
     def get_users_with_most_badges(self, limit=5):
         # Geeft de top 5 gebruikers met de meeste badges.
         cursor, con = self.connect_db()
@@ -296,13 +310,13 @@ class Account:
                     ORDER BY total_badges DESC
                     LIMIT ?           
                 """,
-                (limit,)
+                (limit,),
             ).fetchall()
             return [dict(row) for row in result]
         finally:
             if con:
                 con.close()
-    
+
     def get_users(self, limit=5, offset=0):
         # Geeft een lijst van gebruikers met een limiet en offset.
         cursor, con = self.connect_db()
@@ -313,20 +327,17 @@ class Account:
                     FROM users
                     LIMIT ? OFFSET ?
                 """,
-                (limit, offset)
+                (limit, offset),
             ).fetchall()
             return [dict(row) for row in result]
         finally:
             if con:
                 con.close()
-    
+
     def ban_user(self, user_id):
         cursor, con = self.connect_db()
         try:
-            cursor.execute(
-                "UPDATE users SET is_banned = 1 WHERE id = ?",
-                (user_id,)
-            )
+            cursor.execute("UPDATE users SET is_banned = 1 WHERE id = ?", (user_id,))
             con.commit()
             return True, "User banned successfully"
         except Exception as e:
@@ -334,14 +345,11 @@ class Account:
         finally:
             if con:
                 con.close()
-    
+
     def unban_user(self, user_id):
         cursor, con = self.connect_db()
         try:
-            cursor.execute(
-                "UPDATE users SET is_banned = 0 WHERE id = ?",
-                (user_id,)
-            )
+            cursor.execute("UPDATE users SET is_banned = 0 WHERE id = ?", (user_id,))
             con.commit()
             return True, "User unbanned successfully"
         except Exception as e:
@@ -349,13 +357,11 @@ class Account:
         finally:
             if con:
                 con.close()
+
     def make_admin(self, user_id):
         cursor, con = self.connect_db()
         try:
-            cursor.execute(
-                "UPDATE users SET is_admin = 1 WHERE id = ?",
-                (user_id,)
-            )
+            cursor.execute("UPDATE users SET is_admin = 1 WHERE id = ?", (user_id,))
             con.commit()
             return True, "User made admin successfully"
         except Exception as e:
@@ -363,14 +369,11 @@ class Account:
         finally:
             if con:
                 con.close()
-                
+
     def remove_admin(self, user_id):
         cursor, con = self.connect_db()
         try:
-            cursor.execute(
-                "UPDATE users SET is_admin = 0 WHERE id = ?",
-                (user_id,)
-            )
+            cursor.execute("UPDATE users SET is_admin = 0 WHERE id = ?", (user_id,))
             con.commit()
             return True, "Admin removed successfully"
         except Exception as e:
