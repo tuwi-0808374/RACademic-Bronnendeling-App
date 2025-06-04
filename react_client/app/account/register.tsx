@@ -6,6 +6,8 @@ import { useDebouncedCallback } from 'use-debounce';
 import { getApiBaseUrl } from '../../constants/get_ip';
 import Icon from "react-native-vector-icons/Ionicons";
 import Container from '../../components/general/Container';
+import ErrorMessage from '../../components/general/ErrorMessage';
+import {Ionicons} from '@expo/vector-icons';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -44,11 +46,13 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [activeLanguage, setActiveLanguage] = useState<'EN' | 'NL'>('NL');
   const router = useRouter();
   const [AccountPublic, setAccountPublic] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [generalError, setGeneralError] = useState<string>('');
 
   const usernameStatusStyle = [
     styles.usernameStatus,
@@ -128,14 +132,17 @@ const RegisterScreen = () => {
   const handleRegister = async () => {
     if ((!usernameStatus.available && username) || (!emailStatus.available && email)) {
       console.log('Kies een beschikbare gebruikersnaam en email');
+      setGeneralError('Kies een beschikbare gebruikersnaam en email');
       return;
     }
     if (!firstName || !lastName || !username || !email || !password || !confirmPassword) {
       console.log('Vul alle velden in.');
+      setGeneralError('Vul alle velden in.');
       return;
     }
     if (password !== confirmPassword) {
       console.log('Wachtwoorden komen niet overeen.');
+      setGeneralError('Wachtwoorden komen niet overeen.');
       return;
     }
   
@@ -172,6 +179,7 @@ const RegisterScreen = () => {
       const data = await response.json();
       if (response.ok) router.push('/');
       else console.log('Registration failed:', data.error);
+      setGeneralError(data.error || 'Registratie mislukt');
     } catch (error) {
       console.log('Error:', error);
     }
@@ -310,15 +318,27 @@ const RegisterScreen = () => {
 
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>WACHTWOORD</Text>
+              <View style={styles.passwordContainer}>
               <TextInput
                 style={[styles.input, styles.inputStandard]}
                 placeholder="********"
                 placeholderTextColor={COLORS.placeholderText}
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry={true}
+                secureTextEntry={!showPassword}
                 selectionColor={COLORS.inputLine}
               />
+              <TouchableOpacity
+                style={styles.eyeIcon}
+                onPress={() => setShowPassword(!showPassword)}
+              >
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={20}
+                  color={COLORS.inputLine}
+                />
+              </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.inputGroup}>
@@ -375,6 +395,10 @@ const RegisterScreen = () => {
                             onValueChange={(value) => setAccountPublic(value)}
                           />
                         </View>
+                        <ErrorMessage 
+                          message={generalError} 
+                          type="error"
+                        />
 
             <PrimaryButton onPress={handleRegister} title="Registreren" />
 
@@ -615,6 +639,10 @@ const styles = StyleSheet.create({
   },
   tooltipWeb: {
     // hier kan andere styling voor web
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 0,
   },
   
 });
