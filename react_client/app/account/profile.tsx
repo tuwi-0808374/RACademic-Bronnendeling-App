@@ -150,7 +150,9 @@ export default function PublicProfileScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Container>
           { profileUserId ? (
-              <UserBadges userID={profileUserId} ></UserBadges>
+              <View>
+                <UserBadges userID={profileUserId} ></UserBadges>
+              </View>
             ): <UserBadges userID={0} ></UserBadges>}
           <TouchableWithoutFeedback>
           <View style={styles.innerContainer}>
@@ -257,6 +259,9 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: '100%',
     paddingHorizontal: 30,
     paddingTop: 40,
     paddingBottom: 20,
@@ -273,7 +278,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputGroup: {
-    width: "100%",
+    width: Platform.OS === 'web' ?  '75%' : '100%',
     marginBottom: 25,
   },
   labelContainer: {
@@ -304,7 +309,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    width: "100%",
+    width: Platform.OS === 'web' ?  '25%' : '100%',
     alignItems: "center",
     marginTop: 30,
     marginBottom: 30,

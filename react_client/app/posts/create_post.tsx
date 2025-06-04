@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { CheckBox } from "@/components/input";
 import {useRouter} from "expo-router";
 import { useUser } from '@/constants/get_user_id';
@@ -71,50 +71,52 @@ export default function Create_post() {
                 </View>
 
                 <ScrollView style={styles.scrollView}>
-                <View style={styles.form}>
-                    <View style={styles.input}>
-                        <Text style={styles.inputlabel}>Titel</Text>
-                            <TextInput
-                                maxLength={200}
-                                style={styles.inputcontroltitel}
-                                placeholder="Titel van de bron"
-                                placeholderTextColor={COLORS.placeholderText}
-                                value={title}
-                                onChangeText={(text)=> setTitle(text)}
-                        />
-                    </View>
-
-                    <View style={styles.input}>
-                        <Text style={styles.inputlabel}>Content van de bron</Text>
-                            <TextInput
-                                multiline={true}
-                                maxLength={1000}
-                                style={styles.inputcontrolcontent}
-                                placeholder="print(Hello World)"
-                                placeholderTextColor={COLORS.placeholderText}
-                                value={content}
-                                onChangeText={(text)=> setContent(text)}
-                        />
-                    </View>
-
-                    <View style={styles.input}>
-                        <Text style={styles.inputlabel}>Tags</Text>
-                            <CheckBox
-                                options={data}
-                                CheckedValues={tagid}
-                                onChange={setTagid}
+                    <TouchableWithoutFeedback>
+                        <View style={styles.form}>
+                            <View style={styles.input}>
+                                <Text style={styles.inputlabel}>Titel</Text>
+                                    <TextInput
+                                        maxLength={200}
+                                        style={styles.inputcontroltitel}
+                                        placeholder="Titel van de bron"
+                                        placeholderTextColor={COLORS.placeholderText}
+                                        value={title}
+                                        onChangeText={(text)=> setTitle(text)}
                                 />
-                    </View>
-
-                    <View style={styles.create}>
-                        <TouchableOpacity onPress={CreatePost}>
-                            <View style={styles.button}>
-                                <Text style={styles.buttontext}>Create post</Text>
                             </View>
-                        </TouchableOpacity>
-                    </View>
 
-                </View>
+                            <View style={styles.input}>
+                                <Text style={styles.inputlabel}>Content van de bron</Text>
+                                    <TextInput
+                                        multiline={true}
+                                        maxLength={1000}
+                                        style={styles.inputcontrolcontent}
+                                        placeholder="print(Hello World)"
+                                        placeholderTextColor={COLORS.placeholderText}
+                                        value={content}
+                                        onChangeText={(text)=> setContent(text)}
+                                />
+                            </View>
+
+                            <View style={styles.input}>
+                                <Text style={styles.inputlabel}>Tags</Text>
+                                    <CheckBox
+                                        options={data}
+                                        CheckedValues={tagid}
+                                        onChange={setTagid}
+                                        />
+                            </View>
+
+                            <View style={styles.create}>
+                                <TouchableOpacity style={{paddingBottom:200}} onPress={CreatePost}>
+                                    <View style={styles.button}>
+                                        <Text style={styles.buttontext}>Create post</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
+                        </View>
+                    </TouchableWithoutFeedback>
                 </ScrollView>
             </View>
         </SafeAreaView>

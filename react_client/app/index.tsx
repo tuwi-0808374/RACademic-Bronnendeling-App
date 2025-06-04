@@ -76,11 +76,28 @@ const LoginScreen = () => {
     await AsyncStorage.setItem("authToken", data["access_token"]);
     router.push("/homepage");
 
+<<<<<<< HEAD
   } catch (error) {
     setErrorMessage(error.message || "Er is een fout opgetreden");
     console.error("Login error:", error);
   }
 };
+=======
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login succesvol", data);
+        setUserLoggedIn(true);
+        await AsyncStorage.setItem("authToken", data["access_token"]);
+        router.push("/posts");
+      } else {
+        const errorData = await response.json();
+        console.log("Fout bij inloggen:", errorData.message);
+      }
+    } catch (error) {
+      console.log("Er is een fout opgetreden:", error);
+    }
+  };
+>>>>>>> dev
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -215,12 +232,16 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+
     backgroundColor: COLORS.background,
   },
   keyboardAvoidingContainer: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   innerContainer: {
+    width:'100%',
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -266,7 +287,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   inputGroup: {
-    width: "100%",
+    width: Platform.OS === 'web' ?  '50%' : '100%',
     marginBottom: 35,
   },
   labelContainer: {
@@ -310,7 +331,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    width: "100%",
+      width: Platform.OS === 'web' ?  '25%' : '100%',
     alignItems: "center",
     marginTop: 20,
     marginBottom: 30,

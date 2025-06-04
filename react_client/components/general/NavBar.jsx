@@ -9,7 +9,6 @@ export default function NavBar(props) {
   const setUserLoggedIn = useContext(UserStatusContext);
 
   const exitLogout = async (props) => {
-    console.log('Logging out...');
     await AsyncStorage.removeItem('authToken');
     setUserLoggedIn(false);
     props.router.push('/');
@@ -18,7 +17,10 @@ export default function NavBar(props) {
   return (
       <View style={Platform.OS === 'web' ? styles.navbarContent : styles.navbarContentPhone}>
         {Platform.OS === 'web' ? (
-                <TouchableOpacity onPress={props.handleSideBarState}>
+                <TouchableOpacity onPress={() => {
+                  props.handleClose();
+                  props.handleSideBarState();
+                }}>
                   <Ionicons name={'menu'} color={'#fff'} size={30} style={styles.icon} />
                 </TouchableOpacity>
             )
@@ -27,15 +29,21 @@ export default function NavBar(props) {
             visible={props.visible}
             setVisible={props.setVisible}
             selectedTags={props.selectedTags}
-            API_BASE_URL={props.API_BASE_URL}
             handleInsidePress={props.handleInsidePress}
         />
         {Platform.OS === 'web' ? (
                 <View style={styles.spacer}>
-                  <TouchableOpacity onPress={() => props.router.push('/account/profile')}>
+                  <TouchableOpacity onPress={() => {
+                    props.handleClose();
+                    props.router.push('/account/profile');
+                  }}>
                     <Ionicons name="person" size={32} color="white" style={styles.icon} />
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => exitLogout(props)} style={styles.routeContainer}>
+                  <TouchableOpacity onPress={() => {
+                      props.handleClose();
+                      exitLogout(props);
+                  }} style={styles.routeContainer}
+                  >
                     <Ionicons name="exit" size={32} color="white" style={styles.icon} />
                   </TouchableOpacity>
                 </View>
