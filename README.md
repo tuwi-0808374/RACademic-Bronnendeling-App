@@ -6,11 +6,11 @@ De RACademic Bronnendeling App is een platform voor Hogeschool Rotterdam-student
 
 ## Wie zijn wij?
 
-Wij zijn team **Wip** en ons team bestaat uit:
+Wij zijn team **Kiwi** en ons team bestaat uit:
 - **Max Hofman** (1103166)
 - **Tuwi Nannings** (0808374)
 - **Noortje Vroegop** (1100338)
-- **Jesper Edeling** (1103541))
+- **Jesper Edeling** (1103541)
 
 ---
 
