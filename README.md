@@ -28,8 +28,8 @@ Wij zijn team **Wip** en ons team bestaat uit:
 
 2. **Clone de repository**:
    ```bash
-   git clone https://github.com/Rac-Software-Development/wp3-2025-rest-1d2-wip.git
-   cd wp3-2025-rest-1d2-wip
+   git clone https://github.com/Rac-Software-Development/wp4-2025-react-1d2-kiwi-wip.git
+   cd wp4-2025-react-1d2-kiwi-wip
    ```
 3. ** Bouw en start de applicatie:
   ```bash
@@ -126,18 +126,6 @@ Het gebruik van een virtual environment is aanbevolen om afhankelijkheden van di
      source venv/bin/activate
      ```
 
-#### Optie 2: PyCharm
-1. Open **PyCharm** en open het project.
-2. Ga naar:
-   ```
-   File > Settings > Project: <your_project_name> > Python Interpreter
-   ```
-3. Klik op het **tandwiel-icoon** en selecteer **Add**.
-4. Kies voor **New Environment** en selecteer **Virtualenv**.
-5. Klik op **OK** om de omgeving aan te maken en te activeren.
-
----
-
 ### 3. Installeer afhankelijkheden
 
 #### Optie 1: Installeren met `requirements.txt` (Aanbevolen)
@@ -191,22 +179,32 @@ set FLASK_APP=main.py
 export FLASK_APP=main.py
 ```
 
-### 5. Start de applicatie
+### 5. Start de flask server
 
 #### Methode 1: Via de terminal
-1. Navigeer naar de hoofdmap:
+1. Navigeer naar de server map:
    ```bash
-   cd wp3-2025-rest-1d2-wip
+   cd .\flask_server\
    ```
 2. Start de applicatie:
    ```bash
-   flask run
+   flask --app main.py run
    ```
-De applicatie is toegankelijk via [http://127.0.0.1:5000](http://127.0.0.1:5000).
+De flask server is nu toegankelijk via [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-#### Methode 2: Via PyCharm
-1. Open het bestand `main.py` in PyCharm.
-2. Klik op de **Run**-knop om het script te starten.
+3. Ga naar de root van de react client folder
+  ```bash
+  cd .\react_client\
+  ```
+
+4. Start de dev omgeving met
+  ```bash
+  npx expo start
+  ```
+
+Wacht to je "Logs for your project will appear below. "
+Druk op W en je browser laat de website zien.
+
 
 ---
 
