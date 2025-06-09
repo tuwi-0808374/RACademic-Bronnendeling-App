@@ -208,6 +208,19 @@ Druk op W en je browser laat de website zien.
 
 ---
 
+## ERD
+![WP4_db](https://github.com/user-attachments/assets/2eef0ab2-e3c2-4192-8282-ce8d1652e663)
+1. users – Bevat informatie over gebruikers, zoals id, email, display_name, first_name, last_name, password, is_admin, is_public, en is_banned.
+2. badges – Bevat gegevens over badges, zoals id, title, requirement, en image_url.
+3. user_badges – Koppelt gebruikers aan badges met user_id en badge_id.
+4. posts – Bevat details over posts, zoals id, title, content, user_id, total_rating, en posted_date.
+5. comments – Bevat informatie over comments, zoals id, title, content, user_id, post_id, total_rating, en posted_date.
+6. ratings – Registreert ratings, zoals user_id, post_id, comment_id, rating, is_favorited, is_reported, en report_reason.
+7. post_tags – Koppelt posts aan tags met post_id en tag_id.
+8. tags – Bevat gegevens over tags, zoals id, title, en color.
+
+---
+
 ## Inloggegevens
 
 Je kunt inloggen met het standaard account:
