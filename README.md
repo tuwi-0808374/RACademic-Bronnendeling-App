@@ -244,22 +244,74 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens
   - E-mailadres
 
 ---
+## Overzicht 
+## Functies van de App
 
+### Admin Functies
+- Inloggen voor admins
+- Gebruikers blokkeren
+- Admin-accounts toevoegen (moet @hr.nl email gebruiken)
+- Emails blokkeren
 
+### Student Functies
+- Inloggen (vereist @hr.nl email)
+- Registreren (geblokkeerde emails kunnen niet opnieuw worden gebruikt)
 
+### Gebruiker Functies
+- Profiel bijwerken
+- Bronnenoverzicht bijwerken
+- Bron details bekijken
+- Bronnen beoordelen
+- Bronnen filteren
+- Bronnen toevoegen als favoriet
+- Bronnen zoeken
+- Display-naam aanpassen
+- Wachtwoord aanpassen
+
+### Algemene Functies
+- Inloggen vereist om content in de app te bekijken
+- Bronnen bevatten tags
+
+--
 ## **Screenshots**
- 
+- komt nog
 
 
 ## **Assets**
-- bron
+- komt nog
 
 ## **Code Bronnen**
-- **Web Resources**
-  - bron
-
- <br>
-
- - **YouTube Tutorials**
-   - bron 
+- [React useState](https://www.w3schools.com/react/react_usestate.asp)
+- [React useEffect](https://www.w3schools.com/react/react_useeffect.asp)
+- [Object.prototype.toString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString)
+- [Expo Router Notation](https://docs.expo.dev/router/basics/notation/#indextsx-files)
+- [The Only Docker Tutorial You Need To Get Started](https://www.youtube.com/watch?v=DQdB7wFEygo) (The Coding Sloth)
+- [How to Create a Flask + React Project](https://youtu.be/7LNl2JlZKHA?si=NaK5iTT8ocxOhwPi) (Arpan Neupane)
+- [Marked - Markdown Parser](https://www.npmjs.com/package/marked)
+- [datetime - Basic Date and Time Types](https://docs.python.org/3/library/datetime.html)
+- [Resourceful Routing](https://flask-restful.readthedocs.io/en/latest/quickstart.html#resourceful-routing)
+- [Bruno - The Open Source API Client](https://docs.usebruno.com/send-requests/overview)
+- [SQLite string contains other string query](https://stackoverflow.com/questions/3498844/sqlite-string-contains-other-string-query)
+- [React Native tutorial #53 Post API with Input fields and form data](https://www.youtube.com/watch?v=BJNOceFLdjQ) (Code Step By Step)
+- [#1 Create a Simple Login Screen in React Native](https://www.youtube.com/watch?v=lA_73_-n-V4) (WithFrame)
+- [Handle multiple checkboxes in expo react native](https://stackoverflow.com/questions/65205428/handle-multiple-checkboxes-in-expo-react-native)
+- [Checkbox](https://docs.expo.dev/versions/latest/sdk/checkbox/)
+- [Checkbox Inputs ( Buttons ) in React Native](https://www.youtube.com/watch?v=C-PVg6HhMNk) (ToThePointCode)
+- [Password And Confirm Password Validation in React JS](https://youtu.be/HPmklyuk4Hc?si=zFx3tpyaEviE3vsl) (Time To Program)
+- [ImagePicker](https://docs.expo.dev/versions/latest/sdk/imagepicker/)
+- [ChatGPT - Like Dislike Buttons RN](https://chatgpt.com/share/68160223-38fc-800e-b129-fecd90a793de)
+- [Passing Props to a Component – React](https://react.dev/learn/passing-props-to-a-component)
+- [Storing Images in Your Database with Base64 & React](https://medium.com/@blturner3527/storing-images-in-your-database-with-base64-react-682f5f3921c2)
+- [Upgrade Expo SDK](https://docs.expo.dev/workflow/upgrading-expo-sdk-walkthrough/)
+- [Check if email address valid or not in Python](https://www.geeksforgeeks.org/check-if-email-address-valid-or-not-in-python/)
+- [Navigating between pages](https://docs.expo.dev/router/basics/navigation/)
+- [Learn Expo Router - Complete Tutorial](https://www.youtube.com/watch?v=Z20nUdAUGmM) (Cosden Solutions)
+- [Router](https://docs.expo.dev/versions/latest/sdk/router/#hooks)
+- [How to pass props to the screens when using expo router](https://stackoverflow.com/questions/78057797/how-to-pass-props-to-the-screens-when-using-expo-router)
+- [Updating Arrays in State – React](https://react.dev/learn/updating-arrays-in-state)
+- [Modal · React Native](https://reactnative.dev/docs/modal)
+- [How To Authentication users with Token in a React application](https://medium.com/better-programming/how-to-authentication-users-with-token-in-a-react-application-f99997c2ee9d)
+- [How to pass an array of numbers with TypeScript and React](https://stackoverflow.com/questions/62917259/how-to-pass-an-array-of-numbers-with-typescript-and-react)
+- [React useState Append to Array](https://www.dhiwise.com/post/react-usestate-append-to-array-a-simple-guide)
+- [Platform-Specific Code · React Native](https://reactnative.dev/docs/platform-specific-code)
 
