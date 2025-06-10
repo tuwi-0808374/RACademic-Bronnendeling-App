@@ -274,14 +274,11 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens
 
 --
 ## **Screenshots**
-<img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200">
-<img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200">
-<img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200">
-<img src="https://github.com/user-attachments/assets/f416259e-93f8-40ae-b3ae-22fb714bbe5" width="200">
-<img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200">
-<img src="https://github.com/user-attachments/assets/48d46bee-c51e-4d98-a1c4-7a50adb61713" width="200">
-<img src="https://github.com/user-attachments/assets/30b8b473-f4f6-4588-8b8f-51302177d907" width="200">
-<img src="https://github.com/user-attachments/assets/d33baf00-5d1f-4191-8c35-688e43a30bd5" width="200">
+| **Profiel** | **Overzicht gebruikers** | **Badge popup** | **Overzicht bronnen** |
+|-----------------------|-------------|-----------------|---------------------|
+|<img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200">|<img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200">|<img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200">|<img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200">|
+| **Inlog pagina** | **Nieuwe tag** | **Profiel bewerken** | **Nieuwe bron toevoegen** |
+|<img src="https://github.com/user-attachments/assets/48d46bee-c51e-4d98-a1c4-7a50adb61713" width="200">|<img src="https://github.com/user-attachments/assets/30b8b473-f4f6-4588-8b8f-51302177d907" width="200">|<img src="https://github.com/user-attachments/assets/d33baf00-5d1f-4191-8c35-688e43a30bd5" width="200">|<img src="https://github.com/user-attachments/assets/dd1e700f-5cc1-4319-9ac7-08f18c7d5774" width="200">|
 
 ## **Assets**
 - komt nog
