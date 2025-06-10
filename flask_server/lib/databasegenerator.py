@@ -233,8 +233,17 @@ class DatabaseGenerator:
             {"title": "Dependency Injection in C#",
              "content": "Improve testability and maintainability in C# by using built-in dependency injection in ASP.NET Core.",
              "user_id": 6, "posted_date": 1682000000},
-            {"title": "Markdown and Code Snippets", "content": """Learn how to embed code: ```python def hello(): print("Hello from markdown!") You can also embed images: """,
-             "user_id": 7, "posted_date": 1682100000},
+            {"title": "Markdown and Code Snippets", "content":
+            """programming test:
+```python
+        def hello():
+            print("Hello, world!")
+
+        hello()
+```
+einde test
+            """,
+             "user_id": 1, "posted_date": 1682100000},
             ]
         list_of_parameters = [(post["title"], post["content"], post["user_id"], post["posted_date"]) for post in
                               posts]

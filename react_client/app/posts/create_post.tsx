@@ -39,7 +39,7 @@ export default function Create_post() {
     const [data, setData] = useState([]);
     const router = useRouter();
     const { userId, loading } = useUser();
-
+    const [selection, setSelection] = useState({ start: 0, end: 0 });
     useEffect(() => {
         fetch(`${API_BASE_URL}/tags`)
             .then(res => res.json())
@@ -48,8 +48,20 @@ export default function Create_post() {
                 console.log(data.data);
             })
     }, []);
+    const addTab = () => {
+        const start = selection.start;
+        const end = selection.end;
 
-    //
+        // Insert 4 spaces at the cursor position
+        const newText = content.slice(0, start) + '    ' + content.slice(end);
+
+        setContent(newText);
+
+        // Move cursor to right after inserted spaces
+        const newPos = start + 4;
+        setSelection({ start: newPos, end: newPos });
+
+    };
     const CreatePost = async () => {
         if (!loading && userId) {
             try {
@@ -84,36 +96,53 @@ export default function Create_post() {
                         <View style={styles.form}>
                             <View style={styles.input}>
                                 <Text style={styles.inputlabel}>Titel</Text>
-                                    <TextInput
-                                        maxLength={200}
-                                        style={styles.inputcontroltitel}
-                                        placeholder="Titel van de bron"
-                                        placeholderTextColor={COLORS.placeholderText}
-                                        value={title}
-                                        onChangeText={(text)=> setTitle(text)}
+                                <TextInput
+                                    maxLength={200}
+                                    style={styles.inputcontroltitel}
+                                    placeholder="Titel van de bron"
+                                    placeholderTextColor={COLORS.placeholderText}
+                                    value={title}
+                                    onChangeText={(text)=> setTitle(text)}
                                 />
                             </View>
-
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Markdown Tips:</Text>
+                                <Text style={{ fontSize: 12 }}># Header</Text>
+                                <Text style={{ fontSize: 12 }}>*italic*, **bold**</Text>
+                                <Text style={{ fontSize: 12 }}>- List item</Text>
+                                <Text style={{ fontSize: 12 }}>```code```</Text>
+                            </View>
                             <View style={styles.input}>
                                 <Text style={styles.inputlabel}>Content van de bron</Text>
-                                    <TextInput
-                                        multiline={true}
-                                        maxLength={1000}
-                                        style={styles.inputcontrolcontent}
-                                        placeholder="print(Hello World)"
-                                        placeholderTextColor={COLORS.placeholderText}
-                                        value={content}
-                                        onChangeText={(text)=> setContent(text)}
+                                <TouchableOpacity onPress={addTab} style={[styles.button,{backgroundColor:'green'}]}>
+                                    <Text>tab</Text>
+                                </TouchableOpacity>
+                                <TextInput
+                                    multiline={true}
+                                    maxLength={1000}
+                                    style={styles.inputcontrolcontent}
+                                    placeholder="print(Hello World)"
+                                    placeholderTextColor={COLORS.placeholderText}
+                                    value={content}
+                                    onChangeText={(text)=> setContent(text)}
+                                    onSelectionChange={({ nativeEvent: { selection } }) => setSelection(selection)}
+                                    selection={selection}
+                                    onKeyPress={({ nativeEvent }) => {
+                                        if (nativeEvent.key === 'Tab') {
+                                            nativeEvent.preventDefault();
+                                            addTab();
+                                        }
+                                    }}
                                 />
                             </View>
 
                             <View style={styles.input}>
                                 <Text style={styles.inputlabel}>Tags</Text>
-                                    <CheckBox
-                                        options={data}
-                                        CheckedValues={tagid}
-                                        onChange={setTagid}
-                                        />
+                                <CheckBox
+                                    options={data}
+                                    CheckedValues={tagid}
+                                    onChange={setTagid}
+                                    />
                             </View>
 
                             <View style={styles.create}>

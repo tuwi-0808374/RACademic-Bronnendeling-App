@@ -128,7 +128,7 @@ export default function editpost() {
                             <Text style={styles.inputLabel}>Tags</Text>
                             <CheckBox
                                 options={tagData}
-                                CheckedValues={selected_tags}
+                                CheckedValues={selected_tags || []}
                                 onChange={setSelectedTagId}
                                 />
                         </View>
@@ -136,7 +136,7 @@ export default function editpost() {
                         <View style={styles.create}>
                             <TouchableOpacity onPress={EditPost}>
                                 <View style={styles.button}>
-                                    <Text style={styles.buttonText}>edit post</Text>
+                                    <Text style={styles.buttonText}>Save post</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>

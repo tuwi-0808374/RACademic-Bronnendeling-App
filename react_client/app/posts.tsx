@@ -17,6 +17,7 @@ import { useUser } from '@/constants/get_user_id';
 import {useRouter} from "expo-router";
 import TagBar from "@/components/general/TagBar";
 import tagContainer from "@/components/general/TagContainer";
+import Markdown, {MarkdownIt} from 'react-native-markdown-display';
 const API_BASE_URL = getApiBaseUrl();
 
 function Posts() {
@@ -120,7 +121,14 @@ function Posts() {
                 )}
               </View>
               <View style={styles.contentContainer}>
-                <Text>{post['content']}</Text>
+                {/*https://www.npmjs.com/package/react-native-markdown-display*/}
+                <Markdown
+                    markdownit={
+                      MarkdownIt({typographer: true}).disable([ 'image' ])
+                    }
+                >
+                  {post['content']}
+                </Markdown>
               </View>
 
               <View style={{flexDirection:'row'}}>
