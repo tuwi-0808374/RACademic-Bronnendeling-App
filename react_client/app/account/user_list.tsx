@@ -151,6 +151,7 @@ export default function UserListScreen() {
     <SafeAreaView style={{ height: '100%' }}>
       <StatusBar />
       <ScrollView>
+        <View style={Platform.OS ==='web'? {width:'50%', alignSelf:'center'} : {width: '100%'}}>
         <View>
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
@@ -279,6 +280,7 @@ export default function UserListScreen() {
             </View>
           </TouchableWithoutFeedback>
         ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
