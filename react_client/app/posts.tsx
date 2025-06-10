@@ -79,12 +79,18 @@ function Posts() {
 
   return (
     <SafeAreaView style={{height: '100%'}}>
-      {!local.tag_ids || local.tag_ids === 'undefined' ?
-          <View style={[Platform.OS === 'web'? {width: '100%'} : {width: '100%'},{alignItems: 'center'} ]}>
-            <TagBar />
+      {(!local.tag_ids || local.tag_ids === 'undefined') && Platform.OS !=='web' ?
+
+          <View style={{width: '100%'}}>
+            <TagBar searchQuery={local.search_query || local.search_query !== 'undefined' ? local.search_query : undefined} />
           </View>
           : null}
       <ScrollView style={styles.container}>
+        {(!local.tag_ids || local.tag_ids === 'undefined') && Platform.OS ==='web' ?
+            <View style={{width: '50%',alignSelf: 'center', padding:3}}>
+              <TagBar searchQuery={local.search_query || local.search_query !== 'undefined' ? local.search_query : undefined} />
+            </View>
+        : null}
         {posts.map((post, i) => (
           <TouchableWithoutFeedback key={i}>
             <View key={i} style={[styles.postContainer, Platform.OS === 'web'? {width: '50%'} : {width: '100%'}]}>
@@ -105,7 +111,7 @@ function Posts() {
                     </View>
                   </TouchableOpacity>
               )}
-              <View style={{flexDirection: 'row'}}>
+              <View style={styles.postTagsContainer}>
                 {Object.entries(post['tag_objects']).map(([key, tag]: any, i: number) => (
                     <View key={i} style={[styles.tagContainer,{backgroundColor:tag['color']}]}>
                       <Text style={styles.textTagStyle}>{tag['title']}</Text>
@@ -143,7 +149,7 @@ function Posts() {
 }
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 10,
     backgroundColor: 'off-white',
   },
   postContainer: {
@@ -163,11 +169,17 @@ const styles = StyleSheet.create({
   contentContainer: {
     // flexDirection: 'row',
   },
+  postTagsContainer:{
+  flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignContent: 'flex-start'
+  },
   tagContainer: {
-    width: 60,
+    minWidth: 60,
     height: 20,
+    paddingHorizontal: 5,
     borderRadius: 25,
-    marginRight: 15,
+    margin: 5,
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
