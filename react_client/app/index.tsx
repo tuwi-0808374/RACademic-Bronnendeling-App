@@ -10,6 +10,7 @@ import {
   Platform,
   SafeAreaView,
   StatusBar,
+    Keyboard
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -46,6 +47,13 @@ const LoginScreen = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const setUserLoggedIn = useContext(UserStatusContext);
 
+  const handleOnKeyPress = (event) =>{
+    const key = event.nativeEvent.key
+    if(key ==="Enter"){
+      handleLogin();
+      Keyboard.dismiss();
+    }
+  }
   const handleLogin = async () => {
 
     if (!email || !password) {
@@ -171,6 +179,7 @@ const LoginScreen = () => {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 selectionColor={COLORS.inputLine}
+                onKeyPress={handleOnKeyPress}
               />
               <TouchableOpacity
                 style={styles.eyeIcon}
