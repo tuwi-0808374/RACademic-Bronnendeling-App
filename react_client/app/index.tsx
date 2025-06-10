@@ -10,7 +10,7 @@ import {
   Platform,
   SafeAreaView,
   StatusBar,
-    Keyboard
+  Keyboard
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -46,12 +46,7 @@ const LoginScreen = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const setUserLoggedIn = useContext(UserStatusContext);
 
-  const handleSubmit = () =>{
-    handleLogin();
-    Keyboard.dismiss();
-  }
   const handleLogin = async () => {
-
     if (!email || !password) {
       setErrorMessage("Vul beide velden in!");
       console.log("Please fill in both fields.");
@@ -86,7 +81,7 @@ const LoginScreen = () => {
       console.log("Er is een fout opgetreden:", error);
     }
   };
-
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
@@ -170,13 +165,13 @@ const LoginScreen = () => {
             </View>
             <View style={styles.passwordContainer}>
               <TextInput
-                style={[styles.input, styles.inputPassword]}
-                placeholder="********"
-                placeholderTextColor={COLORS.placeholderText}
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                selectionColor={COLORS.inputLine}
+                  style={[styles.input, styles.inputPassword]}
+                  placeholder="********"
+                  placeholderTextColor={COLORS.placeholderText}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  selectionColor={COLORS.inputLine}
               />
               <TouchableOpacity
                 style={styles.eyeIcon}
