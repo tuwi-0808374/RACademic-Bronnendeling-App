@@ -17,12 +17,13 @@ function SideBar({ sideBarState, setSideBarState }) {
         setUserLoggedIn(false);
         router.push('/');
     };
+
     const [fontsLoaded] = useFonts({
         BebasNeue: require('@/assets/fonts/BebasNeue-Regular.ttf'),
     });
-    console.log("Fonts loaded?", fontsLoaded);
+
     if (!fontsLoaded) {
-        console.log('No fontsLoaded');
+        console.log('No fonts loaded');
         return null;
     }
     if (!sideBarState) {
@@ -44,17 +45,6 @@ function SideBar({ sideBarState, setSideBarState }) {
             >
                 <Ionicons name="chevron-back" size={30} color="white" style={styles.backIcon} />
             </TouchableOpacity>
-
-            {/*<TouchableOpacity*/}
-            {/*    onPress={() => {*/}
-            {/*        setSideBarState(false);*/}
-            {/*        router.push('/homepage');*/}
-            {/*    }}*/}
-            {/*    style={styles.routeContainer}*/}
-            {/*>*/}
-            {/*    <Ionicons name="home" size={32} style={styles.Icon} />*/}
-            {/*    <Text style={styles.SideText}>Home</Text>*/}
-            {/*</TouchableOpacity>*/}
 
             <TouchableOpacity
                 onPress={() => {

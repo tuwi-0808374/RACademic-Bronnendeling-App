@@ -15,8 +15,6 @@ import FavoriteButton from '@/components/posts/FavoriteButton';
 import {getApiBaseUrl} from "@/constants/get_ip";
 import { useUser } from '@/constants/get_user_id';
 import {useRouter} from "expo-router";
-import TagBar from '@/components/general/TagBar'
-
 const API_BASE_URL = getApiBaseUrl();
 
 function Posts() {
@@ -27,9 +25,9 @@ function Posts() {
   // const[tags, setTags] = useState([])
 
   useEffect(() => {
+    if (!loading && userId) {
+      const fetchPosts = async () => {
 
-    const fetchPosts = async () => {
-      if (!loading && userId) {
         try {
           const params = new URLSearchParams();
           if (local.search_query && local.search_query !== 'undefined') {
@@ -54,25 +52,22 @@ function Posts() {
         } catch (error) {
           console.error('API request failed:', error);
         }
-      }
-    };
-    // useEffect(() => {
-    //   fetch(`${API_BASE_URL}/tags`)
-    //   .then(res => res.json())
-    //   .then(data => {
-    //     setTags(data.data);
-    //   })
-    // }, []);
-
-
-    if (userId) {
+      };
       fetchPosts();
     }
   }, [userId, loading]);
+  if (!userId) {
 
-  if (loading && !userId) {
-    return <Text>Loading...</Text>;
+    return (
+        <View style={[styles.container,{justifyContent:"center", alignItems:'center'}]}>
+          <Text>Please log in to see posts.</Text>
+        </View>
+    )
   }
+  if (loading) {
+    return <Text>Loading user info...</Text>;
+  }
+
   if (!posts) {
     return (
         <View style={styles.container}>
@@ -84,24 +79,6 @@ function Posts() {
 
   return (
     <SafeAreaView style={{height: '100%'}}>
-      {!local.tag_ids || local.tag_ids === 'undefined' ?
-      <View style={[Platform.OS === 'web'? {width: '49%'} : {width: '100%'},{alignSelf: 'center'} ]}>
-        <TagBar />
-      </View>
-          : null}
-      {/*{local.tag_ids || local.tag_ids !== 'undefined'}*/}
-      {/*{ tags.map((tag, i) => {*/}
-      {/*  <View key={i}*/}
-      {/*        style={[styles.tagContainer,*/}
-      {/*          { backgroundColor: tag['color'] }]}*/}
-      {/*  >*/}
-
-      {/*    <Text style={styles.textStyle}>{tag['title']}</Text>*/}
-      {/*  </View>*/}
-      {/*}}*/}
-      <View style={[Platform.OS === 'web'? {width: '49%'} : {width: '100%'},{alignSelf: 'center'} ]}>
-
-      </View>
       <ScrollView style={styles.container}>
 
         {posts.map((post, i) => (

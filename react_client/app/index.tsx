@@ -10,13 +10,13 @@ import {
   Platform,
   SafeAreaView,
   StatusBar,
+  Keyboard
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import {Ionicons} from '@expo/vector-icons';
 import { UserStatusContext } from "./_layout";
-import Container from '../components/general/Container';
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -46,6 +46,13 @@ const LoginScreen = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const setUserLoggedIn = useContext(UserStatusContext);
 
+  const handleOnKeyPress = (event:any) =>{
+    const key = event.nativeEvent.key
+    if(key ==="Enter"){
+      handleLogin();
+      Keyboard.dismiss();
+    }
+  }
   const handleLogin = async () => {
 
     if (!email || !password) {
@@ -72,6 +79,7 @@ const LoginScreen = () => {
         setUserLoggedIn(true);
         await AsyncStorage.setItem("authToken", data["access_token"]);
         router.push("/posts");
+
       } else {
         const errorData = await response.json();
         console.log("Fout bij inloggen:", errorData.message);
@@ -171,6 +179,7 @@ const LoginScreen = () => {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 selectionColor={COLORS.inputLine}
+                onKeyPress={handleOnKeyPress}
               />
               <TouchableOpacity
                 style={styles.eyeIcon}

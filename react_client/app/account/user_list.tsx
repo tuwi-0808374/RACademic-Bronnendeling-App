@@ -154,7 +154,7 @@ export default function UserListScreen() {
         <View>
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
-        {isAdmin && ( 
+        {isAdmin ? (
           <TouchableOpacity 
             style={styles.button_darkgreen}
             onPress={() =>
@@ -166,7 +166,7 @@ export default function UserListScreen() {
               Gebruiker toevoegen
             </Text>
           </TouchableOpacity>
-        )}
+        ) : null}
         
         {users.map((user) => (
           <TouchableWithoutFeedback
