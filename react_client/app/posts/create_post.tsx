@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    SafeAreaView,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    ScrollView,
+    Platform
+} from 'react-native';
 import { CheckBox } from "@/components/input";
 import {useRouter} from "expo-router";
 import { useUser } from '@/constants/get_user_id';
@@ -65,13 +75,12 @@ export default function Create_post() {
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>Create Post</Text>
-                </View>
-
-                <ScrollView style={styles.scrollView}>
-                    <TouchableWithoutFeedback>
+            <ScrollView style={styles.scrollView}>
+                <TouchableWithoutFeedback>
+                    <View style={[styles.container, Platform.OS ==='web'? {width:'50%', alignSelf:'center'} : {width: '100%'}]}>
+                        <View style={styles.header}>
+                            <Text style={styles.title}>Create Post</Text>
+                        </View>
                         <View style={styles.form}>
                             <View style={styles.input}>
                                 <Text style={styles.inputlabel}>Titel</Text>
@@ -108,88 +117,87 @@ export default function Create_post() {
                             </View>
 
                             <View style={styles.create}>
-                                <TouchableOpacity style={{paddingBottom:200}} onPress={CreatePost}>
+                                <TouchableOpacity onPress={CreatePost}>
                                     <View style={styles.button}>
                                         <Text style={styles.buttontext}>Create post</Text>
                                     </View>
                                 </TouchableOpacity>
                             </View>
-
                         </View>
-                    </TouchableWithoutFeedback>
-                </ScrollView>
-            </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </ScrollView>
         </SafeAreaView>
     )
 
 }
 
-    const styles = StyleSheet.create({
-        container: {
-            paddingVertical: 10,
-            paddingHorizontal: 30,
-            height: '100%'
-        },
-        header: {
-            marginVertical: 36,
-        },
-        title: {
-            fontSize: 30,
-            fontWeight: "bold",
-            color: COLORS.text,
-            marginBottom: 1,
-            textAlign: "center",
-        },
-        form:{},
-        input:{},
-        inputlabel:{
-            fontSize: 20,
-            fontWeight: "semibold",
-            color: COLORS.text,
-            marginBottom: 5,
-            textAlign: "center"
-        },
-        inputcontroltitel:{
-            fontSize: 15,
-            fontWeight: "semibold",
-            color: COLORS.text,
-            height: 50,
-            backgroundColor: COLORS.textLight,
-            paddingHorizontal: 16,
-            borderRadius: 12,
-            marginBottom: 25,
-        },
-        inputcontrolcontent:{
-            fontSize: 15,
-            fontWeight: "semibold",
-            color: COLORS.text,
-            height: 150,
-            backgroundColor: COLORS.textLight,
-            paddingHorizontal: 16,
-            borderRadius: 12,
-            marginBottom: 25,
-        },
-        create:{},
-        button:{
-            backgroundColor: COLORS.red,
-            borderRadius: 8,
-            borderBottomWidth: 1,
-            borderColor: COLORS.text,
-            flexDirection: "row",
-            justifyContent: "center",
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-        },
-        buttontext:{
-            fontSize: 20,
-            fontWeight: "bold",
-            color: COLORS.textLight,
-        },
-        checkbox:{
-            justifyContent: "center",
-            marginBottom: 15
-        },
-        scrollView:{
+const styles = StyleSheet.create({
+    container: {
+        paddingVertical: 10,
+        paddingHorizontal: 30,
+        height: '100%'
+    },
+    header: {
+        marginVertical: 36,
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: "bold",
+        color: COLORS.text,
+        marginBottom: 1,
+        textAlign: "center",
+    },
+    form:{},
+    input:{},
+    inputlabel:{
+        fontSize: 20,
+        fontWeight: "semibold",
+        color: COLORS.text,
+        marginBottom: 5,
+        textAlign: "center"
+    },
+    inputcontroltitel:{
+        fontSize: 15,
+        fontWeight: "semibold",
+        color: COLORS.text,
+        height: 50,
+        backgroundColor: COLORS.textLight,
+        paddingHorizontal: 16,
+        borderRadius: 12,
+        marginBottom: 25,
+    },
+    inputcontrolcontent:{
+        fontSize: 15,
+        fontWeight: "semibold",
+        color: COLORS.text,
+        height: 150,
+        backgroundColor: COLORS.textLight,
+        paddingHorizontal: 16,
+        borderRadius: 12,
+        marginBottom: 25,
+    },
+    create:{},
+    button:{
+        backgroundColor: COLORS.red,
+        borderRadius: 8,
+        borderBottomWidth: 1,
+        borderColor: COLORS.text,
+        flexDirection: "row",
+        justifyContent: "center",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+    },
+    buttontext:{
+        fontSize: 20,
+        fontWeight: "bold",
+        color: COLORS.textLight,
+    },
+    checkbox:{
+        justifyContent: "center",
+        marginBottom: 15
+    },
+    scrollView:{
 
-        }
-    })
+    }
+})

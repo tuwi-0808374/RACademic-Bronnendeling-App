@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Platform, TouchableWithoutFeedback } from 'react-native';
 import {CheckBox} from "@/components/input";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import {getApiBaseUrl} from "@/constants/get_ip";
@@ -92,18 +92,19 @@ export default function editpost() {
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
-                <View style={styles.container}>
+            <ScrollView>
+                <View style={[styles.container, Platform.OS ==='web'? {width:'50%', alignSelf:'center'} : {width: '100%'}]}>
                     <View style={styles.header}>
                         <Text style={styles.title}>Edit Post</Text>
                     </View>
 
-                    <ScrollView>
+
                     <View style={styles.form}>
                         <View style={styles.input}>
-                            <Text style={styles.inputlabel}>Titel</Text>
+                            <Text style={styles.inputLabel}>Titel</Text>
                                 <TextInput
                                     maxLength={200}
-                                    style={styles.inputcontroltitel}
+                                    style={styles.inputControlTitel}
                                     placeholderTextColor={COLORS.placeholderText}
                                     value={title}
                                     onChangeText={(text)=> setTitle(text)}
@@ -111,11 +112,11 @@ export default function editpost() {
                         </View>
 
                         <View style={styles.input}>
-                            <Text style={styles.inputlabel}>Content</Text>
+                            <Text style={styles.inputLabel}>Content</Text>
                             <TextInput
                                 multiline={true}
                                 maxLength={1000}
-                                style={styles.inputcontroltitel}
+                                style={styles.inputControlTitel}
                                 placeholderTextColor={COLORS.placeholderText}
                                 value={content}
                                 onChangeText={(text)=> setContent(text)}
@@ -124,7 +125,7 @@ export default function editpost() {
 
 
                         <View style={styles.input}>
-                            <Text style={styles.inputlabel}>Tags</Text>
+                            <Text style={styles.inputLabel}>Tags</Text>
                             <CheckBox
                                 options={tagData}
                                 CheckedValues={selected_tags}
@@ -135,7 +136,7 @@ export default function editpost() {
                         <View style={styles.create}>
                             <TouchableOpacity onPress={EditPost}>
                                 <View style={styles.button}>
-                                    <Text style={styles.buttontext}>edit post</Text>
+                                    <Text style={styles.buttonText}>edit post</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -143,16 +144,16 @@ export default function editpost() {
                         <View style={styles.create}>
                             <TouchableOpacity onPress={DeletePost}>
                                 <View style={styles.button}>
-                                    <Text style={styles.buttontext}>Delete post</Text>
+                                    <Text style={styles.buttonText}>Delete post</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
 
 
                     </View>
-                    </ScrollView>
-                </View>
 
+                </View>
+            </ScrollView>
         </SafeAreaView>
     )
 
@@ -176,14 +177,14 @@ const styles = StyleSheet.create({
     },
     form:{},
     input:{},
-    inputlabel:{
+    inputLabel:{
         fontSize: 20,
         fontWeight: "semibold",
         color: COLORS.text,
         marginBottom: 5,
         textAlign: "center"
     },
-    inputcontroltitel:{
+    inputControlTitel:{
         fontSize: 15,
         fontWeight: "semibold",
         color: COLORS.text,
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginBottom: 25,
     },
-    inputcontrolcontent:{
+    inputControlContent:{
         fontSize: 15,
         fontWeight: "semibold",
         color: COLORS.text,
@@ -215,7 +216,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
     },
-    buttontext:{
+    buttonText:{
         fontSize: 20,
         fontWeight: "bold",
         color: COLORS.textLight,
