@@ -20,7 +20,7 @@ class Post:
         params = []
         if user_id:
             query = """
-                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating, 
+                    SELECT posts.*, ratings.is_favorite , ratings.userRated , ratings.rating, GROUP_CONCAT(post_tags.tag_id) AS tag_ids,  
                     CASE 
                         WHEN users.is_public = true THEN users.display_name
                         ELSE users.username
@@ -28,6 +28,9 @@ class Post:
                     FROM posts
                     LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
                     JOIN users ON posts.user_id = users.id
+                    LEFT JOIN post_tags 
+                        ON posts.id = post_tags.post_id
+                    GROUP BY posts.id
                     """
             params.append(user_id)
         else:
@@ -36,7 +39,7 @@ class Post:
         if limit:
             query += " LIMIT ?"
             params.append(limit)
-            
+
         query += " ORDER BY posted_date DESC"
         
         self.cursor.execute(query, params)
@@ -50,14 +53,15 @@ class Post:
         params = (user_id,)
         query = """
                 SELECT 
-                posts.*,ratings.is_favorite , ratings.userRated , ratings.rating, 
+                posts.*,ratings.is_favorite , ratings.userRated , ratings.rating, GROUP_CONCAT(post_tags.tag_id) AS tag_ids,
                 CASE 
                     WHEN users.is_public = true THEN users.display_name
                     ELSE users.username
                 END AS user_name
                 FROM posts
-                    JOIN users ON posts.user_id = users.id
-                    LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
+                JOIN users ON posts.user_id = users.id
+                LEFT JOIN ratings ON posts.id = ratings.post_id AND ratings.user_id = ?
+                LEFT JOIN post_tags ON posts.id = post_tags.post_id
                 WHERE 1=1 
                 """
 
@@ -79,7 +83,8 @@ class Post:
                 # checked voor content en title
                 query += "AND (LOWER(posts.content) LIKE ? or LOWER(posts.title) LIKE ?) "
                 params += (str('%' + word.lower() + '%'),str('%' + word.lower() + '%'),)
-        query += (str("ORDER BY posts.posted_date DESC"))
+        query += (str("GROUP BY posts.id ORDER BY posts.posted_date DESC"))
+
         # params +=  user_id,
         print(query, params,)
         self.cursor.execute(query, params,)

@@ -26,8 +26,9 @@ export default function TagBar() {
         });
     };
     return (
+        <View style={{width: '100%', alignItems: 'center'}}>
         <ScrollView horizontal={true}>
-            <View style={styles.contentContainer}>
+            <View style={[styles.contentContainer,{width:'100%'}]}>
                 {tags.map((tag, i) => (
                     <TouchableOpacity
                         key={i}
@@ -40,13 +41,13 @@ export default function TagBar() {
                 ))}
             </View>
         </ScrollView>
+        </View>
     );
 }
 const styles = StyleSheet.create({
     contentContainer: {
         paddingTop: 10,
         paddingBottom: 10,
-        // moet nog shadow voor presentatie toevoegen
         flexDirection: 'row',
         gap: 8,
         backgroundColor:'#dfdfdf',

@@ -76,10 +76,11 @@ const LoginScreen = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Login succesvol", data);
-        setUserLoggedIn(true);
-        await AsyncStorage.setItem("authToken", data["access_token"]);
-        router.push("/posts");
 
+        await AsyncStorage.setItem("authToken", data["access_token"]).then(()=>{
+          setUserLoggedIn(true);
+          router.push("/posts");
+        });
       } else {
         const errorData = await response.json();
         console.log("Fout bij inloggen:", errorData.message);

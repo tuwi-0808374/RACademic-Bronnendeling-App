@@ -15,6 +15,8 @@ import FavoriteButton from '@/components/posts/FavoriteButton';
 import {getApiBaseUrl} from "@/constants/get_ip";
 import { useUser } from '@/constants/get_user_id';
 import {useRouter} from "expo-router";
+import TagBar from "@/components/general/TagBar";
+import tagContainer from "@/components/general/TagContainer";
 const API_BASE_URL = getApiBaseUrl();
 
 function Posts() {
@@ -22,12 +24,10 @@ function Posts() {
   const { userId, loading } = useUser();
   const local = useLocalSearchParams();
   const router = useRouter();
-  // const[tags, setTags] = useState([])
 
   useEffect(() => {
     if (!loading && userId) {
       const fetchPosts = async () => {
-
         try {
           const params = new URLSearchParams();
           if (local.search_query && local.search_query !== 'undefined') {
@@ -79,8 +79,12 @@ function Posts() {
 
   return (
     <SafeAreaView style={{height: '100%'}}>
+      {!local.tag_ids || local.tag_ids === 'undefined' ?
+          <View style={[Platform.OS === 'web'? {width: '100%'} : {width: '100%'},{alignItems: 'center'} ]}>
+            <TagBar />
+          </View>
+          : null}
       <ScrollView style={styles.container}>
-
         {posts.map((post, i) => (
           <TouchableWithoutFeedback key={i}>
             <View key={i} style={[styles.postContainer, Platform.OS === 'web'? {width: '50%'} : {width: '100%'}]}>
@@ -91,7 +95,6 @@ function Posts() {
                     <Text style={{ fontSize: 15,fontWeight: 'bold' }}>{post['user_name']? post['user_name']:'anonymous user'}</Text>
                   </TouchableOpacity>
               </View>
-
               <View style={{justifyContent:'flex-start'}}>
                 <Text style={styles.title}>{post['title']}</Text>
               </View>
@@ -102,7 +105,14 @@ function Posts() {
                     </View>
                   </TouchableOpacity>
               )}
-
+              <View style={{flexDirection: 'row'}}>
+                {Object.entries(post['tag_objects']).map(([key, tag]: any, i: number) => (
+                    <View key={i} style={[styles.tagContainer,{backgroundColor:tag['color']}]}>
+                      <Text style={styles.textTagStyle}>{tag['title']}</Text>
+                    </View>
+                    )
+                )}
+              </View>
               <View style={styles.contentContainer}>
                 <Text>{post['content']}</Text>
               </View>
@@ -152,6 +162,22 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     // flexDirection: 'row',
+  },
+  tagContainer: {
+    width: 60,
+    height: 20,
+    borderRadius: 25,
+    marginRight: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  textTagStyle: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: 'white',
+    textAlign: 'center',
+    paddingHorizontal: 4,
   }
 
 })

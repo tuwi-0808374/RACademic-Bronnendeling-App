@@ -24,7 +24,6 @@ def get_tags_by_post_id(post_id):
         'tags':tags,
         'tag_ids': tag_ids
     }
-    print(data)
     if not tags:
         return jsonify({'status': 'error', 'message': 'No tags found'}), 404
     return jsonify({'status': 'success', 'data': data}), 200

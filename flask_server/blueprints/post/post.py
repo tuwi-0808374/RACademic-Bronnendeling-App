@@ -2,6 +2,8 @@ from flask import *
 from flask_cors import CORS
 from blueprints.post.models.post_model import Post
 from blueprints.rating.models.rating_model import Rating
+from blueprints.tag.models.tag_model import Tag
+from flask_jwt_extended import *
 post_bp = Blueprint('post', __name__)
 base = Blueprint('base', __name__)
 CORS(post_bp)
@@ -11,6 +13,7 @@ CORS(base)
 @post_bp.route('/posts/<int:user_id>', methods=['GET'])
 def get_posts_with_user(user_id):
     post = Post()
+    tag = Tag()
 
     search_query = request.args.get('search_query', None)
     tag_ids = []
@@ -30,12 +33,20 @@ def get_posts_with_user(user_id):
     if not result:
         return jsonify({'status': 'error', 'message': 'No posts found'}), 404
 
-    # data = {
-    #     "posts": posts,
-    #     "user_rating": user_rating
-    # }
-    print('test',result[0])
-    return jsonify({'status': 'success', 'data': result}), 200
+    tags = tag.get_tags()
+    if not tags:
+        return jsonify({'status': 'error', 'message': 'No tags found'}), 404
+    posts = []
+    for post in result:
+        tag_id_list = post['tag_ids'].split(',') if post['tag_ids'] else []
+        matched_tags = []
+        for tag_id in tag_id_list:
+            for tag in tags:
+                if str(tag['id']) == tag_id:
+                    matched_tags.append(tag)
+        post['tag_objects'] = matched_tags
+        posts.append(post)
+    return jsonify({'status': 'success', 'data': posts}), 200
 
 
 
