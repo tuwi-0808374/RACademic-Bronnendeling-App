@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
   },
   postTagsContainer:{
-  flexDirection: 'row',
+    flexDirection: 'row',
     flexWrap: 'wrap',
     alignContent: 'flex-start'
   },

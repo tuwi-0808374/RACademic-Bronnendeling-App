@@ -46,12 +46,9 @@ const LoginScreen = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const setUserLoggedIn = useContext(UserStatusContext);
 
-  const handleOnKeyPress = (event:any) =>{
-    const key = event.nativeEvent.key
-    if(key ==="Enter"){
-      handleLogin();
-      Keyboard.dismiss();
-    }
+  const handleSubmit = () =>{
+    handleLogin();
+    Keyboard.dismiss();
   }
   const handleLogin = async () => {
 
@@ -180,7 +177,7 @@ const LoginScreen = () => {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 selectionColor={COLORS.inputLine}
-                onKeyPress={handleOnKeyPress}
+                onSubmitEditing={handleSubmit}
               />
               <TouchableOpacity
                 style={styles.eyeIcon}

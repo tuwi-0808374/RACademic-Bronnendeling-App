@@ -17,16 +17,13 @@ function SearchBar({ visible, setVisible, selectedTags }) {
     };
 
 
-    const handleOnKeyPress = event =>{
-        const key = event.nativeEvent.key
-        if(key ==="Enter"){
-            fetchPosts();
-            setVisible(false);
-            Keyboard.dismiss();
-        }
+    const handleSubmit = () =>{
+        fetchPosts();
+        setVisible(false);
+        Keyboard.dismiss();
     }
 
-    const pressSearch = event =>{
+    const pressSearch = () =>{
         fetchPosts();
         setVisible(false);
         Keyboard.dismiss();
@@ -39,7 +36,7 @@ function SearchBar({ visible, setVisible, selectedTags }) {
                 placeholder="Zoeken..."
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                onKeyPress={handleOnKeyPress}
+                onSubmitEditing={handleSubmit}
                 onFocus={() => setVisible(true)}
             />
             <Ionicons
