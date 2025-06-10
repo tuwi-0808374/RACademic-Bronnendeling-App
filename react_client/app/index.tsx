@@ -10,7 +10,7 @@ import {
   Platform,
   SafeAreaView,
   StatusBar,
-  Keyboard
+    Keyboard
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -177,7 +177,6 @@ const LoginScreen = () => {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 selectionColor={COLORS.inputLine}
-                onSubmitEditing={handleSubmit}
               />
               <TouchableOpacity
                 style={styles.eyeIcon}
