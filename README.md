@@ -1,4 +1,4 @@
-# App RACademic
+# RACademic Bronnendeling App 
 
 ## Overzicht
 
@@ -13,10 +13,7 @@ Wij zijn team **Kiwi** en ons team bestaat uit:
 - **Jesper Edeling** (1103541)
 
 ---
-
-## Installatie Stappen
-
-# Met docker
+# Installatie met Docker
 
 ### Software
 - Docker
@@ -63,17 +60,14 @@ Wacht to je "Logs for your project will appear below. " ziet en scroll iets naar
 Scan de qr code met je telefoon en de website zal te zien zijn op je telefoon.
 (zorg dat je telefoon op dezelfde netwerk is verbonden als je pc)
 
-
-# Zonder docker
-## Vereisten
-
+# Installatie zonder Docker
 ### 1. Software en versievereisten
 Voor het uitvoeren van dit project zijn de volgende vereisten van toepassing:
 
 - **Python-versie:** 3.x
-- **Git:**
-- **Flask:** 
-- **React:** 
+- **Git**
+- **Flask** 
+- **React** 
 
 
 ### 2. Benodigde Python-packages
@@ -137,26 +131,18 @@ pip install -r requirements.txt
 #### Optie 2: Installeren zonder `requirements.txt`
 Als je `requirements.txt` niet wilt gebruiken, installeer je de benodigde libraries handmatig:
 ```bash
-pip install flask
-pip install bcrypt==4.2.1
-pip install blinker==1.9.0
-pip install certifi==2025.1.31
-pip install charset-normalizer==3.4.1
-pip install click==8.1.8
-pip install colorama==0.4.6
-pip install Flask-Bcrypt==1.0.1
-pip install flask-cors==5.0.1
-pip install Flask-JWT-Extended==4.7.1
-pip install flask-swagger-ui==4.11.1
-pip install idna==3.10
-pip install itsdangerous==2.2.0
-pip install Jinja2==3.1.5
-pip install mailersend==0.5.8
-pip install MarkupSafe==3.0.2
-pip install PyJWT==2.10.1
-pip install requests==2.32.3
-pip install urllib3==2.3.0
-pip install Werkzeug==3.1.3
+bcrypt==4.3.0
+blinker==1.9.0
+click==8.1.8
+colorama==0.4.6
+Flask==3.1.0
+flask-cors==5.0.1
+itsdangerous==2.2.0
+Jinja2==3.1.6
+MarkupSafe==3.0.2
+Werkzeug==3.1.3
+flask_jwt_extended
+flask_cors
 ```
 
 ---
@@ -244,8 +230,7 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens
   - E-mailadres
 
 ---
-## Overzicht 
-## Functies van de App
+## Overzicht
 
 ### Admin Functies
 - Inloggen voor admins
@@ -272,16 +257,12 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens
 - Inloggen vereist om content in de app te bekijken
 - Bronnen bevatten tags
 
---
 ## **Screenshots**
 | **Profiel** | **Overzicht gebruikers** | **Badge popup** | **Overzicht bronnen** |
 |-----------------------|-------------|-----------------|---------------------|
 |<img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200">|<img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200">|<img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200">|<img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200">|
 | **Inlog pagina** | **Nieuwe tag** | **Profiel bewerken** | **Nieuwe bron toevoegen** |
 |<img src="https://github.com/user-attachments/assets/48d46bee-c51e-4d98-a1c4-7a50adb61713" width="200">|<img src="https://github.com/user-attachments/assets/30b8b473-f4f6-4588-8b8f-51302177d907" width="200">|<img src="https://github.com/user-attachments/assets/d33baf00-5d1f-4191-8c35-688e43a30bd5" width="200">|<img src="https://github.com/user-attachments/assets/dd1e700f-5cc1-4319-9ac7-08f18c7d5774" width="200">|
-
-## **Assets**
-- komt nog
 
 ## **Code Bronnen**
 - [React useState](https://www.w3schools.com/react/react_usestate.asp)
