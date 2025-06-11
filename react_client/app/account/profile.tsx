@@ -184,7 +184,7 @@ export default function PublicProfileScreen() {
                 />
                 <Text style={styles.inputLabel}>Naam</Text>
               </View>
-              {isPublic ? (
+              {isPublic || (userId === profileUserId || !profileUserId) ? (
                 <Text style={styles.input}>
                   {first_name} {lastName}
                 </Text>
@@ -203,7 +203,7 @@ export default function PublicProfileScreen() {
                 />
                 <Text style={styles.inputLabel}>E-mail</Text>
               </View>
-              {isPublic ? (
+              {isPublic || (userId === profileUserId || !profileUserId) ? (
                 <Text style={styles.input}>{email}</Text>
               ) : (
                 <Text style={styles.input}>Privé account</Text>
