@@ -10,14 +10,13 @@ import {
   Platform,
   SafeAreaView,
   StatusBar,
-  Keyboard
+  Keyboard,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { Ionicons } from "@expo/vector-icons";
 import { UserStatusContext } from "./_layout";
-import Container from "../components/general/Container";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -65,29 +64,23 @@ const LoginScreen = () => {
         }),
       });
 
-      const text = await response.text();
-      const data = text ? JSON.parse(text) : {};
-      if (!response.ok) {
-        throw new Error(data.message || "Inloggen mislukt");
-      }
-      if (response.ok) {
-        const data = await response.json();
+      const data = await response.json();
 
+      if (response.ok) {
         console.log("Login succesvol", data);
         setUserLoggedIn(true);
-        
+
         await AsyncStorage.setItem("authToken", data["access_token"]);
-          router.push("/posts");
+        router.push("/posts");
       } else {
-        const errorData = await response.json();
-        console.log("Fout bij inloggen:", errorData.message);
+        throw new Error(data.message || "Inloggen mislukt");
       }
     } catch (error) {
       setErrorMessage(error.message || "Er is een fout opgetreden");
       console.error("Login error:", error);
     }
   };
-  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
@@ -170,13 +163,13 @@ const LoginScreen = () => {
               </View>
               <View style={styles.passwordContainer}>
                 <TextInput
-                    style={[styles.input, styles.inputPassword]}
-                    placeholder="********"
-                    placeholderTextColor={COLORS.placeholderText}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    selectionColor={COLORS.inputLine}
+                  style={[styles.input, styles.inputPassword]}
+                  placeholder="********"
+                  placeholderTextColor={COLORS.placeholderText}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  selectionColor={COLORS.inputLine}
                 />
                 <TouchableOpacity
                   style={styles.eyeIcon}

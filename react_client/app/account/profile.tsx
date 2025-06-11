@@ -12,15 +12,17 @@ import {
   Platform,
   ScrollView,
   TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import {Ionicons} from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import UserBadges from "../../components/badges/user_badges";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { useFocusEffect } from "expo-router";
 import Container from "../../components/general/Container";
+import PostList from "../../components/account/PostList";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -72,6 +74,9 @@ export default function PublicProfileScreen() {
   const [isPublic, setIsPublic] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
 
+  const [userPosts, setUserPosts] = useState<any[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(false);
+
   const fetchProfile = async () => {
     try {
       const token = await AsyncStorage.getItem("authToken");
@@ -102,7 +107,6 @@ export default function PublicProfileScreen() {
           setIsPublic(userData.is_public === 0);
           setUserName(userData.username || "");
 
-          // Bron: ChatGPT
           if (userData.is_public === 0 || targetUserId === decoded.user_id) {
             setFirstName(userData.first_name || "");
             setLastName(userData.last_name || "");
@@ -140,6 +144,40 @@ export default function PublicProfileScreen() {
     fetchProfile();
   }, []);
 
+  const fetchUserPosts = async () => {
+    setLoadingPosts(true);
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      const targetUserId = profileUserId || userId;
+
+      if (!targetUserId) return;
+
+      const response = await fetch(
+        `${API_BASE_URL}/posts_by_user_id/${targetUserId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserPosts(data.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching user posts:", error);
+    } finally {
+      setLoadingPosts(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userId || profileUserId) {
+      fetchUserPosts();
+    }
+  }, [userId, profileUserId]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
@@ -147,17 +185,20 @@ export default function PublicProfileScreen() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingContainer}
       >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Container>
-            {profileUserId ? (
-              <View>
-                <UserBadges userID={profileUserId}></UserBadges>
-              </View>
-            ) : (
-              <UserBadges userID={0}></UserBadges>
-            )}
-            <TouchableWithoutFeedback>
-              <View style={styles.innerContainer}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          style={{ width: "100%" }}
+        >
+          <TouchableWithoutFeedback>
+            <Container>
+              {profileUserId ? (
+                <View>
+                  <UserBadges userID={profileUserId}></UserBadges>
+                </View>
+              ) : (
+                <UserBadges userID={0}></UserBadges>
+              )}
+              <View style={styles.innerContainer} pointerEvents="box-none">
                 <View style={styles.profileImageContainer}>
                   {profileImage ? (
                     <Image
@@ -178,41 +219,41 @@ export default function PublicProfileScreen() {
                     : `PROFIEL VAN ${username}`}
                 </Text>
 
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Ionicons
-                  name="person-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>Naam</Text>
-              </View>
-              {isPublic || (userId === profileUserId || !profileUserId) ? (
-                <Text style={styles.input}>
-                  {first_name} {lastName}
-                </Text>
-              ) : (
-                <Text style={styles.input}>Privé account</Text>
-              )}
-            </View>
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelContainer}>
+                    <Ionicons
+                      name="person-outline"
+                      size={16}
+                      color={COLORS.red}
+                      style={styles.labelIcon}
+                    />
+                    <Text style={styles.inputLabel}>Naam</Text>
+                  </View>
+                  {isPublic || userId === profileUserId || !profileUserId ? (
+                    <Text style={styles.input}>
+                      {first_name} {lastName}
+                    </Text>
+                  ) : (
+                    <Text style={styles.input}>Privé account</Text>
+                  )}
+                </View>
 
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Ionicons
-                  name="mail-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>E-mail</Text>
-              </View>
-              {isPublic || (userId === profileUserId || !profileUserId) ? (
-                <Text style={styles.input}>{email}</Text>
-              ) : (
-                <Text style={styles.input}>Privé account</Text>
-              )}
-            </View>
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelContainer}>
+                    <Ionicons
+                      name="mail-outline"
+                      size={16}
+                      color={COLORS.red}
+                      style={styles.labelIcon}
+                    />
+                    <Text style={styles.inputLabel}>E-mail</Text>
+                  </View>
+                  {isPublic || userId === profileUserId || !profileUserId ? (
+                    <Text style={styles.input}>{email}</Text>
+                  ) : (
+                    <Text style={styles.input}>Privé account</Text>
+                  )}
+                </View>
 
                 <View style={styles.inputGroup}>
                   <View style={styles.labelContainer}>
@@ -243,8 +284,19 @@ export default function PublicProfileScreen() {
                   </TouchableOpacity>
                 )}
               </View>
-            </TouchableWithoutFeedback>
-          </Container>
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>POSTS</Text>
+                {loadingPosts ? (
+                  <ActivityIndicator size="large" color={COLORS.red} />
+                ) : (
+                  <PostList
+                    posts={userPosts}
+                    showEdit={userId === (profileUserId || userId)}
+                  />
+                )}
+              </View>
+            </Container>
+          </TouchableWithoutFeedback>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -261,10 +313,9 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: "center",
+    minHeight: "100%",
   },
   innerContainer: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
@@ -382,5 +433,19 @@ const styles = StyleSheet.create({
   },
   statusUnavailable: {
     color: COLORS.error,
+  },
+  section: {
+    width: "100%",
+    marginTop: 30,
+    paddingHorizontal: 20,
+  },
+  noPostsText: {
+    textAlign: "center",
+    color: COLORS.text,
+    marginVertical: 20,
+  },
+  debugBorder: {
+    borderWidth: 1,
+    borderColor: "red",
   },
 });
