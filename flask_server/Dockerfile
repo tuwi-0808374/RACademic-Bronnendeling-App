@@ -5,15 +5,13 @@ WORKDIR /flask_server
 COPY ./ /flask_server/
 
 RUN pip install -r requirements.txt
-
-COPY . .
+RUN python3 lib/databasegenerator.py
 
 ENV FLASK_APP=main.py
 
 EXPOSE 5000
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
 
 # Stappen voor om alleen deze dockerfile te draaien:
 # Dit uitvoeren als je in de map bent waar dit bestand staat
