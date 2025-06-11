@@ -4,6 +4,7 @@ import ColorPicker from "react-native-wheel-color-picker";
 import {useRouter} from "expo-router";
 import { useUser } from '@/constants/get_user_id';
 import {getApiBaseUrl} from "@/constants/get_ip";
+import {Ionicons} from "@expo/vector-icons";
 const API_BASE_URL = getApiBaseUrl();
 
 
@@ -14,6 +15,7 @@ const COLORS = {
     textLight: '#FFFFFF',
     inputLine: '#555555',
     placeholderText: '#666666',
+    error: "#D32F2F",
 };
 
 // Bronnen
@@ -26,9 +28,9 @@ const COLORS = {
 export default function Create_post() {
     const [title, setTitle] = useState('');
     const [color, setColor] = useState('');
-    const [data, setData] = useState([]);
     const router = useRouter();
-    const { userId, loading } = useUser();
+    const [errorMessage, setErrorMessage] = useState("");
+
 
 
 
@@ -36,7 +38,7 @@ export default function Create_post() {
     const Createtag = async () => {
         if (title && color) {
             try {
-                console.warn(title, color, );
+                console.warn(title, color);
                 const url = `${API_BASE_URL}/tag`
                 let result = await fetch(url, {
                     method: 'POST',
@@ -46,7 +48,7 @@ export default function Create_post() {
                 result = await result.json();
                 if (result) {
                     console.warn("tag is saved successfully.")
-                    router.push('/homepage')
+                    router.push('/posts')
                 }
 
             } catch (error) {
@@ -55,7 +57,8 @@ export default function Create_post() {
             }
         }
         if (!title || !color) {
-            console.error('Vul alle velden in.');
+            setErrorMessage("Vul beide velden in!");
+            console.log("Please fill in both fields.");
             return;
         }
     }
@@ -87,9 +90,18 @@ export default function Create_post() {
                             <ColorPicker
                             onColorChange={(color) => setColor(color)}
                             />
-
-
                         </View>
+
+                        {errorMessage && (
+                            <View style={styles.errorContainer}>
+                                <Ionicons
+                                    name="alert-circle-outline"
+                                    size={16}
+                                    color={COLORS.error}
+                                />
+                                <Text style={styles.errorText}>{errorMessage}</Text>
+                            </View>
+                        )}
 
 
 
@@ -174,6 +186,17 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     scrollView:{
-
-    }
+    },
+    errorContainer: {
+        paddingVertical: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: -20,
+        marginBottom: 20,
+    },
+    errorText: {
+        color: COLORS.error,
+        marginLeft: 5,
+        fontSize: 14,
+    },
 })

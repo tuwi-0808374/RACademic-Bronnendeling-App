@@ -14,6 +14,7 @@ import { CheckBox } from "@/components/input";
 import {useRouter} from "expo-router";
 import { useUser } from '@/constants/get_user_id';
 import {getApiBaseUrl} from "@/constants/get_ip";
+import {Ionicons} from "@expo/vector-icons";
 const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
@@ -23,6 +24,7 @@ const COLORS = {
     textLight: '#FFFFFF',
     inputLine: '#555555',
     placeholderText: '#666666',
+    error: "#D32F2F",
 };
 
 // Bronnen
@@ -39,6 +41,7 @@ export default function Create_post() {
     const [data, setData] = useState([]);
     const router = useRouter();
     const { userId, loading } = useUser();
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         fetch(`${API_BASE_URL}/tags`)
@@ -51,14 +54,15 @@ export default function Create_post() {
 
     //
     const CreatePost = async () => {
-        if (!loading && userId) {
+        if (!loading && userId && title && content && tagid) {
+            console.log(tagid)
             try {
                 console.warn(title, content, tagid);
                 const url = `${API_BASE_URL}/posts`
                 let result = await fetch(url, {
                     method: 'POST',
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({title: title, content: content, tag_ids: tagid,user_id: userId}),
+                    body: JSON.stringify({title: title, content: content, tag_ids: tagid, user_id: userId}),
                 });
                 result = await result.json();
                 if (result) {
@@ -69,6 +73,12 @@ export default function Create_post() {
             } catch (error) {
                 console.error('API request failed:', error);
             }
+        }
+        if (!title || !content || !tagid) {
+            setErrorMessage("Vul beide velden in!");
+            console.log("Please fill in both fields.");
+            console.log(tagid)
+            return;
         }
     }
 
@@ -115,6 +125,17 @@ export default function Create_post() {
                                         onChange={setTagid}
                                         />
                             </View>
+
+                            {errorMessage && (
+                                <View style={styles.errorContainer}>
+                                    <Ionicons
+                                        name="alert-circle-outline"
+                                        size={16}
+                                        color={COLORS.error}
+                                    />
+                                    <Text style={styles.errorText}>{errorMessage}</Text>
+                                </View>
+                            )}
 
                             <View style={styles.create}>
                                 <TouchableOpacity onPress={CreatePost}>
@@ -198,6 +219,17 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     scrollView:{
-
-    }
+    },
+    errorContainer: {
+        paddingVertical: 20,
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: -20,
+        marginBottom: 20,
+    },
+    errorText: {
+        color: COLORS.error,
+        marginLeft: 5,
+        fontSize: 14,
+    },
 })
