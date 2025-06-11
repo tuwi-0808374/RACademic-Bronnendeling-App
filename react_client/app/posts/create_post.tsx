@@ -135,12 +135,15 @@ export default function Create_post() {
                             </View>
                             <View style={styles.input}>
                                 <Text style={styles.inputlabel}>Content van de bron</Text>
-                                <TouchableOpacity onPress={addTab} style={[styles.button,{backgroundColor:'green'}]}>
-                                    <Text>tab</Text>
-                                </TouchableOpacity>
-                                <View style={{flexDirection:'row'}}>
-                                    <Text>maxCharacters: </Text>
-                                    <Text style={lengthCounter >= 0 ? {color: 'black'}:{color:'red'}}>{lengthCounter}</Text>
+
+                                <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                                    <TouchableOpacity onPress={addTab} style={[styles.button,{backgroundColor:'green',width:'25%',marginBottom:10}]}>
+                                        <Text style={{color:'white'}}> indent toevoegen </Text>
+                                    </TouchableOpacity>
+                                    <View style={{flexDirection: 'row',alignItems:'center', padding: '1%'}}>
+                                        <Text>maxCharacters: </Text>
+                                        <Text style={lengthCounter >= 0 ? {color: 'black'}:{color:'red'}}>{lengthCounter}</Text>
+                                    </View>
                                 </View>
                                 <TextInput
                                     multiline={true}
