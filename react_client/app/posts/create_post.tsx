@@ -127,7 +127,6 @@ export default function Create_post() {
                                     <Text>tab</Text>
                                 </TouchableOpacity>
                                 <View>
-
                                     <Text style={lengthCounter >= 0 ? {color: 'black'}:{color:'red'}}>{lengthCounter}</Text>
                                 </View>
                                 <TextInput

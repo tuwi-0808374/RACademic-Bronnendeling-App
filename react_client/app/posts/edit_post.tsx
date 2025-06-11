@@ -27,7 +27,23 @@ export default function editpost() {
     const [tagData, setTagData] = useState([]);
     const [selected_tags, setSelectedTagId] = useState([]);
     const router = useRouter();
+    const [lengthCounter, setLengthCounter] = useState(0)
+    const [selection, setSelection] = useState({ start: 0, end: 0 });
+    // chatgpt heeft hier geholpen want ik kon nergens anders vinden hoe je tabs kan toevoegen in text inputs
+    const addTab = () => {
+        const start = selection.start;
+        const end = selection.end;
 
+        // Insert 4 spaces at the cursor position
+        const newText = content.slice(0, start) + '    ' + content.slice(end);
+
+        setContent(newText);
+
+        // Move cursor to right after inserted spaces
+        const newPos = start + 4;
+        setSelection({ start: newPos, end: newPos });
+
+    };
     useEffect(() => {
         fetch(`${API_BASE_URL}/tags_by_post_id/${post_id}`)
             .then(res => res.json())
@@ -87,7 +103,14 @@ export default function editpost() {
             router.push('/posts/user_posts');
         }
     }
-
+    useEffect(() => {
+        setLengthCounter(1000 - content.length)
+    })
+    const handleEditRequest = () => {
+        if (lengthCounter >= 0) {
+            EditPost();
+        }
+    }
 
 
     return (
@@ -113,18 +136,34 @@ export default function editpost() {
 
                         <View style={styles.input}>
                             <Text style={styles.inputLabel}>Content</Text>
+                            <TouchableOpacity onPress={addTab} style={[styles.button,{backgroundColor:'green'}]}>
+                                    <Text>tab</Text>
+                            </TouchableOpacity>
+                            <View>
+                                <Text style={lengthCounter >= 0 ? {color: 'black'}:{color:'red'}}>{lengthCounter}</Text>
+                            </View>
                             <TextInput
                                 multiline={true}
-                                maxLength={1000}
-                                style={styles.inputControlTitel}
+                                numberOfLines={15}
+                                style={[styles.inputControlContent,{ minHeight: 150, maxHeight: 500,}]}
+                                placeholder="print(Hello World)"
                                 placeholderTextColor={COLORS.placeholderText}
                                 value={content}
                                 onChangeText={(text)=> setContent(text)}
+                                onSelectionChange={({ nativeEvent: { selection } }) => setSelection(selection)}
+                                selection={selection}
+                                onKeyPress={({ nativeEvent }) => {
+                                    if (nativeEvent.key === 'Tab') {
+                                        // @ts-ignore
+                                        nativeEvent.preventDefault();
+                                        addTab();
+                                    }
+                                }}
                             />
                         </View>
 
 
-                        <View style={styles.input}>
+                        <View>
                             <Text style={styles.inputLabel}>Tags</Text>
                             <CheckBox
                                 options={tagData}
@@ -134,7 +173,7 @@ export default function editpost() {
                         </View>
 
                         <View style={styles.create}>
-                            <TouchableOpacity onPress={EditPost}>
+                            <TouchableOpacity onPress={handleEditRequest}>
                                 <View style={styles.button}>
                                     <Text style={styles.buttonText}>Save post</Text>
                                 </View>

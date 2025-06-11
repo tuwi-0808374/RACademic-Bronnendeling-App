@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    SafeAreaView,
+    TouchableOpacity,
+    ScrollView,
+    TouchableWithoutFeedback
+} from 'react-native';
 import {getApiBaseUrl} from "@/constants/get_ip";
 import { useUser } from '@/constants/get_user_id';
 import {useRouter} from "expo-router";
@@ -58,7 +67,7 @@ export default function UserPosts () {
                     </View>
 
                 <ScrollView style={styles.scrollview} >
-                    <TouchableOpacity>
+                    <TouchableWithoutFeedback>
                     <View style={styles.header}>
                         {postdata.map((post) => (
                             <View key={post['id']} style={styles.postbox} >
@@ -78,7 +87,7 @@ export default function UserPosts () {
                             </View>
                         ))}
                     </View>
-                    </TouchableOpacity>
+                    </TouchableWithoutFeedback>
                 </ScrollView>
 
 
