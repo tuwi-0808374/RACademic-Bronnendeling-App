@@ -28,7 +28,7 @@ Wij zijn team **Kiwi** en ons team bestaat uit:
    git clone https://github.com/Rac-Software-Development/wp4-2025-react-1d2-kiwi-wip.git
    cd wp4-2025-react-1d2-kiwi-wip
    ```
-3. ** Bouw en start de applicatie:
+3. **Bouw en start de applicatie**:
   ```bash
   docker-compose up --build -d
   ```
