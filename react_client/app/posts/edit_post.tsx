@@ -136,16 +136,19 @@ export default function editpost() {
 
                         <View style={styles.input}>
                             <Text style={styles.inputLabel}>Content</Text>
-                            <TouchableOpacity onPress={addTab} style={[styles.button,{backgroundColor:'green'}]}>
-                                    <Text>tab</Text>
-                            </TouchableOpacity>
-                            <View>
-                                <Text style={lengthCounter >= 0 ? {color: 'black'}:{color:'red'}}>{lengthCounter}</Text>
+                            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                                    <TouchableOpacity onPress={addTab} style={[styles.button,{backgroundColor:'green',width:'25%',marginBottom:10}]}>
+                                        <Text style={{color:'white'}}> indent toevoegen </Text>
+                                    </TouchableOpacity>
+                                <View style={{flexDirection: 'row',alignItems:'center', padding: '1%'}}>
+                                    <Text>maxCharacters: </Text>
+                                    <Text style={lengthCounter >= 0 ? {color: 'black'}:{color:'red'}}>{lengthCounter}</Text>
+                                </View>
                             </View>
                             <TextInput
                                 multiline={true}
                                 numberOfLines={15}
-                                style={[styles.inputControlContent,{ minHeight: 150, maxHeight: 500,}]}
+                                style={styles.inputControlContent}
                                 placeholder="print(Hello World)"
                                 placeholderTextColor={COLORS.placeholderText}
                                 value={content}
@@ -160,6 +163,7 @@ export default function editpost() {
                                     }
                                 }}
                             />
+
                         </View>
 
 

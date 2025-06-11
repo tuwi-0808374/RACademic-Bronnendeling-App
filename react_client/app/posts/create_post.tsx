@@ -119,20 +119,22 @@ export default function Create_post() {
                                 <Text style={{ fontSize: 12 }}># Header</Text>
                                 <Text style={{ fontSize: 12 }}>*italic*, **bold**</Text>
                                 <Text style={{ fontSize: 12 }}>- List item</Text>
-                                <Text style={{ fontSize: 12 }}>```code```</Text>
+                                <Text>[ titel ]( Hier jouw link )</Text>
+                                <Text style={{ fontSize: 12 }}>```code``` of met indents</Text>
                             </View>
                             <View style={styles.input}>
                                 <Text style={styles.inputlabel}>Content van de bron</Text>
                                 <TouchableOpacity onPress={addTab} style={[styles.button,{backgroundColor:'green'}]}>
                                     <Text>tab</Text>
                                 </TouchableOpacity>
-                                <View>
+                                <View style={{flexDirection:'row'}}>
+                                    <Text>maxCharacters: </Text>
                                     <Text style={lengthCounter >= 0 ? {color: 'black'}:{color:'red'}}>{lengthCounter}</Text>
                                 </View>
                                 <TextInput
                                     multiline={true}
                                     numberOfLines={15}
-                                    style={[styles.inputcontrolcontent,{ minHeight: 150, maxHeight: 500,}]}
+                                    style={styles.inputcontrolcontent}
                                     placeholder="print(Hello World)"
                                     placeholderTextColor={COLORS.placeholderText}
                                     value={content}
