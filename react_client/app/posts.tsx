@@ -26,8 +26,7 @@ function Posts() {
   const local = useLocalSearchParams();
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && userId) {
+    useEffect(() => {
       const fetchPosts = async () => {
         try {
           const params = new URLSearchParams();
@@ -46,7 +45,11 @@ function Posts() {
           }
 
           const queryString = params.toString();
-          const url= queryString ? `${API_BASE_URL}/posts/${userId}?${queryString}` : `${API_BASE_URL}/posts/${userId}`;
+          let id = userId
+          if (!userId){
+            id = 1;
+          }
+          const url= queryString ? `${API_BASE_URL}/posts/${id}?${queryString}` : `${API_BASE_URL}/posts/${id}`;
           const res = await fetch(url);
           const data = await res.json();
           setPosts(data.data);
@@ -55,19 +58,51 @@ function Posts() {
         }
       };
       fetchPosts();
-    }
-  }, [userId, loading]);
-  if (!userId) {
+      console.log(456)
+  }, []);
 
-    return (
-        <View style={[styles.container,{justifyContent:"center", alignItems:'center'}]}>
-          <Text>Please log in to see posts.</Text>
-        </View>
-    )
-  }
-  if (loading) {
-    return <Text>Loading user info...</Text>;
-  }
+  // useEffect(() => {
+  //   if (!loading && userId) {
+  //     const fetchPosts = async () => {
+  //       try {
+  //         const params = new URLSearchParams();
+  //         if (local.search_query && local.search_query !== 'undefined') {
+  //           const search = Array.isArray(local.search_query)
+  //               ? local.search_query.join(',')
+  //               : local.search_query;
+  //           params.append('search_query', search);
+  //         }
+
+  //         if (local.tag_ids && local.tag_ids !== 'undefined') {
+  //           const tags = Array.isArray(local.tag_ids)
+  //               ? local.tag_ids.join(',')
+  //               : local.tag_ids;
+  //           params.append('tag_ids', tags);
+  //         }
+
+  //         const queryString = params.toString();
+  //         const url= queryString ? `${API_BASE_URL}/posts/${userId}?${queryString}` : `${API_BASE_URL}/posts/${userId}`;
+  //         const res = await fetch(url);
+  //         const data = await res.json();
+  //         setPosts(data.data);
+  //       } catch (error) {
+  //         console.error('API request failed:', error);
+  //       }
+  //     };
+  //     fetchPosts();
+  //   }
+  // }, [userId, loading]);
+  // if (!userId) {
+
+  //   return (
+  //       <View style={[styles.container,{justifyContent:"center", alignItems:'center'}]}>
+  //         <Text>Please log in to see posts.</Text>
+  //       </View>
+  //   )
+  // }
+  // if (loading) {
+  //   return <Text>Loading user info...</Text>;
+  // }
 
   if (!posts) {
     return (
