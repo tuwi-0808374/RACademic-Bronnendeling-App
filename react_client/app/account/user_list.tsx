@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaVie
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
-import UserBadges from '../../components/user_badges';
 import { getApiBaseUrl } from '../../constants/get_ip';
 
 
@@ -151,10 +150,11 @@ export default function UserListScreen() {
     <SafeAreaView style={{ height: '100%' }}>
       <StatusBar />
       <ScrollView>
+        <View style={Platform.OS ==='web'? {width:'50%', alignSelf:'center'} : {width: '100%'}}>
         <View>
           <Text style={{ fontSize: 24, fontWeight: 'bold', margin: 16 }}>Gebruikers lijst</Text>
         </View>
-        {isAdmin && ( 
+        {isAdmin ? (
           <TouchableOpacity 
             style={styles.button_darkgreen}
             onPress={() =>
@@ -166,7 +166,7 @@ export default function UserListScreen() {
               Gebruiker toevoegen
             </Text>
           </TouchableOpacity>
-        )}
+        ) : null}
         
         {users.map((user) => (
           <TouchableWithoutFeedback
@@ -279,6 +279,7 @@ export default function UserListScreen() {
             </View>
           </TouchableWithoutFeedback>
         ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

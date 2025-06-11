@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity ,View} from "react-native";
+import {Platform, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import React, { useEffect, useState } from "react";
 import { getApiBaseUrl } from '@/constants/get_ip';
 const API_BASE_URL = getApiBaseUrl();
@@ -24,19 +24,20 @@ function TagContainer({ visible,selectedTags, setSelectedTags }) {
     if (!visible) return null;
 
     return (
-        <View style={styles.containerPostTags}>
+        <View style={[styles.containerPostTags, Platform.OS === 'web' ? {width: "60%"} : {width: "95%"}]}>
             {postTags.map((tag) => (
                 <TouchableOpacity
                     key={tag.id}
-                    onPress={() => toggleTag(tag.id)}
+                    onPress={() => toggleTag(tag['id'])}
                     style={[
                         styles.tag,
-                        selectedTags[tag.id] ? styles.tagSelected : null,
+                        Platform.OS === 'web' ? {minWidth: "15%"} : {minWidth: "20%",},
+                        selectedTags[tag['id']] ? styles.tagSelected : {backgroundColor: tag['color']},
                     ]}
                 >
                     <Text
                         style={
-                            selectedTags[tag.id]
+                            selectedTags[tag['id']]
                                 ? styles.tagTextSelected
                                 : styles.tagText
                         }
@@ -52,11 +53,15 @@ function TagContainer({ visible,selectedTags, setSelectedTags }) {
 const styles = StyleSheet.create({
     containerPostTags: {
         position: "absolute",
+        borderWidth: 1,
+        borderColor:'grey',
+        alignContent: 'flex-start',
+        justifyContent: 'flex-start',
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
         top: 75,
-        width: "85%",
+
         padding: 5,
         borderRadius: 25,
         elevation: 999,
@@ -68,9 +73,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "white",
         padding: 8,
-        borderRadius: 10,
+        borderRadius: 25,
         marginVertical: 3,
-        width: "25%",
+        marginHorizontal: 3,
+
     },
     tagSelected: {
         backgroundColor: "orange",

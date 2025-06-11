@@ -16,8 +16,8 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import UserBadges from "../../components/user_badges";
+import {Ionicons} from '@expo/vector-icons';
+import UserBadges from "../../components/badges/user_badges";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { useFocusEffect } from "expo-router";
 import Container from "../../components/general/Container";
@@ -178,41 +178,41 @@ export default function PublicProfileScreen() {
                     : `PROFIEL VAN ${username}`}
                 </Text>
 
-                <View style={styles.inputGroup}>
-                  <View style={styles.labelContainer}>
-                    <Ionicons
-                      name="person-outline"
-                      size={16}
-                      color={COLORS.red}
-                      style={styles.labelIcon}
-                    />
-                    <Text style={styles.inputLabel}>Naam</Text>
-                  </View>
-                  {isPublic ? (
-                    <Text style={styles.input}>
-                      {first_name} {lastName}
-                    </Text>
-                  ) : (
-                    <Text style={styles.input}>Privé account</Text>
-                  )}
-                </View>
+            <View style={styles.inputGroup}>
+              <View style={styles.labelContainer}>
+                <Ionicons
+                  name="person-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>Naam</Text>
+              </View>
+              {isPublic || (userId === profileUserId || !profileUserId) ? (
+                <Text style={styles.input}>
+                  {first_name} {lastName}
+                </Text>
+              ) : (
+                <Text style={styles.input}>Privé account</Text>
+              )}
+            </View>
 
-                <View style={styles.inputGroup}>
-                  <View style={styles.labelContainer}>
-                    <Ionicons
-                      name="mail-outline"
-                      size={16}
-                      color={COLORS.red}
-                      style={styles.labelIcon}
-                    />
-                    <Text style={styles.inputLabel}>E-mail</Text>
-                  </View>
-                  {isPublic ? (
-                    <Text style={styles.input}>{email}</Text>
-                  ) : (
-                    <Text style={styles.input}>Privé account</Text>
-                  )}
-                </View>
+            <View style={styles.inputGroup}>
+              <View style={styles.labelContainer}>
+                <Ionicons
+                  name="mail-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>E-mail</Text>
+              </View>
+              {isPublic || (userId === profileUserId || !profileUserId) ? (
+                <Text style={styles.input}>{email}</Text>
+              ) : (
+                <Text style={styles.input}>Privé account</Text>
+              )}
+            </View>
 
                 <View style={styles.inputGroup}>
                   <View style={styles.labelContainer}>

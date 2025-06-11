@@ -5,7 +5,7 @@ import { getApiBaseUrl } from "@/constants/get_ip";
 
 const API_BASE_URL = getApiBaseUrl();
 
-export default function TagBar() {
+export default function TagBar({searchQuery}) {
     const[tags, setTags] = useState([])
     const router = useRouter();
 
@@ -21,13 +21,15 @@ export default function TagBar() {
         router.push({
             pathname: '/posts',
             params: {
+                search_query: searchQuery,
                 tag_ids: tagId,
             },
         });
     };
     return (
+        <View >
         <ScrollView horizontal={true}>
-            <View style={styles.contentContainer}>
+            <View style={[styles.contentContainer,{width:'100%',paddingHorizontal:10}]}>
                 {tags.map((tag, i) => (
                     <TouchableOpacity
                         key={i}
@@ -40,21 +42,22 @@ export default function TagBar() {
                 ))}
             </View>
         </ScrollView>
+        </View>
     );
 }
 const styles = StyleSheet.create({
     contentContainer: {
         paddingTop: 10,
         paddingBottom: 10,
-        // moet nog shadow voor presentatie toevoegen
         flexDirection: 'row',
         gap: 8,
         backgroundColor:'#dfdfdf',
     },
     tagContainer: {
-        width: 90,
+        minWidth: 90,
         height: 30,
         borderRadius: 25,
+        paddingHorizontal: 5,
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',

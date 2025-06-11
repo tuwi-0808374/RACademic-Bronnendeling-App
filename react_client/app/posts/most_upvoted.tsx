@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
-import FavoriteButton from '../../components/posts/FavoriteButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from 'jwt-decode';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import {getApiBaseUrl} from "@/constants/get_ip";
 const API_BASE_URL = getApiBaseUrl();
+
+// Bronnen:
+// https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples
+// https://jasonwatmore.com/post/2020/01/27/react-fetch-http-get-request-examples
+// https://www.youtube.com/watch?v=EcRFYF4B3IQ
 
 export default function MostUpvoted() {
   const router = useRouter();
@@ -29,30 +31,6 @@ export default function MostUpvoted() {
         fetchPosts(id);
         return;
       }
-
-    //   const fetchProfile = async () => {
-    //   try {
-    //     const token = await AsyncStorage.getItem("authToken");
-    //     if (!token) {
-    //       console.log("Geen token gevonden.");
-    //       return;
-    //     }
-
-    //     const decoded = jwt_decode<JwtPayload>(token);
-    //     const currentUserId = decoded.user_id;
-
-    //     if (!currentUserId) {
-    //       console.error("User ID niet gevonden in token:", decoded);
-    //       return;
-    //     }
-
-    //     setUserId(currentUserId);
-    //   } catch (error) {
-    //     console.error("Error loading user ID:", error);
-    //   }
-    // }
-    // fetchProfile();
-    // fetchPosts();
   }, []);
 
     const fetchPosts = async (userId: Number = 0) => {
@@ -72,10 +50,6 @@ export default function MostUpvoted() {
       }
     };  
 
-  // https://jasonwatmore.com/post/2020/02/01/react-fetch-http-post-request-examples
-  // https://jasonwatmore.com/post/2020/01/27/react-fetch-http-get-request-examples
-  // https://www.youtube.com/watch?v=EcRFYF4B3IQ
-
   return (
             <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
                 <View style={styles.container}>
@@ -94,12 +68,6 @@ export default function MostUpvoted() {
                             <View key={post['id']} style={styles.postbox} >
                                 <Text style={styles.textTitle}>{post['title']}</Text>
                                 <Text style={styles.textContent}>{post['content']}</Text>
-
-                                {/* <TouchableOpacity onPress={() => router.push({ pathname: "/posts/edit_post", params: { post_id: post['id']} })}>
-                                    <View style={styles.button}>
-                                        <Text style={styles.buttontext}>edit post</Text>
-                                    </View>
-                                </TouchableOpacity> */}
                             </View>
                         ))}
                     </View>

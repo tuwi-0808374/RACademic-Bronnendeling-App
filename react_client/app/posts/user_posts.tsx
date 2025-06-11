@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
-import {useRouter} from "expo-router";
-import { useUser } from '@/constants/get_user_id';
+import {
+    View,
+    Text,
+    TextInput,
+    StyleSheet,
+    SafeAreaView,
+    TouchableOpacity,
+    ScrollView,
+    TouchableWithoutFeedback
+} from 'react-native';
 import {getApiBaseUrl} from "@/constants/get_ip";
+import { useUser } from '@/constants/get_user_id';
+import {useRouter} from "expo-router";
 const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
@@ -39,17 +48,26 @@ export default function UserPosts () {
         }
     }, []);
 
+    if (!postdata) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Your posts</Text>
+                <Text style={styles.textContent}>Geen posts gevonden</Text>
+            </View>
+        )
+    }
+
 
         return (
             <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
                 <View style={styles.container}>
 
                     <View style={styles.header}>
-                        <Text style={styles.title}>Your posts</Text>
+                        <Text style={styles.title}>Jouw posts</Text>
                     </View>
 
-
                 <ScrollView style={styles.scrollview} >
+                    <TouchableWithoutFeedback>
                     <View style={styles.header}>
                         {postdata.map((post) => (
                             <View key={post['id']} style={styles.postbox} >
@@ -61,10 +79,17 @@ export default function UserPosts () {
                                         <Text style={styles.buttontext}>edit post</Text>
                                     </View>
                                 </TouchableOpacity>
+                                <TouchableOpacity onPress={() => router.push({ pathname: "/posts/post_details", params: { post_id: post['id']} })}>
+                                    <View style={styles.button}>
+                                        <Text style={styles.buttontext}>post details</Text>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                         ))}
                     </View>
+                    </TouchableWithoutFeedback>
                 </ScrollView>
+
 
                 </View>
             </SafeAreaView>

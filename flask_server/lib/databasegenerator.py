@@ -296,37 +296,38 @@ class DatabaseGenerator:
     # Insert initial posts into the database
     def insert_initial_posts(self):
         posts = [
-            {
-                "title": "Eerste post!",
-                "content": "Dit is de eerste post",
-                "user_id": 1,
-                "posted_date": 1681100000,
-            },
-            {
-                "title": "Gerapporteerde post",
-                "content": "Dit bericht is gerapporteerd",
-                "user_id": 5,
-                "posted_date": 1681200000,
-            },
-            {
-                "title": "markdown test",
-                "content": """This is a markdown *test* ![screamingkiwi](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzL-qI5ImbMMkm9kZoZaIauxJDQ_8djZRpPWS9mVd7YASM2p0CdDe6aHcCKdl4OFnc_54&usqp=CAU)
+            {"title": "Hello World in Python",
+             "content": "Learn how to print your first message in Python with `print(\"Hello, world!\")`", "user_id": 2,
+             "posted_date": 1681500000},
+            {"title": "Understanding Pointers in C++",
+             "content": "Pointers let you manipulate memory directly. Use `int* ptr = &x;` to get started.",
+             "user_id": 3, "posted_date": 1681600000},
+            {"title": "C# Async Programming",
+             "content": "Async and await in C# are great for I/O-bound operations. Example: `await HttpClient.GetAsync(url);`",
+             "user_id": 4, "posted_date": 1681700000},
+            {"title": "SOLID Principles in OOP",
+             "content": "The SOLID principles help you write maintainable object-oriented code. Start with the Single Responsibility Principle.",
+             "user_id": 5, "posted_date": 1681800000},
+            {"title": "Python Decorators Explained",
+             "content": "Use decorators like `@login_required` to add functionality to functions without changing them.",
+             "user_id": 2, "posted_date": 1681900000},
+            {"title": "Dependency Injection in C#",
+             "content": "Improve testability and maintainability in C# by using built-in dependency injection in ASP.NET Core.",
+             "user_id": 6, "posted_date": 1682000000},
+            {"title": "Markdown and Code Snippets", "content":
+            """programming test:
+```python
+        def hello():
+            print("Hello, world!")
 
-Markdown is cool""",
-                "user_id": 6,
-                "posted_date": 1681300000,
-            },
-            {
-                "title": "OOP en design patterns",
-                "content": "Alles over OOP en design patterns",
-                "user_id": 7,
-                "posted_date": 1681400000,
-            },
-        ]
-        list_of_parameters = [
-            (post["title"], post["content"], post["user_id"], post["posted_date"])
-            for post in posts
-        ]
+        hello()
+```
+einde test
+            """,
+             "user_id": 1, "posted_date": 1682100000},
+            ]
+        list_of_parameters = [(post["title"], post["content"], post["user_id"], post["posted_date"]) for post in
+                              posts]
         create_statement = """INSERT INTO posts (title, content, user_id, posted_date) VALUES (?, ?, ?, ?)"""
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
         print("✅ Initial posts inserted")
@@ -466,6 +467,12 @@ Markdown is cool""",
             {"title": "c++", "color": "#32CD32"},
             {"title": "oop", "color": "#FF4500"},
             {"title": "c#", "color": "#800080"},
+            {"title": "async", "color": "#00CED1"},
+            {"title": "decorators", "color": "#FF69B4"},
+            {"title": "solid", "color": "#1E90FF"},
+            {"title": "markdown", "color": "#A9A9A9"},
+            {"title": "dependency-injection", "color": "#00BFFF"},
+            {"title": "code-snippets", "color": "#FF8C00"}
         ]
         list_of_parameters = [(tags["title"], tags["color"]) for tags in tags]
         create_statement = """INSERT INTO tags (title, color) VALUES (?, ?)"""
@@ -552,13 +559,22 @@ Markdown is cool""",
     def insert_initial_post_tags(self):
         post_tags = [
             {"post_id": 1, "tag_id": 1},
-            {"post_id": 1, "tag_id": 2},
+            {"post_id": 2, "tag_id": 2},
             {"post_id": 2, "tag_id": 3},
             {"post_id": 3, "tag_id": 4},
+            {"post_id": 3, "tag_id": 5},
+            {"post_id": 4, "tag_id": 3},
+            {"post_id": 4, "tag_id": 7},
+            {"post_id": 5, "tag_id": 1},
+            {"post_id": 5, "tag_id": 6},
+            {"post_id": 6, "tag_id": 4},
+            {"post_id": 6, "tag_id": 9},
+            {"post_id": 7, "tag_id": 8},
+            {"post_id": 7, "tag_id": 10},
+            {"post_id": 7, "tag_id": 1},
         ]
-        list_of_parameters = [
-            (post_tags["post_id"], post_tags["tag_id"]) for post_tags in post_tags
-        ]
+
+        list_of_parameters = [(post_tags["post_id"], post_tags["tag_id"]) for post_tags in post_tags]
         create_statement = """INSERT INTO post_tags (post_id, tag_id) VALUES (?, ?)"""
         self.__execute_many_transaction_statement(create_statement, list_of_parameters)
         print("✅ Initial post tags inserted")

@@ -49,3 +49,11 @@ class Tag:
         if post_ids:
             return post_ids
         return False
+
+    def post_create_tag(self, data):
+        query = "INSERT INTO tags (title, color) VALUES (?,?)"
+        result = self.cursor.execute(query, (data["title"], data["color"]))
+        self.con.commit()
+        if result:
+            return True
+        return False

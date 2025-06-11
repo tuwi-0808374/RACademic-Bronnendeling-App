@@ -11,14 +11,16 @@ import {
   Platform
 } from 'react-native';
 import FavoriteButton from '@/components/posts/FavoriteButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import jwt_decode from 'jwt-decode';
 import {getApiBaseUrl} from "@/constants/get_ip";
 import {useRouter} from "expo-router";
 import RateButtons from "@/components/posts/RateButtons";
 import { useUser } from '@/constants/get_user_id';
 import {Ionicons} from '@expo/vector-icons';
 const API_BASE_URL = getApiBaseUrl();
+
+// Bronnen:
+// https://stackoverflow.com/questions/62917259/how-to-pass-an-array-of-numbers-with-typescript-and-react
+// https://www.dhiwise.com/post/react-usestate-append-to-array-a-simple-guide
 
 export default function favourites() {
   const [posts, setPosts] = useState([]);
@@ -54,8 +56,6 @@ export default function favourites() {
 
   };
 
-  // https://stackoverflow.com/questions/62917259/how-to-pass-an-array-of-numbers-with-typescript-and-react
-  // https://www.dhiwise.com/post/react-usestate-append-to-array-a-simple-guide
   const [undoID, setundoID] = useState<number[]>([]);
 
   useEffect(() => {

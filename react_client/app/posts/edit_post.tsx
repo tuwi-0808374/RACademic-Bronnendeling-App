@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Platform, TouchableWithoutFeedback } from 'react-native';
 import {CheckBox} from "@/components/input";
 import {useLocalSearchParams, useRouter} from "expo-router";
 import {getApiBaseUrl} from "@/constants/get_ip";
@@ -27,7 +27,23 @@ export default function editpost() {
     const [tagData, setTagData] = useState([]);
     const [selected_tags, setSelectedTagId] = useState([]);
     const router = useRouter();
+    const [lengthCounter, setLengthCounter] = useState(0)
+    const [selection, setSelection] = useState({ start: 0, end: 0 });
+    // chatgpt heeft hier geholpen want ik kon nergens anders vinden hoe je tabs kan toevoegen in text inputs
+    const addTab = () => {
+        const start = selection.start;
+        const end = selection.end;
 
+        // Insert 4 spaces at the cursor position
+        const newText = content.slice(0, start) + '    ' + content.slice(end);
+
+        setContent(newText);
+
+        // Move cursor to right after inserted spaces
+        const newPos = start + 4;
+        setSelection({ start: newPos, end: newPos });
+
+    };
     useEffect(() => {
         fetch(`${API_BASE_URL}/tags_by_post_id/${post_id}`)
             .then(res => res.json())
@@ -87,71 +103,100 @@ export default function editpost() {
             router.push('/posts/user_posts');
         }
     }
-
+    useEffect(() => {
+        setLengthCounter(1000 - content.length)
+    })
+    const handleEditRequest = () => {
+        if (lengthCounter >= 0) {
+            EditPost();
+        }
+    }
 
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>Edit Post</Text>
-                </View>
+            <ScrollView>
+                <View style={[styles.container, Platform.OS ==='web'? {width:'50%', alignSelf:'center'} : {width: '100%'}]}>
+                    <View style={styles.header}>
+                        <Text style={styles.title}>Edit Post</Text>
+                    </View>
 
-                <ScrollView>
-                <View style={styles.form}>
-                    <View style={styles.input}>
-                        <Text style={styles.inputlabel}>Titel</Text>
+
+                    <View style={styles.form}>
+                        <View style={styles.input}>
+                            <Text style={styles.inputLabel}>Titel</Text>
+                                <TextInput
+                                    maxLength={200}
+                                    style={styles.inputControlTitel}
+                                    placeholderTextColor={COLORS.placeholderText}
+                                    value={title}
+                                    onChangeText={(text)=> setTitle(text)}
+                                />
+                        </View>
+
+                        <View style={styles.input}>
+                            <Text style={styles.inputLabel}>Content</Text>
+                            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                                    <TouchableOpacity onPress={addTab} style={[styles.button,{backgroundColor:'green',width:'25%',marginBottom:10}]}>
+                                        <Text style={{color:'white'}}> indent toevoegen </Text>
+                                    </TouchableOpacity>
+                                <View style={{flexDirection: 'row',alignItems:'center', padding: '1%'}}>
+                                    <Text>maxCharacters: </Text>
+                                    <Text style={lengthCounter >= 0 ? {color: 'black'}:{color:'red'}}>{lengthCounter}</Text>
+                                </View>
+                            </View>
                             <TextInput
-                                maxLength={200}
-                                style={styles.inputcontroltitel}
+                                multiline={true}
+                                numberOfLines={15}
+                                style={styles.inputControlContent}
+                                placeholder="print(Hello World)"
                                 placeholderTextColor={COLORS.placeholderText}
-                                value={title}
-                                onChangeText={(text)=> setTitle(text)}
+                                value={content}
+                                onChangeText={(text)=> setContent(text)}
+                                onSelectionChange={({ nativeEvent: { selection } }) => setSelection(selection)}
+                                selection={selection}
+                                onKeyPress={({ nativeEvent }) => {
+                                    if (nativeEvent.key === 'Tab') {
+                                        // @ts-ignore
+                                        nativeEvent.preventDefault();
+                                        addTab();
+                                    }
+                                }}
                             />
+
+                        </View>
+
+
+                        <View>
+                            <Text style={styles.inputLabel}>Tags</Text>
+                            <CheckBox
+                                options={tagData}
+                                CheckedValues={selected_tags || []}
+                                onChange={setSelectedTagId}
+                                />
+                        </View>
+
+                        <View style={styles.create}>
+                            <TouchableOpacity onPress={handleEditRequest}>
+                                <View style={styles.button}>
+                                    <Text style={styles.buttonText}>Save post</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.create}>
+                            <TouchableOpacity onPress={DeletePost}>
+                                <View style={styles.button}>
+                                    <Text style={styles.buttonText}>Delete post</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+
                     </View>
-
-                    <View style={styles.input}>
-                        <Text style={styles.inputlabel}>Content</Text>
-                        <TextInput
-                            multiline={true}
-                            maxLength={1000}
-                            style={styles.inputcontroltitel}
-                            placeholderTextColor={COLORS.placeholderText}
-                            value={content}
-                            onChangeText={(text)=> setContent(text)}
-                        />
-                    </View>
-
-
-                    <View style={styles.input}>
-                        <Text style={styles.inputlabel}>Tags</Text>
-                        <CheckBox
-                            options={tagData}
-                            CheckedValues={selected_tags}
-                            onChange={setSelectedTagId}
-                            />
-                    </View>
-
-                    <View style={styles.create}>
-                        <TouchableOpacity onPress={EditPost}>
-                            <View style={styles.button}>
-                                <Text style={styles.buttontext}>edit post</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.create}>
-                        <TouchableOpacity onPress={DeletePost}>
-                            <View style={styles.button}>
-                                <Text style={styles.buttontext}>Delete post</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-
 
                 </View>
-                </ScrollView>
-            </View>
+            </ScrollView>
         </SafeAreaView>
     )
 
@@ -161,6 +206,7 @@ const styles = StyleSheet.create({
     container: {
         paddingVertical: 10,
         paddingHorizontal: 30,
+        height: '100%'
     },
     header: {
         marginVertical: 36,
@@ -174,14 +220,14 @@ const styles = StyleSheet.create({
     },
     form:{},
     input:{},
-    inputlabel:{
+    inputLabel:{
         fontSize: 20,
         fontWeight: "semibold",
         color: COLORS.text,
         marginBottom: 5,
         textAlign: "center"
     },
-    inputcontroltitel:{
+    inputControlTitel:{
         fontSize: 15,
         fontWeight: "semibold",
         color: COLORS.text,
@@ -191,7 +237,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginBottom: 25,
     },
-    inputcontrolcontent:{
+    inputControlContent:{
         fontSize: 15,
         fontWeight: "semibold",
         color: COLORS.text,
@@ -213,7 +259,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
     },
-    buttontext:{
+    buttonText:{
         fontSize: 20,
         fontWeight: "bold",
         color: COLORS.textLight,

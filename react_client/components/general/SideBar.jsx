@@ -17,12 +17,13 @@ function SideBar({ sideBarState, setSideBarState }) {
         setUserLoggedIn(false);
         router.push('/');
     };
+
     const [fontsLoaded] = useFonts({
         BebasNeue: require('@/assets/fonts/BebasNeue-Regular.ttf'),
     });
-    console.log("Fonts loaded?", fontsLoaded);
+
     if (!fontsLoaded) {
-        console.log('No fontsLoaded');
+        console.log('No fonts loaded');
         return null;
     }
     if (!sideBarState) {
@@ -44,17 +45,6 @@ function SideBar({ sideBarState, setSideBarState }) {
             >
                 <Ionicons name="chevron-back" size={30} color="white" style={styles.backIcon} />
             </TouchableOpacity>
-
-            {/*<TouchableOpacity*/}
-            {/*    onPress={() => {*/}
-            {/*        setSideBarState(false);*/}
-            {/*        router.push('/homepage');*/}
-            {/*    }}*/}
-            {/*    style={styles.routeContainer}*/}
-            {/*>*/}
-            {/*    <Ionicons name="home" size={32} style={styles.Icon} />*/}
-            {/*    <Text style={styles.SideText}>Home</Text>*/}
-            {/*</TouchableOpacity>*/}
 
             <TouchableOpacity
                 onPress={() => {
@@ -114,12 +104,23 @@ function SideBar({ sideBarState, setSideBarState }) {
             <TouchableOpacity
                 onPress={() => {
                     setSideBarState(false);
-                    router.push('/posts//create_post');
+                    router.push('/posts/create_post');
                 }}
                 style={styles.routeContainer}
             >
                 <Ionicons name="create-outline" size={32} style={styles.Icon} />
                 <Text style={styles.SideText}>Nieuwe post aanmaken</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={() => {
+                    setSideBarState(false);
+                    router.push('/tags/create_tag');
+                }}
+                style={styles.routeContainer}
+            >
+                <Ionicons name="create-outline" size={32} style={styles.Icon} />
+                <Text style={styles.SideText}>Nieuwe tag aanmaken</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
