@@ -17,7 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {Ionicons} from '@expo/vector-icons';
-import UserBadges from "../../components/user_badges";
+import UserBadges from "../../components/badges/user_badges";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { useFocusEffect } from "expo-router";
 import Container from '../../components/general/Container';

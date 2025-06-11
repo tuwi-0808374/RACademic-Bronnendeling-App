@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, SafeAreaVie
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwt_decode from 'jwt-decode';
 import { useRouter } from 'expo-router';
-import UserBadges from '../../components/user_badges';
 import { getApiBaseUrl } from '../../constants/get_ip';
 
 
