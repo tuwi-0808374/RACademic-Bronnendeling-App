@@ -39,6 +39,7 @@ export default function Create_post() {
     const [data, setData] = useState([]);
     const router = useRouter();
     const { userId, loading } = useUser();
+    const [lengthCounter, setLengthCounter] = useState(0)
     const [selection, setSelection] = useState({ start: 0, end: 0 });
     useEffect(() => {
         fetch(`${API_BASE_URL}/tags`)
@@ -48,6 +49,7 @@ export default function Create_post() {
                 console.log(data.data);
             })
     }, []);
+    // chatgpt heeft hier geholpen want ik kon nergens anders vinden hoe je tabs kan toevoegen in text inputs
     const addTab = () => {
         const start = selection.start;
         const end = selection.end;
@@ -62,6 +64,7 @@ export default function Create_post() {
         setSelection({ start: newPos, end: newPos });
 
     };
+
     const CreatePost = async () => {
         if (!loading && userId) {
             try {
@@ -83,8 +86,14 @@ export default function Create_post() {
             }
         }
     }
-
-
+    useEffect(() => {
+        setLengthCounter(1000 - content.length)
+    })
+    const handleCreateRequest = () => {
+        if (lengthCounter >= 0) {
+            CreatePost();
+        }
+    }
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
             <ScrollView style={styles.scrollView}>
@@ -117,10 +126,14 @@ export default function Create_post() {
                                 <TouchableOpacity onPress={addTab} style={[styles.button,{backgroundColor:'green'}]}>
                                     <Text>tab</Text>
                                 </TouchableOpacity>
+                                <View>
+
+                                    <Text style={lengthCounter >= 0 ? {color: 'black'}:{color:'red'}}>{lengthCounter}</Text>
+                                </View>
                                 <TextInput
                                     multiline={true}
-                                    maxLength={1000}
-                                    style={styles.inputcontrolcontent}
+                                    numberOfLines={15}
+                                    style={[styles.inputcontrolcontent,{ minHeight: 150, maxHeight: 500,}]}
                                     placeholder="print(Hello World)"
                                     placeholderTextColor={COLORS.placeholderText}
                                     value={content}
@@ -129,10 +142,12 @@ export default function Create_post() {
                                     selection={selection}
                                     onKeyPress={({ nativeEvent }) => {
                                         if (nativeEvent.key === 'Tab') {
+                                            // @ts-ignore
                                             nativeEvent.preventDefault();
                                             addTab();
                                         }
                                     }}
+
                                 />
                             </View>
 
@@ -146,7 +161,7 @@ export default function Create_post() {
                             </View>
 
                             <View style={styles.create}>
-                                <TouchableOpacity onPress={CreatePost}>
+                                <TouchableOpacity onPress={handleCreateRequest}>
                                     <View style={styles.button}>
                                         <Text style={styles.buttontext}>Create post</Text>
                                     </View>
