@@ -115,12 +115,12 @@ export default function Create_post() {
                                 />
                             </View>
                             <View style={{ marginTop: 10 }}>
-                                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Markdown Tips:</Text>
-                                <Text style={{ fontSize: 12 }}># Header</Text>
-                                <Text style={{ fontSize: 12 }}>*italic*, **bold**</Text>
-                                <Text style={{ fontSize: 12 }}>- List item</Text>
-                                <Text>[ titel ]( Hier jouw link )</Text>
-                                <Text style={{ fontSize: 12 }}>```code``` of met indents</Text>
+                                <Text style={{fontWeight: 'bold' }}>Markdown Tips:</Text>
+                                <Text>aantal #'s voor Header grote bijv. ##</Text>
+                                <Text>*italic*, **bold**</Text>
+                                <Text>maak een list aan: - List item</Text>
+                                <Text> een link: [ titel ]( Hier jouw link )</Text>
+                                <Text>code blocks aanmaken: ```code``` of met indents</Text>
                             </View>
                             <View style={styles.input}>
                                 <Text style={styles.inputlabel}>Content van de bron</Text>
