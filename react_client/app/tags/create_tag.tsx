@@ -46,7 +46,7 @@ export default function Create_post() {
                 result = await result.json();
                 if (result) {
                     console.warn("tag is saved successfully.")
-                    router.push('/homepage')
+                    router.push('/posts')
                 }
 
             } catch (error) {
