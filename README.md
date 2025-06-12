@@ -258,7 +258,60 @@ Bij het inloggen kun je ook de taal van de pagina wijzigen naar Engels of Nederl
 Op de **Registratiepagina** kunt u een account aanmaken als **Student**. U kunt kiezen in welke taal u de registratiepagina wilt zien: Engels of Nederlands. Tijdens het registratieproces wordt u gevraagd om persoonlijke gegevens in te vullen, zoals uw voornaam, achternaam, gebruikersnaam, e-mailadres (een @hr.nl-adres is verplicht) en wachtwoord. U kunt ook een profielfoto toevoegen (dit is niet verplicht) en aangeven of uw account openbaar of privé moet zijn.
 
 ---
+## Navbar
 
+![image](https://github.com/user-attachments/assets/d5991f9c-a6de-4d38-98c6-efc6883a9858)
+
+- **Zoekbalk**  
+  In de zoekbalk kun je zoeken naar woorden in de posttitels of de inhoud van posts.
+
+- **Tag-selectie voor zoekopdracht**  
+  Hier selecteer je de tags die je wilt gebruiken voor de zoekopdracht.
+
+- **Zoekopdracht uitvoeren**  
+  Gebruikt de ingevoerde tekst en de geselecteerde tags om te zoeken naar posts en navigeert naar de postpagina.
+
+- **Profielknop**  
+  Bezoek de profielpagina.
+
+- **Sidebarknop**  
+  Opent de sidebar.
+
+- **Uitlogknop**  
+  Logt uit en gaat terug naar de inlogpagina.
+---
+## Sidebar
+![image](https://github.com/user-attachments/assets/34164654-643c-45e1-b032-12f5c7e59838)
+
+- **Sidebar inklappen**  
+  Deze knop klapt de sidebar terug in.
+
+- **Pagina-knoppen**  
+  Als je op deze knoppen klikt, bezoek je de pagina’s die aan de knoppen gekoppeld zijn.
+
+- **Uitloggen**  
+  Logt uit en gaat terug naar de inlogpagina.
+---
+## Post Overzicht Pagina
+
+![image](https://github.com/user-attachments/assets/eac24e96-aab7-4326-a48a-5dfa0489d540)
+
+- **Tag-knoppen**  
+  Bezoek de pagina die gelinkt is aan deze specifieke tag.
+
+- **Edit post-knop**  
+  Bewerk de post als jij de eigenaar bent.
+
+- **Upvote**  
+  Geef de post een positieve beoordeling.
+
+- **Downvote**  
+  Geef de post een negatieve beoordeling.
+
+- **Favoriteren**  
+  Voeg deze post toe aan je favorieten.
+
+---
 ### Create Post pagina
 
 Op de create post pagina kan je een post aanmaken. Tijdens het aanmaken van de post worden om deze gegevens gevraagt.
