@@ -317,7 +317,7 @@ class Account:
             if con:
                 con.close()
 
-    def get_users(self, limit=5, offset=0):
+    def get_users(self):
         # Geeft een lijst van gebruikers met een limiet en offset.
         cursor, con = self.connect_db()
         try:
@@ -325,9 +325,8 @@ class Account:
                 """
                     SELECT id, first_name, last_name, display_name, username, email, is_public, profile_image, is_banned, is_admin
                     FROM users
-                    LIMIT ? OFFSET ?
                 """,
-                (limit, offset),
+                (),
             ).fetchall()
             return [dict(row) for row in result]
         finally:
