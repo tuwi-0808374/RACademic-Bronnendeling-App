@@ -1,4 +1,4 @@
-# RACademic Bronnendeling App 
+# RACademic Bronnendeling App
 
 ## Overzicht
 
@@ -7,20 +7,25 @@ De RACademic Bronnendeling App is een platform voor Hogeschool Rotterdam-student
 ## Wie zijn wij?
 
 Wij zijn team **Kiwi** en ons team bestaat uit:
+
 - **Max Hofman** (1103166)
 - **Tuwi Nannings** (0808374)
 - **Noortje Vroegop** (1100338)
 - **Jesper Edeling** (1103541)
 
 ---
+
 # Installatie met Docker
 
 ### Software
+
 - Docker
 - Git
 
 ## Installatie
+
 1. **Installeer Docker**:
+
    - Download en installeer [Docker Desktop](https://www.docker.com/products/docker-desktop/) voor jouw besturingssysteem en zorg dat het draait.
 
 2. **Clone de repository**:
@@ -29,50 +34,57 @@ Wij zijn team **Kiwi** en ons team bestaat uit:
    cd wp4-2025-react-1d2-kiwi-wip
    ```
 3. **Bouw en start de applicatie**:
-  ```bash
-  docker-compose up --build -d
-  ```
+
+```bash
+docker-compose up --build -d
+```
 
 Wacht toch het installeren klaar is.
 De app is nu bereikbaar vanaf http://localhost:19006
 En het inlog scherm zou nu moeten verschijnen.
 
 4. Optioneel: Bekijk logs met:
-  ```bash
-  docker-compose logs -f
-  ```
+
+```bash
+docker-compose logs -f
+```
 
 Voor de mobile versie ga verder met deze stappen:
 
 6. Installeer de Expo Go app op android of ios via de playstore
 
-5. Ga naar de root van de react client folder
-  ```bash
-  cd .\react_client\
-  ```
+7. Ga naar de root van de react client folder
+
+```bash
+cd .\react_client\
+```
 
 6. Start de dev omgeving met
-  ```bash
-  npx expo start
-  ```
+
+```bash
+npx expo start
+```
 
 Wacht to je "Logs for your project will appear below. " ziet en scroll iets naar boven.
 Scan de qr code met je telefoon en de website zal te zien zijn op je telefoon.
 (zorg dat je telefoon op dezelfde netwerk is verbonden als je pc)
 
 # Installatie zonder Docker
+
 ### 1. Software en versievereisten
+
 Voor het uitvoeren van dit project zijn de volgende vereisten van toepassing:
 
 - **Python-versie:** 3.x
 - **Git**
-- **Flask** 
-- **React** 
-
+- **Flask**
+- **React**
 
 ### 2. Benodigde Python-packages
+
 Je kunt deze afhankelijkheden installeren met behulp van het meegeleverde `requirements.txt`-bestand.
 Of gebruik deze lijst om ze zelfs te installeren:
+
 ```bash
 bcrypt==4.3.0
 blinker==1.9.0
@@ -89,6 +101,7 @@ flask_cors
 ```
 
 ### 1. Clone de repository
+
 Om te beginnen, clonen we de repository naar je lokale machine. Gebruik de volgende opdracht:
 
 ```bash
@@ -97,16 +110,19 @@ cd wp3-2025-rest-1d2-wip
 ```
 
 ### 2. Maak een virtual environment (venv) aan
+
 Het gebruik van een virtual environment is aanbevolen om afhankelijkheden van dit project afzonderlijk te houden. Je kunt een virtual environment aanmaken via de **command line** of via **PyCharm**. Kies de methode die je wilt gebruiken.
 
 #### Optie 1: Command Line
+
 1. Maak een virtual environment aan:
    ```bash
    python -m venv venv
    ```
 2. Activeer de virtual environment:
-    
+
    - Op Windows (Git Bash):
+
      ```bash
      source venv/Scripts/activate
      ```
@@ -123,13 +139,17 @@ Het gebruik van een virtual environment is aanbevolen om afhankelijkheden van di
 ### 3. Installeer afhankelijkheden
 
 #### Optie 1: Installeren met `requirements.txt` (Aanbevolen)
+
 Zorg ervoor dat je virtual environment is geactiveerd. Installeer daarna de afhankelijkheden met:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 #### Optie 2: Installeren zonder `requirements.txt`
+
 Als je `requirements.txt` niet wilt gebruiken, installeer je de benodigde libraries handmatig:
+
 ```bash
 bcrypt==4.3.0
 blinker==1.9.0
@@ -148,19 +168,23 @@ flask_cors
 ---
 
 ### 4. Omgevingsvariabele Instellen
+
 Om de Flask-applicatie te starten met `main.py` als de hoofdapplicatie, moet je de `FLASK_APP`-omgevingsvariabele instellen. Gebruik de onderstaande commando's, afhankelijk van je besturingssysteem:
 
 #### macOS/Linux
+
 ```bash
 export FLASK_APP=main.py
 ```
 
 #### Windows (Command Prompt - CMD)
+
 ```bash
 set FLASK_APP=main.py
 ```
 
 #### Windows (Git Bash)
+
 ```bash
 export FLASK_APP=main.py
 ```
@@ -168,34 +192,40 @@ export FLASK_APP=main.py
 ### 5. Start de flask server
 
 #### Methode 1: Via de terminal
+
 1. Navigeer naar de server map:
    ```bash
    cd .\flask_server\
    ```
 2. Start de applicatie:
+
    ```bash
    flask --app main.py run
    ```
-De flask server is nu toegankelijk via [http://127.0.0.1:5000](http://127.0.0.1:5000).
+
+   De flask server is nu toegankelijk via [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 3. Ga naar de root van de react client folder
-  ```bash
-  cd .\react_client\
-  ```
+
+```bash
+cd .\react_client\
+```
 
 4. Start de dev omgeving met
-  ```bash
-  npx expo start
-  ```
+
+```bash
+npx expo start
+```
 
 Wacht to je "Logs for your project will appear below. "
 Druk op W en je browser laat de website zien.
 
-
 ---
 
 ## ERD
+
 ![WP4_db](https://github.com/user-attachments/assets/2eef0ab2-e3c2-4192-8282-ce8d1652e663)
+
 1. users – Bevat informatie over gebruikers, zoals id, email, display_name, first_name, last_name, password, is_admin, is_public, en is_banned.
 2. badges – Bevat gegevens over badges, zoals id, title, requirement, en image_url.
 3. user_badges – Koppelt gebruikers aan badges met user_id en badge_id.
@@ -211,59 +241,77 @@ Druk op W en je browser laat de website zien.
 
 Je kunt inloggen met het standaard account:
 
-*Student*\
+_Student_\
 **Gebruikersnaam:** student@hr.nl
 **Wachtwoord:** 1
 
-*Beheerder*\
+_Admin_\
 **Gebruikersnaam:** admin@hr.nl
 **Wachtwoord:** 1
 
+Bij het inloggen kun je ook de taal van de pagina wijzigen naar Engels of Nederlands, afhankelijk van je voorkeur.
+
+---
+
 ### Registratiepagina
 
-Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens het registratieproces wordt u gevraagd om de volgende gegevens in te vullen:
+Op de **Registratiepagina** kunt u een account aanmaken als **Student**. U kunt kiezen in welke taal u de registratiepagina wilt zien: Engels of Nederlands. Tijdens het registratieproces wordt u gevraagd om persoonlijke gegevens in te vullen, zoals uw voornaam, achternaam, gebruikersnaam, e-mailadres (een @hr.nl-adres is verplicht) en wachtwoord. U kunt ook een profielfoto toevoegen (dit is niet verplicht) en aangeven of uw account openbaar of privé moet zijn.
 
-- **Persoonlijke gegevens**:
-  - Voornaam
-  - Achternaam
-  - Wachtwoord
-  - E-mailadres
-
+---
 
 ### Create Post pagina
 
 Op de create post pagina kan je een post aanmaken. Tijdens het aanmaken van de post worden om deze gegevens gevraagt.
 
 - **Post data**:
-    - Titel
-    - Content dus de bron zelf
-    - en een tag zodat andere mensen de post makkelijker kunnen vinden
+  - Titel
+  - Content dus de bron zelf
+  - en een tag zodat andere mensen de post makkelijker kunnen vinden
+
+---
 
 ### Create tag pagina
+
 Op de create tag pagina kan je een nieuwe tag aanmaken. Tijdens het aanmaken van de tag worden om deze gegevens gevraagt.
 
 - **Tag data**:
-    - De naam van de tag
-    - De kleur van de tag
+  - De naam van de tag
+  - De kleur van de tag
 
+---
 
 ### Eigen post pagina
+
 Op de eigen post pagina kan je alle posts zien die jij hebt gemaakt en kan je de details zien van de post en kan je de post aan passen
 
 ---
+
+### Profiel bekijken
+
+Op de profielpagina zie je een overzicht van persoonlijke gegevens, zoals naam, e-mailadres, gebruikersnaam en profielfoto. Daarnaast kun je ook badges en geplaatste posts bekijken, en zien of het account privé of openbaar is. Je kunt niet alleen je eigen profiel bekijken, maar ook de profielen van andere studenten. Als je je eigen profiel bekijkt, zie je bovendien een knop **Bewerken** om je gegevens aan te passen.
+
+---
+
+### Profiel bewerken
+
+Via de profielpagina kun je je gegevens zelf aanpassen. Je kunt je naam, e-mailadres, gebruikersnaam en wachtwoord wijzigen. Ook kun je je profielfoto bijwerken of verwijderen en zelf instellen of je account privé of openbaar is.
+
 ## Overzicht
 
 ### Admin Functies
+
 - Inloggen voor admins
 - Gebruikers blokkeren
 - Admin-accounts toevoegen (moet @hr.nl email gebruiken)
 - Emails blokkeren
 
 ### Student Functies
+
 - Inloggen (vereist @hr.nl email)
 - Registreren (geblokkeerde emails kunnen niet opnieuw worden gebruikt)
 
 ### Gebruiker Functies
+
 - Profiel bijwerken
 - Bronnenoverzicht bijwerken
 - Bron details bekijken
@@ -275,17 +323,24 @@ Op de eigen post pagina kan je alle posts zien die jij hebt gemaakt en kan je de
 - Wachtwoord aanpassen
 
 ### Algemene Functies
+
 - Inloggen vereist om content in de app te bekijken
 - Bronnen bevatten tags
 
+---
+
 ## **Screenshots**
-| **Profiel** | **Overzicht gebruikers** | **Badge popup** | **Overzicht bronnen** |
-|-----------------------|-------------|-----------------|---------------------|
-|<img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200">|<img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200">|<img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200">|<img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200">|
-| **Inlog pagina** | **Nieuwe tag** | **Profiel bewerken** | **Nieuwe bron toevoegen** |
-|<img src="https://github.com/user-attachments/assets/48d46bee-c51e-4d98-a1c4-7a50adb61713" width="200">|<img src="https://github.com/user-attachments/assets/30b8b473-f4f6-4588-8b8f-51302177d907" width="200">|<img src="https://github.com/user-attachments/assets/d33baf00-5d1f-4191-8c35-688e43a30bd5" width="200">|<img src="https://github.com/user-attachments/assets/dd1e700f-5cc1-4319-9ac7-08f18c7d5774" width="200">|
+
+| **Profiel**                                                                                             | **Overzicht gebruikers**                                                                                | **Badge popup**                                                                                         | **Overzicht bronnen**                                                                                   |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| <img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200"> | <img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200"> | <img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200"> | <img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200"> |
+| **Inlog pagina**                                                                                        | **Nieuwe tag**                                                                                          | **Profiel bewerken**                                                                                    | **Nieuwe bron toevoegen**                                                                               |
+| <img src="https://github.com/user-attachments/assets/48d46bee-c51e-4d98-a1c4-7a50adb61713" width="200"> | <img src="https://github.com/user-attachments/assets/30b8b473-f4f6-4588-8b8f-51302177d907" width="200"> | <img src="https://github.com/user-attachments/assets/d33baf00-5d1f-4191-8c35-688e43a30bd5" width="200"> | <img src="https://github.com/user-attachments/assets/dd1e700f-5cc1-4319-9ac7-08f18c7d5774" width="200"> |
+
+---
 
 ## **Code Bronnen**
+
 - [React useState](https://www.w3schools.com/react/react_usestate.asp)
 - [React useEffect](https://www.w3schools.com/react/react_useeffect.asp)
 - [Object.prototype.toString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString)
@@ -319,4 +374,3 @@ Op de eigen post pagina kan je alle posts zien die jij hebt gemaakt en kan je de
 - [How to pass an array of numbers with TypeScript and React](https://stackoverflow.com/questions/62917259/how-to-pass-an-array-of-numbers-with-typescript-and-react)
 - [React useState Append to Array](https://www.dhiwise.com/post/react-usestate-append-to-array-a-simple-guide)
 - [Platform-Specific Code · React Native](https://reactnative.dev/docs/platform-specific-code)
-
