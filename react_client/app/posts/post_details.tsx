@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import {useLocalSearchParams, useRouter} from "expo-router";
 import {getApiBaseUrl} from "@/constants/get_ip";
 const API_BASE_URL = getApiBaseUrl();
@@ -26,10 +26,6 @@ export default function post_details() {
             .then(data => {
                 setPostData(data.data);
                 setComment(data.data.comments);
-                console.log('1',data.data);
-
-
-
             })
     }, []);
 
@@ -38,24 +34,25 @@ export default function post_details() {
             .then(res => res.json())
             .then(data => {
                 setTagData(data.data);
-                console.log('2',data.data);
             })
     }, []);
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: COLORS.background}}>
+            <ScrollView style={styles.scrollview} >
+                <TouchableWithoutFeedback>
+
             <View style={styles.container}>
 
                 <View style={styles.header}>
                     <Text style={styles.title}>Details post</Text>
                 </View>
 
-                <ScrollView style={styles.scrollview} >
+
 
                     <View style={styles.postbox}>
                         <Text style={styles.textTitle}>{postData['title']}</Text>
                         <Text style={styles.textContent}>{postData['content']}</Text>
-                        <Text style={styles.textContent}>{postData['posted_date']}</Text>
 
                         <Text style={styles.title}>Tags</Text>
                         <View style={styles.contentContainer}>
@@ -82,9 +79,11 @@ export default function post_details() {
                             </View>
                         ))}
                     </View>
-                </ScrollView>
+
 
             </View>
+            </TouchableWithoutFeedback>
+            </ScrollView>
         </SafeAreaView>
     )
 

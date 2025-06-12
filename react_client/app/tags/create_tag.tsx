@@ -74,11 +74,11 @@ export default function Create_post() {
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.form}>
                         <View style={styles.input}>
-                            <Text style={styles.inputlabel}>Titel</Text>
+                            <Text style={styles.inputlabel}>Naam van de tag</Text>
                             <TextInput
                                 maxLength={200}
                                 style={styles.inputcontroltitel}
-                                placeholder="Titel van de bron"
+                                placeholder="Naam van de tag"
                                 placeholderTextColor={COLORS.placeholderText}
                                 value={title}
                                 onChangeText={(text)=> setTitle(text)}

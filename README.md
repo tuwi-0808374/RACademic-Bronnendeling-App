@@ -229,6 +229,27 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens
   - Wachtwoord
   - E-mailadres
 
+
+### Create Post pagina
+
+Op de create post pagina kan je een post aanmaken. Tijdens het aanmaken van de post worden om deze gegevens gevraagt.
+
+- **Post data**:
+    - Titel
+    - Content dus de bron zelf
+    - en een tag zodat andere mensen de post makkelijker kunnen vinden
+
+### Create tag pagina
+Op de create tag pagina kan je een nieuwe tag aanmaken. Tijdens het aanmaken van de tag worden om deze gegevens gevraagt.
+
+- **Tag data**:
+    - De naam van de tag
+    - De kleur van de tag
+
+
+### Eigen post pagina
+Op de eigen post pagina kan je alle posts zien die jij hebt gemaakt en kan je de details zien van de post en kan je de post aan passen
+
 ---
 ## Overzicht
 
