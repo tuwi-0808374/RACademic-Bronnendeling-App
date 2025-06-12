@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import {View, Text, TextInput, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, TouchableWithoutFeedback, Platform } from 'react-native';
 import {useLocalSearchParams, useRouter} from "expo-router";
+import Markdown, {MarkdownIt} from 'react-native-markdown-display';
 import {getApiBaseUrl} from "@/constants/get_ip";
 const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
     red: '#C80032',
-    background: '#F8F4EF',
+    background: '#efede7',
     backgroundDark: '#535353',
     text: '#333333',
     textLight: '#FFFFFF',
@@ -15,7 +16,7 @@ const COLORS = {
 };
 
 export default function post_details() {
-    const [postData, setPostData] = useState({});
+    const [postData, setPostData] = useState();
     const [comment, setComment] = useState([]);
     const [tagData, setTagData] = useState([]);
     const { post_id } = useLocalSearchParams();
@@ -42,21 +43,12 @@ export default function post_details() {
             <ScrollView style={styles.scrollview} >
                 <TouchableWithoutFeedback>
 
-            <View style={styles.container}>
-
-                <View style={styles.header}>
-                    <Text style={styles.title}>Details post</Text>
-                </View>
-
-
-
+            <View style={[styles.container, Platform.OS === "web"? {width:'75%', alignSelf:'center'}:{width:'100%'}]}>
+                {postData && (
                     <View style={styles.postbox}>
                         <Text style={styles.textTitle}>{postData['title']}</Text>
-                        <Text style={styles.textContent}>{postData['content']}</Text>
-
-                        <Text style={styles.title}>Tags</Text>
-                        <View style={styles.contentContainer}>
-                        {tagData.tags
+                        <View style={{width:'100%', flexDirection: 'row'}}>
+                            {tagData.tags
                             ?.filter(tag => tagData.tag_ids.includes(tag.id))
                             .map(tag => (
                                 <View key={tag.id} style={[styles.tagContainer, { backgroundColor: tag['color'] }]}>
@@ -64,21 +56,31 @@ export default function post_details() {
                                 </View>
                             ))}
                         </View>
+                        <View style={styles.contentContainer}>
+                            {/*https://www.npmjs.com/package/react-native-markdown-display*/}
+                            <Markdown
+                                markdownit={
+                                    MarkdownIt({typographer: true}).disable([ 'image' ])
+                                }
+                            >
+                                {postData['content']}
+                            </Markdown>
+                        </View>
                     </View>
+                )}
 
 
+                {/*<Text style={styles.title}>Comments</Text>*/}
+                {/*<View style={styles.header}>*/}
+                {/*    {comment.map((comments) => (*/}
+                {/*        <View key={comments['id']} style={styles.postboxcomments} >*/}
+                {/*            <Text style={styles.textTitle}>{comments['title']}</Text>*/}
+                {/*            <Text style={styles.textContent}>{comments['content']}</Text>*/}
 
-                    <Text style={styles.title}>Comments</Text>
-                    <View style={styles.header}>
-                        {comment.map((comments) => (
-                            <View key={comments['id']} style={styles.postboxcomments} >
-                                <Text style={styles.textTitle}>{comments['title']}</Text>
-                                <Text style={styles.textContent}>{comments['content']}</Text>
 
-
-                            </View>
-                        ))}
-                    </View>
+                {/*        </View>*/}
+                {/*    ))}*/}
+                {/*</View>*/}
 
 
             </View>
@@ -172,6 +174,7 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 15,
         flexDirection: 'column',
+        justifyContent: "center",
     },
     scrollview:{
         flex: 1
@@ -186,21 +189,23 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
     },
     contentContainer: {
-        marginTop: 50,
+        marginTop: 5,
         alignItems: "center",
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: 8,
+        marginHorizontal: 20,
+        padding: 20,
     },
     tagContainer: {
-        width: 80,              // fixed width
-        height: 55,              // fixed height
-        borderRadius: 8,
-        marginRight: 8,
-        marginBottom: 8,
+        minWidth: 90,
+        height: 30,
+        borderRadius: 25,
+        paddingHorizontal: 5,
+        marginTop: 5,
         justifyContent: 'center',
         alignItems: 'center',
-        overflow: 'hidden',      // prevent content from overflowing
+        overflow: 'hidden',
     },
     textStyle: {
         fontSize: 16,
