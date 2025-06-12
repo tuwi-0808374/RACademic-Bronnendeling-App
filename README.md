@@ -331,6 +331,26 @@ Via de profielpagina kun je je gegevens zelf aanpassen. Je kunt je naam, e-maila
 
 ## **Screenshots**
 
+- **Inlogpagina**  
+  ![Inloggen](react_client/assets/images/readme/login.png)
+
+- **Registratiepagina**  
+  ![Registratie](react_client/assets/images/readme/register.png)
+  ![Registratie](react_client/assets/images/readme/register2.png)
+
+- **Postspagina**  
+  ![Posts](react_client/assets/images/readme/posts.png)
+
+- **Profielpagina anderen**  
+  ![Profielpagina anderen](react_client/assets/images/readme/profile.png)
+
+- **Eigen profiel**  
+  ![Eigen profiel](react_client/assets/images/readme/my_profile.png)
+
+- **Profiel bewerken**  
+  ![Profiel bewerken](react_client/assets/images/readme/edit_profile.png)
+  ![Profiel bewerken](react_client/assets/images/readme/password.png)
+
 | **Profiel**                                                                                             | **Overzicht gebruikers**                                                                                | **Badge popup**                                                                                         | **Overzicht bronnen**                                                                                   |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | <img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200"> | <img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200"> | <img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200"> | <img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200"> |
