@@ -7,12 +7,14 @@ De RACademic Bronnendeling App is een platform voor Hogeschool Rotterdam-student
 ## Wie zijn wij?
 
 Wij zijn team **Kiwi** en ons team bestaat uit:
+
 - **Max Hofman** (1103166)
 - **Tuwi Nannings** (0808374)
 - **Noortje Vroegop** (1100338)
 - **Jesper Edeling** (1103541)
 
 ---
+
 # Installatie met Docker
 
 ### Software
@@ -20,15 +22,15 @@ Wij zijn team **Kiwi** en ons team bestaat uit:
 - Git
 
 ## Installatie
-1. **Installeer Docker**:
+1. Installeer Docker:
    - Download en installeer [Docker Desktop](https://www.docker.com/products/docker-desktop/) voor jouw besturingssysteem en zorg dat het draait.
 
-2. **Clone de repository**:
+2. Clone de repository:
    ```bash
    git clone https://github.com/Rac-Software-Development/wp4-2025-react-1d2-kiwi-wip.git
    cd wp4-2025-react-1d2-kiwi-wip
    ```
-3. ** Bouw en start de applicatie:
+3. Bouw en start de applicatie:
   ```bash
   docker-compose up --build -d
   ```
@@ -37,26 +39,31 @@ Wacht toch het installeren klaar is.
 De app is nu bereikbaar vanaf http://localhost:19006
 En het inlog scherm zou nu moeten verschijnen.
 
-4. Optioneel: Bekijk logs met:
+4. Bekijk logs met (optioneel):
   ```bash
   docker-compose logs -f
   ```
 
-Voor de mobile versie ga verder met deze stappen:
+**Voor de mobile versie ga verder met deze stappen:**
 
-6. Installeer de Expo Go app op android of ios via de playstore
+5. Installeer de Expo Go app op android of ios via de playstore
 
-5. Ga naar de root van de react client folder
+6. Ga naar de root van de react client folder
   ```bash
   cd .\react_client\
   ```
 
-6. Start de dev omgeving met
+7. Installeer de packages met:
+  ```bash
+  npm install --legacy-peer-deps
+  ```
+
+8. Start de dev omgeving met
   ```bash
   npx expo start
   ```
 
-Wacht to je "Logs for your project will appear below. " ziet en scroll iets naar boven.
+Wacht tot je "Logs for your project will appear below. " ziet en scroll iets naar boven.
 Scan de qr code met je telefoon en de website zal te zien zijn op je telefoon.
 (zorg dat je telefoon op dezelfde netwerk is verbonden als je pc)
 
@@ -92,8 +99,8 @@ flask_cors
 Om te beginnen, clonen we de repository naar je lokale machine. Gebruik de volgende opdracht:
 
 ```bash
-git clone https://github.com/Rac-Software-Development/wp3-2025-rest-1d2-wip.git
-cd wp3-2025-rest-1d2-wip
+git clone https://github.com/Rac-Software-Development/wp4-2025-react-1d2-kiwi-wip.git
+cd wp4-2025-react-1d2-kiwi-wip
 ```
 
 ### 2. Maak een virtual environment (venv) aan
@@ -122,30 +129,11 @@ Het gebruik van een virtual environment is aanbevolen om afhankelijkheden van di
 
 ### 3. Installeer afhankelijkheden
 
-#### Optie 1: Installeren met `requirements.txt` (Aanbevolen)
+#### Installeren met `requirements.txt`
 Zorg ervoor dat je virtual environment is geactiveerd. Installeer daarna de afhankelijkheden met:
 ```bash
 pip install -r requirements.txt
 ```
-
-#### Optie 2: Installeren zonder `requirements.txt`
-Als je `requirements.txt` niet wilt gebruiken, installeer je de benodigde libraries handmatig:
-```bash
-bcrypt==4.3.0
-blinker==1.9.0
-click==8.1.8
-colorama==0.4.6
-Flask==3.1.0
-flask-cors==5.0.1
-itsdangerous==2.2.0
-Jinja2==3.1.6
-MarkupSafe==3.0.2
-Werkzeug==3.1.3
-flask_jwt_extended
-flask_cors
-```
-
----
 
 ### 4. Omgevingsvariabele Instellen
 Om de Flask-applicatie te starten met `main.py` als de hoofdapplicatie, moet je de `FLASK_APP`-omgevingsvariabele instellen. Gebruik de onderstaande commando's, afhankelijk van je besturingssysteem:
@@ -167,7 +155,6 @@ export FLASK_APP=main.py
 
 ### 5. Start de flask server
 
-#### Methode 1: Via de terminal
 1. Navigeer naar de server map:
    ```bash
    cd .\flask_server\
@@ -178,24 +165,30 @@ export FLASK_APP=main.py
    ```
 De flask server is nu toegankelijk via [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-3. Ga naar de root van de react client folder
+### 6. Start de React Client
+
+1. Ga naar de root van de react client folder
   ```bash
   cd .\react_client\
   ```
-
-4. Start de dev omgeving met
+2. Installeer de packages met:
+  ```bash
+  npm install --legacy-peer-deps
+  ```
+3. Start de dev omgeving met:
   ```bash
   npx expo start
   ```
 
 Wacht to je "Logs for your project will appear below. "
-Druk op W en je browser laat de website zien.
-
+Druk op W en je browser laat de website zien of scan de QR code voor de mobile web versie.
 
 ---
 
 ## ERD
+
 ![WP4_db](https://github.com/user-attachments/assets/2eef0ab2-e3c2-4192-8282-ce8d1652e663)
+
 1. users – Bevat informatie over gebruikers, zoals id, email, display_name, first_name, last_name, password, is_admin, is_public, en is_banned.
 2. badges – Bevat gegevens over badges, zoals id, title, requirement, en image_url.
 3. user_badges – Koppelt gebruikers aan badges met user_id en badge_id.
@@ -211,38 +204,137 @@ Druk op W en je browser laat de website zien.
 
 Je kunt inloggen met het standaard account:
 
-*Student*\
-**Gebruikersnaam:** student@hr.nl
+_Student_\
+**Gebruikersnaam:** student@hr.nl\
 **Wachtwoord:** 1
 
-*Beheerder*\
-**Gebruikersnaam:** admin@hr.nl
+_Admin_\
+**Gebruikersnaam:** admin@hr.nl\
 **Wachtwoord:** 1
+
+Bij het inloggen kun je ook de taal van de pagina wijzigen naar Engels of Nederlands, afhankelijk van je voorkeur.
+
+---
 
 ### Registratiepagina
 
-Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens het registratieproces wordt u gevraagd om de volgende gegevens in te vullen:
-
-- **Persoonlijke gegevens**:
-  - Voornaam
-  - Achternaam
-  - Wachtwoord
-  - E-mailadres
+Op de **Registratiepagina** kunt u een account aanmaken als **Student**. U kunt kiezen in welke taal u de registratiepagina wilt zien: Engels of Nederlands. Tijdens het registratieproces wordt u gevraagd om persoonlijke gegevens in te vullen, zoals uw voornaam, achternaam, gebruikersnaam, e-mailadres (een @hr.nl-adres is verplicht) en wachtwoord. U kunt ook een profielfoto toevoegen (dit is niet verplicht) en aangeven of uw account openbaar of privé moet zijn.
 
 ---
+
+## Navbar
+
+![image](https://github.com/user-attachments/assets/d5991f9c-a6de-4d38-98c6-efc6883a9858)
+
+- **Zoekbalk**  
+  In de zoekbalk kun je zoeken naar woorden in de posttitels of de inhoud van posts.
+
+- **Tag-selectie voor zoekopdracht**  
+  Hier selecteer je de tags die je wilt gebruiken voor de zoekopdracht.
+
+- **Zoekopdracht uitvoeren**  
+  Gebruikt de ingevoerde tekst en de geselecteerde tags om te zoeken naar posts en navigeert naar de postpagina.
+
+- **Profielknop**  
+  Bezoek de profielpagina.
+
+- **Sidebarknop**  
+  Opent de sidebar.
+
+- **Uitlogknop**  
+  Logt uit en gaat terug naar de inlogpagina.
+
+---
+
+## Sidebar
+
+![image](https://github.com/user-attachments/assets/34164654-643c-45e1-b032-12f5c7e59838)
+
+- **Sidebar inklappen**  
+  Deze knop klapt de sidebar terug in.
+
+- **Pagina-knoppen**  
+  Als je op deze knoppen klikt, bezoek je de pagina’s die aan de knoppen gekoppeld zijn.
+
+- **Uitloggen**  
+  Logt uit en gaat terug naar de inlogpagina.
+
+---
+
+## Post Overzicht Pagina
+
+![image](https://github.com/user-attachments/assets/eac24e96-aab7-4326-a48a-5dfa0489d540)
+
+- **Tag-knoppen**  
+  Bezoek de pagina die gelinkt is aan deze specifieke tag.
+
+- **Edit post-knop**  
+  Bewerk de post als jij de eigenaar bent.
+
+- **Upvote**  
+  Geef de post een positieve beoordeling.
+
+- **Downvote**  
+  Geef de post een negatieve beoordeling.
+
+- **Favoriteren**  
+  Voeg deze post toe aan je favorieten.
+
+---
+
+### Create Post pagina
+
+Op de create post pagina kan je een post aanmaken. Tijdens het aanmaken van de post worden om deze gegevens gevraagt.
+
+- **Post data**:
+  - Titel
+  - Content dus de bron zelf
+  - en een tag zodat andere mensen de post makkelijker kunnen vinden
+
+---
+
+### Create tag pagina
+
+Op de create tag pagina kan je een nieuwe tag aanmaken. Tijdens het aanmaken van de tag worden om deze gegevens gevraagt.
+
+- **Tag data**:
+  - De naam van de tag
+  - De kleur van de tag
+
+---
+
+### Eigen post pagina
+
+Op de eigen post pagina kan je alle posts zien die jij hebt gemaakt en kan je de details zien van de post en kan je de post aan passen
+
+---
+
+### Profiel bekijken
+
+Op de profielpagina zie je een overzicht van persoonlijke gegevens, zoals naam, e-mailadres, gebruikersnaam en profielfoto. Daarnaast kun je ook badges en geplaatste posts bekijken, en zien of het account privé of openbaar is. Je kunt niet alleen je eigen profiel bekijken, maar ook de profielen van andere studenten. Als je je eigen profiel bekijkt, zie je bovendien een knop **Bewerken** om je gegevens aan te passen.
+
+---
+
+### Profiel bewerken
+
+Via de profielpagina kun je je gegevens zelf aanpassen. Je kunt je naam, e-mailadres, gebruikersnaam en wachtwoord wijzigen. Ook kun je je profielfoto bijwerken of verwijderen en zelf instellen of je account privé of openbaar is.
+
 ## Overzicht
 
 ### Admin Functies
+
 - Inloggen voor admins
 - Gebruikers blokkeren
 - Admin-accounts toevoegen (moet @hr.nl email gebruiken)
 - Emails blokkeren
 
 ### Student Functies
+
 - Inloggen (vereist @hr.nl email)
 - Registreren (geblokkeerde emails kunnen niet opnieuw worden gebruikt)
 
 ### Gebruiker Functies
+
 - Profiel bijwerken
 - Bronnenoverzicht bijwerken
 - Bron details bekijken
@@ -254,17 +346,33 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens
 - Wachtwoord aanpassen
 
 ### Algemene Functies
+
 - Inloggen vereist om content in de app te bekijken
 - Bronnen bevatten tags
 
+---
+
 ## **Screenshots**
-| **Profiel** | **Overzicht gebruikers** | **Badge popup** | **Overzicht bronnen** |
-|-----------------------|-------------|-----------------|---------------------|
-|<img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200">|<img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200">|<img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200">|<img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200">|
+
+|
+**Profiel** | **Overzicht gebruikers** | **Badge popup** | **Overzicht bronnen** |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| <img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200"> | <img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200"> | <img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200"> | <img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200"> |
 | **Inlog pagina** | **Nieuwe tag** | **Profiel bewerken** | **Nieuwe bron toevoegen** |
-|<img src="https://github.com/user-attachments/assets/48d46bee-c51e-4d98-a1c4-7a50adb61713" width="200">|<img src="https://github.com/user-attachments/assets/30b8b473-f4f6-4588-8b8f-51302177d907" width="200">|<img src="https://github.com/user-attachments/assets/d33baf00-5d1f-4191-8c35-688e43a30bd5" width="200">|<img src="https://github.com/user-attachments/assets/dd1e700f-5cc1-4319-9ac7-08f18c7d5774" width="200">|
+| <img src="https://github.com/user-attachments/assets/48d46bee-c51e-4d98-a1c4-7a50adb61713" width="200"> | <img src="https://github.com/user-attachments/assets/30b8b473-f4f6-4588-8b8f-51302177d907" width="200"> | <img src="https://github.com/user-attachments/assets/d33baf00-5d1f-4191-8c35-688e43a30bd5" width="200"> | <img src="https://github.com/user-attachments/assets/dd1e700f-5cc1-4319-9ac7-08f18c7d5774" width="200"> |
+
+| **Registratie**                                                | **Registratie (2)**                                              | **Profielpagina anderen**                                 |
+| -------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------- |
+| ![Registratie](react_client/assets/images/readme/register.png) | ![Registratie2](react_client/assets/images/readme/register2.png) | ![Profiel](react_client/assets/images/readme/profile.png) |
+
+| **Profiel bewerken**                                            | **Wachtwoord wijzigen**                                       | **Admin registratie**                                          |
+| --------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------- |
+| ![Bewerken](react_client/assets/images/readme/edit_profile.png) | ![Wachtwoord](react_client/assets/images/readme/password.png) | ![Admin](react_client/assets/images/readme/admin_register.png) |
+
+---
 
 ## **Code Bronnen**
+
 - [React useState](https://www.w3schools.com/react/react_usestate.asp)
 - [React useEffect](https://www.w3schools.com/react/react_useeffect.asp)
 - [Object.prototype.toString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString)
@@ -298,4 +406,3 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens
 - [How to pass an array of numbers with TypeScript and React](https://stackoverflow.com/questions/62917259/how-to-pass-an-array-of-numbers-with-typescript-and-react)
 - [React useState Append to Array](https://www.dhiwise.com/post/react-usestate-append-to-array-a-simple-guide)
 - [Platform-Specific Code · React Native](https://reactnative.dev/docs/platform-specific-code)
-
