@@ -258,6 +258,7 @@ Bij het inloggen kun je ook de taal van de pagina wijzigen naar Engels of Nederl
 Op de **Registratiepagina** kunt u een account aanmaken als **Student**. U kunt kiezen in welke taal u de registratiepagina wilt zien: Engels of Nederlands. Tijdens het registratieproces wordt u gevraagd om persoonlijke gegevens in te vullen, zoals uw voornaam, achternaam, gebruikersnaam, e-mailadres (een @hr.nl-adres is verplicht) en wachtwoord. U kunt ook een profielfoto toevoegen (dit is niet verplicht) en aangeven of uw account openbaar of privé moet zijn.
 
 ---
+
 ## Navbar
 
 ![image](https://github.com/user-attachments/assets/d5991f9c-a6de-4d38-98c6-efc6883a9858)
@@ -279,8 +280,11 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. U kunt 
 
 - **Uitlogknop**  
   Logt uit en gaat terug naar de inlogpagina.
+
 ---
+
 ## Sidebar
+
 ![image](https://github.com/user-attachments/assets/34164654-643c-45e1-b032-12f5c7e59838)
 
 - **Sidebar inklappen**  
@@ -291,7 +295,9 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. U kunt 
 
 - **Uitloggen**  
   Logt uit en gaat terug naar de inlogpagina.
+
 ---
+
 ## Post Overzicht Pagina
 
 ![image](https://github.com/user-attachments/assets/eac24e96-aab7-4326-a48a-5dfa0489d540)
@@ -312,6 +318,7 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. U kunt 
   Voeg deze post toe aan je favorieten.
 
 ---
+
 ### Create Post pagina
 
 Op de create post pagina kan je een post aanmaken. Tijdens het aanmaken van de post worden om deze gegevens gevraagt.
@@ -384,31 +391,20 @@ Via de profielpagina kun je je gegevens zelf aanpassen. Je kunt je naam, e-maila
 
 ## **Screenshots**
 
-- **Inlogpagina**  
-  ![Inloggen](react_client/assets/images/readme/login.png)
-
-- **Registratiepagina**  
-  ![Registratie](react_client/assets/images/readme/register.png)
-  ![Registratie](react_client/assets/images/readme/register2.png)
-
-- **Postspagina**  
-  ![Posts](react_client/assets/images/readme/posts.png)
-
-- **Profielpagina anderen**  
-  ![Profielpagina anderen](react_client/assets/images/readme/profile.png)
-
-- **Eigen profiel**  
-  ![Eigen profiel](react_client/assets/images/readme/my_profile.png)
-
-- **Profiel bewerken**  
-  ![Profiel bewerken](react_client/assets/images/readme/edit_profile.png)
-  ![Profiel bewerken](react_client/assets/images/readme/password.png)
-
-| **Profiel**                                                                                             | **Overzicht gebruikers**                                                                                | **Badge popup**                                                                                         | **Overzicht bronnen**                                                                                   |
+|
+**Profiel** | **Overzicht gebruikers** | **Badge popup** | **Overzicht bronnen** |
 | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | <img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200"> | <img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200"> | <img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200"> | <img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200"> |
-| **Inlog pagina**                                                                                        | **Nieuwe tag**                                                                                          | **Profiel bewerken**                                                                                    | **Nieuwe bron toevoegen**                                                                               |
+| **Inlog pagina** | **Nieuwe tag** | **Profiel bewerken** | **Nieuwe bron toevoegen** |
 | <img src="https://github.com/user-attachments/assets/48d46bee-c51e-4d98-a1c4-7a50adb61713" width="200"> | <img src="https://github.com/user-attachments/assets/30b8b473-f4f6-4588-8b8f-51302177d907" width="200"> | <img src="https://github.com/user-attachments/assets/d33baf00-5d1f-4191-8c35-688e43a30bd5" width="200"> | <img src="https://github.com/user-attachments/assets/dd1e700f-5cc1-4319-9ac7-08f18c7d5774" width="200"> |
+
+| **Registratie**                                                | **Registratie (2)**                                              | **Profielpagina anderen**                                 |
+| -------------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------- |
+| ![Registratie](react_client/assets/images/readme/register.png) | ![Registratie2](react_client/assets/images/readme/register2.png) | ![Profiel](react_client/assets/images/readme/profile.png) |
+
+| **Profiel bewerken**                                            | **Wachtwoord wijzigen**                                       | **Admin registratie**                                          |
+| --------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------- |
+| ![Bewerken](react_client/assets/images/readme/edit_profile.png) | ![Wachtwoord](react_client/assets/images/readme/password.png) | ![Admin](react_client/assets/images/readme/admin_register.png) |
 
 ---
 
