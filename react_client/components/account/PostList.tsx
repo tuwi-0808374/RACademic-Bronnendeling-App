@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
+import Markdown, {MarkdownIt} from "react-native-markdown-display";
 
 interface PostListProps {
   posts?: any[];
@@ -15,9 +16,17 @@ const PostList: React.FC<PostListProps> = ({ posts = [], showEdit }) => {
       {posts.map((post) => (
         <View key={post.id} style={styles.postContainer}>
           <Text style={styles.postTitle}>{post.title}</Text>
-          <Text style={styles.postContent} numberOfLines={2}>
-            {post.content}
-          </Text>
+          <View style={styles.postContent}>
+            {/*https://www.npmjs.com/package/react-native-markdown-display*/}
+            <Markdown
+                markdownit={
+                  MarkdownIt({typographer: true}).disable([ 'image' ])
+                }
+            >
+              {post['content']}
+            </Markdown>
+          </View>
+
 
           <View style={styles.postActions}>
             <TouchableOpacity

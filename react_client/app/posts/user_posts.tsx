@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  TextInput,
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
@@ -12,6 +11,7 @@ import {
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { useUser } from "@/constants/get_user_id";
 import { useRouter } from "expo-router";
+import Markdown, {MarkdownIt} from "react-native-markdown-display";
 const API_BASE_URL = getApiBaseUrl();
 
 const COLORS = {
@@ -69,7 +69,16 @@ export default function UserPosts() {
               {postdata.map((post) => (
                 <View key={post["id"]} style={styles.postbox}>
                   <Text style={styles.textTitle}>{post["title"]}</Text>
-                  <Text style={styles.textContent}>{post["content"]}</Text>
+                  <View style={styles.textContent}>
+                    {/*https://www.npmjs.com/package/react-native-markdown-display*/}
+                    <Markdown
+                        markdownit={
+                          MarkdownIt({typographer: true}).disable([ 'image' ])
+                        }
+                    >
+                      {post['content']}
+                    </Markdown>
+                  </View>
 
                   <TouchableOpacity
                     onPress={() =>
