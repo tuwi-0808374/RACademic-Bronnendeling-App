@@ -17,6 +17,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { Ionicons } from "@expo/vector-icons";
 import { UserStatusContext } from "./_layout";
+import LanguageSelector from "../components/account/LanguageSelector";
+import { translations } from "../constants/translations";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -31,9 +33,14 @@ const COLORS = {
   error: "#D32F2F",
 };
 
-const LoginButton = ({ onPress }: { onPress: () => void }) => (
+type LoginButtonProps = {
+  onPress: () => void;
+  text: string;
+};
+
+const LoginButton = ({ onPress, text }: LoginButtonProps) => (
   <TouchableOpacity style={styles.loginButton} onPress={onPress}>
-    <Text style={styles.loginButtonText}>Inloggen</Text>
+    <Text style={styles.loginButtonText}>{text}</Text>
   </TouchableOpacity>
 );
 
@@ -49,6 +56,9 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     if (!email || !password) {
       setErrorMessage("Vul beide velden in!");
+      setErrorMessage(
+        translations[activeLanguage].login.errorMessages.emptyFields
+      );
       return;
     }
 
@@ -91,36 +101,10 @@ const LoginScreen = () => {
       >
         <View style={styles.mainContainer}>
           <View style={styles.innerContainer}>
-            <View style={styles.languageSelector}>
-              <TouchableOpacity onPress={() => setActiveLanguage("EN")}>
-                <Text
-                  style={[
-                    styles.languageText,
-                    activeLanguage === "EN" && styles.languageActiveText,
-                  ]}
-                >
-                  EN
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => setActiveLanguage("NL")}>
-                <View
-                  style={[
-                    styles.languageOption,
-                    activeLanguage === "NL" && styles.languageActiveBackground,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.languageText,
-                      activeLanguage === "NL" && styles.languageActiveText,
-                    ]}
-                  >
-                    NL
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+            <LanguageSelector
+              activeLanguage={activeLanguage}
+              onLanguageChange={setActiveLanguage}
+            />
 
             <Image
               source={require("../assets/images/hr-logo.png")}
@@ -141,7 +125,9 @@ const LoginScreen = () => {
               </View>
               <TextInput
                 style={[styles.input, styles.inputEmail]}
-                placeholder="voorbeeld@hr.nl"
+                placeholder={
+                  translations[activeLanguage].login.emailPlaceholder
+                }
                 placeholderTextColor={COLORS.placeholderText}
                 value={email}
                 onChangeText={setEmail}
@@ -159,7 +145,9 @@ const LoginScreen = () => {
                   color={COLORS.inputLine}
                   style={styles.labelIcon}
                 />
-                <Text style={styles.inputLabel}>WACHTWOORD</Text>
+                <Text style={styles.inputLabel}>
+                  {translations[activeLanguage].login.passwordLabel}
+                </Text>
               </View>
               <View style={styles.passwordContainer}>
                 <TextInput
@@ -195,12 +183,19 @@ const LoginScreen = () => {
               </View>
             )}
 
-            <LoginButton onPress={handleLogin} />
+            <LoginButton
+              onPress={handleLogin}
+              text={translations[activeLanguage].login.loginButton}
+            />
 
             <View style={styles.registerContainer}>
-              <Text style={styles.registerText}>Nog geen account? </Text>
+              <Text style={styles.registerText}>
+                {translations[activeLanguage].login.registerText}
+              </Text>
               <Link href={"/account/register"}>
-                <Text style={styles.registerLink}>Registreren</Text>
+                <Text style={styles.registerLink}>
+                  {translations[activeLanguage].login.registerLink}
+                </Text>
               </Link>
             </View>
           </View>
