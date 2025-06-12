@@ -1,5 +1,7 @@
 # RACademic Bronnendeling App 
 
+https://github.com/user-attachments/assets/9cf357ef-d8aa-48ea-b913-923cf4e123a3
+
 ## Overzicht
 
 De RACademic Bronnendeling App is een platform voor Hogeschool Rotterdam-studenten om studiematerialen zoals video’s, boeken en cursussen te delen en te vinden. Inloggen vereist een @hr.nl e-mail. Gebruikers kunnen bronnen delen, bekijken, beoordelen, favorieten en zoeken met filters. De app, gebouwd met React Native en Docker, werkt als website en mobiele app, met focus op veiligheid en gebruiksvriendelijkheid.
@@ -195,7 +197,7 @@ Druk op W en je browser laat de website zien.
 ---
 
 ## ERD
-![WP4_db](https://github.com/user-attachments/assets/2eef0ab2-e3c2-4192-8282-ce8d1652e663)
+![452901141-2eef0ab2-e3c2-4192-8282-ce8d1652e663](https://github.com/user-attachments/assets/ec88cc18-7469-4dc5-96d7-4ffd634bd8c2)
 1. users – Bevat informatie over gebruikers, zoals id, email, display_name, first_name, last_name, password, is_admin, is_public, en is_banned.
 2. badges – Bevat gegevens over badges, zoals id, title, requirement, en image_url.
 3. user_badges – Koppelt gebruikers aan badges met user_id en badge_id.
@@ -258,11 +260,15 @@ Op de **Registratiepagina** kunt u een account aanmaken als **Student**. Tijdens
 - Bronnen bevatten tags
 
 ## **Screenshots**
-| **Profiel** | **Overzicht gebruikers** | **Badge popup** | **Overzicht bronnen** |
-|-----------------------|-------------|-----------------|---------------------|
-|<img src="https://github.com/user-attachments/assets/fc11621d-8c2d-47e9-ab6d-e29de34d7b8a" width="200">|<img src="https://github.com/user-attachments/assets/32ad4c0b-e2f5-4f87-bcc5-0478a1786191" width="200">|<img src="https://github.com/user-attachments/assets/221ae065-baa6-4488-a342-a187013e604a" width="200">|<img src="https://github.com/user-attachments/assets/9d84ac79-71b8-4ecb-857b-f344c197f656" width="200">|
-| **Inlog pagina** | **Nieuwe tag** | **Profiel bewerken** | **Nieuwe bron toevoegen** |
-|<img src="https://github.com/user-attachments/assets/48d46bee-c51e-4d98-a1c4-7a50adb61713" width="200">|<img src="https://github.com/user-attachments/assets/30b8b473-f4f6-4588-8b8f-51302177d907" width="200">|<img src="https://github.com/user-attachments/assets/d33baf00-5d1f-4191-8c35-688e43a30bd5" width="200">|<img src="https://github.com/user-attachments/assets/dd1e700f-5cc1-4319-9ac7-08f18c7d5774" width="200">|
+
+<img src="https://github.com/user-attachments/assets/c84ee7d7-d5a7-4175-a02d-503db100f07f" alt="Screenshot 1" width="200">
+<img src="https://github.com/user-attachments/assets/171f3104-9895-4f7c-80bb-1bd6ad9a7e7c" alt="Screenshot 2" width="200">
+<img src="https://github.com/user-attachments/assets/047f43c8-ce6d-40bd-a92d-829befe39ca5" alt="Screenshot 3" width="200">
+<img src="https://github.com/user-attachments/assets/a473fbd7-752f-4410-8692-ab12c828c36b" alt="Screenshot 4" width="200">
+<img src="https://github.com/user-attachments/assets/9107c7e2-7863-4c4f-9f32-54d18437c1a9" alt="Screenshot 5" width="200">
+<img src="https://github.com/user-attachments/assets/674ea470-4474-43d0-a859-acbf7cc53434" alt="Screenshot 6" width="200">
+<img src="https://github.com/user-attachments/assets/e3810a2b-651b-4d94-a9bb-86bcb51fcabe" alt="Screenshot 7" width="200">
+<img src="https://github.com/user-attachments/assets/cc92a378-06aa-494e-89da-7ec10962c87f" alt="Screenshot 8" width="200">
 
 ## **Code Bronnen**
 - [React useState](https://www.w3schools.com/react/react_usestate.asp)
