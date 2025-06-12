@@ -252,18 +252,13 @@ const AdminRegisterScreen = () => {
                   </Text>
                 </View>
 
-                <ImageUploader image={image} onImageSelected={setImage} />
+                <ImageUploader
+                  image={image}
+                  onImageSelected={setImage}
+                  activeLanguage={activeLanguage}
+                />
               </View>
-              {image && (
-                <TouchableOpacity
-                  onPress={removeImage}
-                  style={styles.removeImageButton}
-                >
-                  <Text style={styles.removeImageButtonText}>
-                    {translations[activeLanguage].register.removeImageText}
-                  </Text>
-                </TouchableOpacity>
-              )}
+
               <View style={styles.nameInputRow}>
                 <View style={styles.nameInputContainer}>
                   <Text style={styles.inputLabel}>

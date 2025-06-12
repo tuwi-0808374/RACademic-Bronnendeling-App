@@ -2,13 +2,23 @@ import React from "react";
 import { TouchableOpacity, Image, StyleSheet, View, Text } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
+import { translations } from "../../constants/translations";
+
+const COLORS = {
+  black: "#000000",
+};
 
 interface Props {
   image: string | null;
   onImageSelected: (uri: string | null) => void;
+  activeLanguage: "EN" | "NL";
 }
 
-const ImageUploader: React.FC<Props> = ({ image, onImageSelected }) => {
+const ImageUploader: React.FC<Props> = ({
+  image,
+  onImageSelected,
+  activeLanguage,
+}) => {
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -45,8 +55,13 @@ const ImageUploader: React.FC<Props> = ({ image, onImageSelected }) => {
       </TouchableOpacity>
 
       {image && (
-        <TouchableOpacity onPress={removeImage} style={styles.removeButton}>
-          <Text style={styles.removeButtonText}>Verwijder</Text>
+        <TouchableOpacity
+          onPress={removeImage}
+          style={styles.removeImageButton}
+        >
+          <Text style={styles.removeImageButtonText}>
+            {translations[activeLanguage].register.removeImageText}
+          </Text>
         </TouchableOpacity>
       )}
     </View>
@@ -54,6 +69,9 @@ const ImageUploader: React.FC<Props> = ({ image, onImageSelected }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+  },
   image: {
     width: 120,
     height: 120,
@@ -69,18 +87,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 4,
   },
-  removeButton: {
+  removeImageButton: {
     marginTop: 10,
-    padding: 5,
-    backgroundColor: "#C80032",
-    borderRadius: 5,
+    backgroundColor: "#ccc",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    alignSelf: "center",
   },
-  removeButtonText: {
-    color: "white",
-    fontSize: 14,
-  },
-  container: {
-    alignItems: "center",
+  removeImageButtonText: {
+    color: COLORS.black,
+    fontWeight: "bold",
+    fontSize: 12,
   },
 });
 
