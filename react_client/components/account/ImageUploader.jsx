@@ -36,6 +36,9 @@ const ImageUploader: React.FC<Props> = ({
     onImageSelected(null);
   };
 
+  const removeImageText =
+    translations[activeLanguage]?.register?.removeImageText || "Verwijderen";
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={pickImage}>
@@ -59,9 +62,7 @@ const ImageUploader: React.FC<Props> = ({
           onPress={removeImage}
           style={styles.removeImageButton}
         >
-          <Text style={styles.removeImageButtonText}>
-            {translations[activeLanguage].register.removeImageText}
-          </Text>
+          <Text style={styles.removeImageButtonText}>{removeImageText}</Text>
         </TouchableOpacity>
       )}
     </View>
