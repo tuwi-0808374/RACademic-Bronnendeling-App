@@ -510,7 +510,8 @@ export default function EditProfileScreen() {
                     >
                       <Text style={styles.tooltipText}>
                         Je naam en e-mailadres worden niet weergegeven op je
-                        account.
+                        account, maar je gebruikersnaam is wel zichtbaar voor
+                        anderen.
                       </Text>
                     </View>
                   )}
