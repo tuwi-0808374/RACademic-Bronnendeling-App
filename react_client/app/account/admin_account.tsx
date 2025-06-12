@@ -13,12 +13,16 @@ import {
   ScrollView,
   Switch,
 } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import ImageUploader from "../../components/account/ImageUploader";
 import { useDebouncedCallback } from "use-debounce";
 import { getApiBaseUrl } from "../../constants/get_ip";
 import Icon from "react-native-vector-icons/Ionicons";
 import Container from "../../components/general/Container";
+import ErrorMessage from "../../components/general/ErrorMessage";
+import { Ionicons } from "@expo/vector-icons";
+import LanguageSelector from "../../components/account/LanguageSelector";
+import { translations } from "../../constants/translations";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -62,12 +66,14 @@ const AdminRegisterScreen = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [activeLanguage, setActiveLanguage] = useState<"EN" | "NL">("NL");
   const router = useRouter();
   const [AccountPublic, setAccountPublic] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [generalError, setGeneralError] = useState<string>("");
 
   const usernameStatusStyle = [
     styles.usernameStatus,
@@ -147,6 +153,7 @@ const AdminRegisterScreen = () => {
       (!emailStatus.available && email)
     ) {
       console.log("Kies een beschikbare gebruikersnaam en email");
+      setGeneralError("Kies een beschikbare gebruikersnaam en email");
       return;
     }
     if (
@@ -158,10 +165,12 @@ const AdminRegisterScreen = () => {
       !confirmPassword
     ) {
       console.log("Vul alle velden in.");
+      setGeneralError("Vul alle velden in.");
       return;
     }
     if (password !== confirmPassword) {
       console.log("Wachtwoorden komen niet overeen.");
+      setGeneralError("Wachtwoorden komen niet overeen.");
       return;
     }
 
@@ -198,9 +207,13 @@ const AdminRegisterScreen = () => {
 
       const data = await response.json();
       if (response.ok) router.push("/account/user_list");
-      else console.log("Registration failed:", data.error);
+      else {
+        console.log("Registration failed:", data.error);
+        setGeneralError(data.error || "Registratie mislukt");
+      }
     } catch (error) {
       console.log("Error:", error);
+      setGeneralError("Er is een fout opgetreden");
     }
   };
   const removeImage = () => {
@@ -223,37 +236,10 @@ const AdminRegisterScreen = () => {
               >
                 <Icon name="arrow-back" size={24} color={COLORS.text} />
               </TouchableOpacity>
-              <View style={styles.languageSelector}>
-                <TouchableOpacity onPress={() => setActiveLanguage("EN")}>
-                  <Text
-                    style={[
-                      styles.languageText,
-                      activeLanguage === "EN" && styles.languageActiveText,
-                    ]}
-                  >
-                    EN
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setActiveLanguage("NL")}>
-                  <View
-                    style={[
-                      styles.languageOption,
-                      activeLanguage === "NL" &&
-                        styles.languageActiveBackground,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.languageText,
-                        activeLanguage === "NL" && styles.languageActiveText,
-                      ]}
-                    >
-                      NL
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-
+              <LanguageSelector
+                activeLanguage={activeLanguage}
+                onLanguageChange={setActiveLanguage}
+              />
               <View style={styles.logoContainer}>
                 <View style={styles.logoTextContainer}>
                   <Image
@@ -274,16 +260,20 @@ const AdminRegisterScreen = () => {
                   style={styles.removeImageButton}
                 >
                   <Text style={styles.removeImageButtonText}>
-                    Verwijder foto
+                    {translations[activeLanguage].register.removeImageText}
                   </Text>
                 </TouchableOpacity>
               )}
               <View style={styles.nameInputRow}>
                 <View style={styles.nameInputContainer}>
-                  <Text style={styles.inputLabel}>VOORNAAM</Text>
+                  <Text style={styles.inputLabel}>
+                    {translations[activeLanguage].register.firstNameLabel}
+                  </Text>
                   <TextInput
                     style={[styles.input, styles.inputFirstName]}
-                    placeholder="Test"
+                    placeholder={
+                      translations[activeLanguage].register.firstNamePlaceholder
+                    }
                     placeholderTextColor={COLORS.placeholderText}
                     value={firstName}
                     onChangeText={setFirstName}
@@ -292,10 +282,14 @@ const AdminRegisterScreen = () => {
                   />
                 </View>
                 <View style={styles.nameInputContainer}>
-                  <Text style={styles.inputLabel}>ACHTERNAAM</Text>
+                  <Text style={styles.inputLabel}>
+                    {translations[activeLanguage].register.lastNameLabel}
+                  </Text>
                   <TextInput
                     style={[styles.input, styles.inputLastName]}
-                    placeholder="Test"
+                    placeholder={
+                      translations[activeLanguage].register.lastNamePlaceholder
+                    }
                     placeholderTextColor={COLORS.placeholderText}
                     value={lastName}
                     onChangeText={setLastName}
@@ -306,10 +300,14 @@ const AdminRegisterScreen = () => {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>GEBRUIKERSNAAM</Text>
+                <Text style={styles.inputLabel}>
+                  {translations[activeLanguage].register.usernameLabel}
+                </Text>
                 <TextInput
                   style={[styles.input, styles.inputStandard]}
-                  placeholder="test01"
+                  placeholder={
+                    translations[activeLanguage].register.usernamePlaceholder
+                  }
                   placeholderTextColor={COLORS.placeholderText}
                   value={username}
                   onChangeText={handleUsernameChange}
@@ -317,7 +315,7 @@ const AdminRegisterScreen = () => {
                 />
                 {usernameStatus.checking ? (
                   <Text style={usernameStatusStyle}>
-                    Controleren op beschikbaarheid...
+                    {translations[activeLanguage].register.checkingText}
                   </Text>
                 ) : usernameStatus.message ? (
                   <Text style={usernameStatusStyle}>
@@ -342,7 +340,7 @@ const AdminRegisterScreen = () => {
                 />
                 {emailStatus.checking ? (
                   <Text style={emailStatusStyle}>
-                    Controleren op beschikbaarheid...
+                    {translations[activeLanguage].register.checkingText}
                   </Text>
                 ) : emailStatus.message ? (
                   <Text style={emailStatusStyle}>{emailStatus.message}</Text>
@@ -350,23 +348,42 @@ const AdminRegisterScreen = () => {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>WACHTWOORD</Text>
-                <TextInput
-                  style={[styles.input, styles.inputStandard]}
-                  placeholder="********"
-                  placeholderTextColor={COLORS.placeholderText}
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry={true}
-                  selectionColor={COLORS.inputLine}
-                />
+                <Text style={styles.inputLabel}>
+                  {translations[activeLanguage].register.passwordLabel}
+                </Text>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={[styles.input, styles.inputStandard]}
+                    placeholder="********"
+                    placeholderTextColor={COLORS.placeholderText}
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                    selectionColor={COLORS.inputLine}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Ionicons
+                      name={showPassword ? "eye-outline" : "eye-off-outline"}
+                      size={20}
+                      color={COLORS.inputLine}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>BEVESTIG WACHTWOORD</Text>
+                <Text style={styles.inputLabel}>
+                  {translations[activeLanguage].register.confirmPasswordLabel}
+                </Text>
                 <TextInput
                   style={[styles.input, styles.inputStandard]}
-                  placeholder="Bevestig wachtwoord"
+                  placeholder={
+                    translations[activeLanguage].register
+                      .confirmPasswordPlaceholder
+                  }
                   placeholderTextColor={COLORS.placeholderText}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
@@ -374,59 +391,73 @@ const AdminRegisterScreen = () => {
                   selectionColor={COLORS.inputLine}
                 />
               </View>
-              <View style={styles.toggleContainer}>
-                <View style={styles.toggleLabelContainer}>
-                  <TouchableOpacity
-                    style={styles.infoIcon}
-                    onPress={() => {
-                      if (Platform.OS === "web") {
-                        setShowTooltip(!showTooltip);
-                      }
-                    }}
-                    onPressIn={() =>
-                      Platform.OS !== "web" && setShowTooltip(true)
-                    }
-                    onPressOut={() =>
-                      Platform.OS !== "web" && setShowTooltip(false)
-                    }
-                  >
-                    <Icon
-                      name="information-circle-outline"
-                      size={20}
-                      color={COLORS.text}
-                    />
-                  </TouchableOpacity>
-                  {showTooltip && (
-                    <View
-                      style={[
-                        styles.tooltip,
-                        Platform.OS === "web" && styles.tooltipWeb,
-                      ]}
-                    >
-                      <Text style={styles.tooltipText}>
-                        Je naam en e-mailadres worden niet weergegeven op je
-                        account.
-                      </Text>
-                    </View>
-                  )}
-                  <Text style={styles.toggleLabel}>Privéaccount</Text>
-                </View>
-                <Switch
-                  value={AccountPublic}
-                  onValueChange={(value) => setAccountPublic(value)}
-                />
+
+              <View style={styles.togglesContainer}>
                 <View style={styles.toggleContainer}>
                   <View style={styles.toggleLabelContainer}>
-                    <Text style={styles.toggleLabel}>Admin account</Text>
+                    <TouchableOpacity
+                      style={styles.infoIcon}
+                      onPress={() => {
+                        if (Platform.OS === "web") {
+                          setShowTooltip(!showTooltip);
+                        }
+                      }}
+                      onPressIn={() =>
+                        Platform.OS !== "web" && setShowTooltip(true)
+                      }
+                      onPressOut={() =>
+                        Platform.OS !== "web" && setShowTooltip(false)
+                      }
+                    >
+                      <Icon
+                        name="information-circle-outline"
+                        size={20}
+                        color={COLORS.text}
+                      />
+                    </TouchableOpacity>
+                    {showTooltip && (
+                      <View
+                        style={[
+                          styles.tooltip,
+                          Platform.OS === "web" && styles.tooltipWeb,
+                        ]}
+                      >
+                        <Text style={styles.tooltipText}>
+                          {translations[activeLanguage].register.tooltipText}
+                        </Text>
+                      </View>
+                    )}
+
+                    <Text style={styles.toggleLabel}>
+                      {
+                        translations[activeLanguage].register
+                          .privateAccountLabel
+                      }
+                    </Text>
                   </View>
                   <Switch
-                    value={isAdmin}
-                    onValueChange={(value) => setIsAdmin(value)}
+                    value={AccountPublic}
+                    onValueChange={(value) => setAccountPublic(value)}
                   />
+                </View>
+                <View style={styles.toggleWrapper}>
+                  <View style={styles.toggleLabelContainer}>
+                    <Text style={styles.toggleLabel}>
+                      {translations[activeLanguage].register.adminAccountLabel}
+                    </Text>
+                    <Switch
+                      value={isAdmin}
+                      onValueChange={(value) => setIsAdmin(value)}
+                    />
+                  </View>
                 </View>
               </View>
 
-              <PrimaryButton onPress={handleRegister} title="Registreren" />
+              <ErrorMessage message={generalError} type="error" />
+              <PrimaryButton
+                onPress={handleRegister}
+                title={translations[activeLanguage].register.registerButton}
+              />
             </View>
           </Container>
         </ScrollView>
@@ -499,14 +530,12 @@ const styles = StyleSheet.create({
     textAlign: "left",
     marginBottom: 40,
   },
-
   nameInputRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
     marginBottom: 25,
   },
-
   nameInputContainer: {
     width: "48%",
   },
@@ -581,12 +610,10 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 40,
   },
-
   logoTextContainer: {
     flexDirection: "column",
     alignItems: "flex-start",
   },
-
   profileImage: {
     width: 160,
     height: 160,
@@ -601,7 +628,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: "flex-end",
   },
-
   removeImageButtonText: {
     color: COLORS.black,
     fontWeight: "bold",
@@ -623,16 +649,30 @@ const styles = StyleSheet.create({
   backButton: {
     position: "absolute",
     top: 15,
-    left: 40,
+    left: 20,
     zIndex: 1,
   },
-  backToProfileButton: {
-    backgroundColor: COLORS.placeholderText,
-    marginTop: 10,
+  toggleRow: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  toggleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   toggleLabelContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  togglesContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 20,
+  },
+  toggleWrapper: {
+    width: "48%",
   },
   tooltip: {
     position: "absolute",
@@ -655,16 +695,19 @@ const styles = StyleSheet.create({
   infoIcon: {
     paddingRight: 8,
   },
-  toggleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
-    justifyContent: "flex-start",
-  },
   toggleLabel: {
     fontSize: 16,
     marginRight: 20,
   },
+  passwordContainer: {
+    position: "relative",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 0,
+    bottom: 10,
+  },
+  tooltipWeb: {},
 });
 
 export default AdminRegisterScreen;

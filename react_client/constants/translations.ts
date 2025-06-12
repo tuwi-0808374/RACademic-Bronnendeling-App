@@ -32,6 +32,7 @@ export const translations: Record<"NL" | "EN", Translations> = {
         "Je naam en e-mailadres worden niet weergegeven op je account, maar je gebruikersnaam is wel zichtbaar voor anderen.",
       checkingText: "Controleren op beschikbaarheid...",
       errorCheckingText: "Fout bij controleren",
+      adminAccountLabel: "Admin account",
     },
   },
   EN: {
@@ -67,6 +68,7 @@ export const translations: Record<"NL" | "EN", Translations> = {
         "Your name and email will not be displayed on your account, but your username will be visible to others.",
       checkingText: "Checking availability...",
       errorCheckingText: "Error checking",
+      adminAccountLabel: "Admin account",
     },
   },
 };
