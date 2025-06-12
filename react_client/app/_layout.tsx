@@ -28,19 +28,19 @@ export default function Layout() {
   const [userLoggedIn, setUserLoggedIn] = useState<Boolean>(false);
 
   useEffect(() => {
-    fetchUSerProfile();
+    fetchUserProfile();
   }, []);
 
-  const fetchUSerProfile = async () => {
+  const fetchUserProfile = async () => {
     try {
       const token = await AsyncStorage.getItem("authToken");
       if (!token) {
         setUserLoggedIn(false);
-        router.push('/')
-        throw new Error("No token found");
+        router.push('/');
+        console.log("No token found");
+        return;
       }
 
-      
 
       const decoded = jwt_decode<JwtPayload>(token);
       const targetUserId = decoded.user_id;
@@ -89,6 +89,7 @@ export default function Layout() {
                 visible={visible}
                 setVisible={setVisible}
                 handleInsidePress={handleInsidePress}
+                handleClose={handleClose}
                 selectedTags={selectedTags}
                 API_BASE_URL={API_BASE_URL}
                 sideBarState={sideBarState}
@@ -110,14 +111,14 @@ export default function Layout() {
             </TouchableWithoutFeedback>
             {Platform.OS !== 'web' && userLoggedIn ? (
               <View style={styles.bottomBar}>
-                <TouchableOpacity onPress={handleSideBarState}>
-                  <Ionicons name={'menu'} color={'#fff'} size={30} />
-                </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/posts')}>
                   <MaterialIcons name="post-add" size={32} color="black" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => router.push('/account/profile')}>
                   <FontAwesome name="user" size={32} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSideBarState}>
+                  <Ionicons name={'menu'} size={30} color="black" />
                 </TouchableOpacity>
               </View>
             ) : null}
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
   navbarContainer: {
     backgroundColor: 'black',
     width: '100%',
-    height: '9%',
+    height: Platform.OS === "web" ? '9%' : 70,
     elevation: 2,
     zIndex: 2,
     justifyContent: 'center',

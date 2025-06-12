@@ -11,15 +11,18 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import {Ionicons} from '@expo/vector-icons';
-import UserBadges from "../../components/user_badges";
+import { Ionicons } from "@expo/vector-icons";
+import UserBadges from "../../components/badges/user_badges";
 import { getApiBaseUrl } from "@/constants/get_ip";
 import { useFocusEffect } from "expo-router";
+import Container from "../../components/general/Container";
+import PostList from "../../components/account/PostList";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -63,12 +66,16 @@ export default function PublicProfileScreen() {
   const [userId, setUserId] = useState<number | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
-
   const params = useLocalSearchParams();
-  const profileUserId = params.user_id ? parseInt(params.user_id as string) : null;
+  const profileUserId = params.user_id
+    ? parseInt(params.user_id as string)
+    : null;
   const router = useRouter();
   const [isPublic, setIsPublic] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
+
+  const [userPosts, setUserPosts] = useState<any[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -84,7 +91,6 @@ export default function PublicProfileScreen() {
 
       const targetUserId = profileUserId || decoded.user_id;
 
-      
       const response = await fetch(`${API_BASE_URL}/profile/${targetUserId}`, {
         method: "GET",
         headers: {
@@ -100,8 +106,7 @@ export default function PublicProfileScreen() {
           setUserData(userData);
           setIsPublic(userData.is_public === 0);
           setUserName(userData.username || "");
-          
-          // Modified: Only show private info if viewing own profile or profile is public
+
           if (userData.is_public === 0 || targetUserId === decoded.user_id) {
             setFirstName(userData.first_name || "");
             setLastName(userData.last_name || "");
@@ -126,18 +131,52 @@ export default function PublicProfileScreen() {
     }
   };
 
-
   useFocusEffect(
     React.useCallback(() => {
       fetchProfile();
     }, [profileUserId])
   );
 
-  const isOwnProfile = !profileUserId || (userId !== null && profileUserId === userId);
+  const isOwnProfile =
+    !profileUserId || (userId !== null && profileUserId === userId);
 
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  const fetchUserPosts = async () => {
+    setLoadingPosts(true);
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      const targetUserId = profileUserId || userId;
+
+      if (!targetUserId) return;
+
+      const response = await fetch(
+        `${API_BASE_URL}/posts_by_user_id/${targetUserId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserPosts(data.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching user posts:", error);
+    } finally {
+      setLoadingPosts(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userId || profileUserId) {
+      fetchUserPosts();
+    }
+  }, [userId, profileUserId]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -146,93 +185,117 @@ export default function PublicProfileScreen() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingContainer}
       >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          { profileUserId ? (
-              <UserBadges userID={profileUserId} ></UserBadges>
-            ): <UserBadges userID={0} ></UserBadges>}
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          style={{ width: "100%" }}
+        >
           <TouchableWithoutFeedback>
-          <View style={styles.innerContainer}>
-            <View style={styles.profileImageContainer}>
-              {profileImage ? (
-                <Image
-                  source={{ uri: profileImage }}
-                  style={styles.profileImage}
-                />
+            <Container>
+              {profileUserId ? (
+                <View>
+                  <UserBadges userID={profileUserId}></UserBadges>
+                </View>
               ) : (
-                <Image
-                  source={require("../../assets/images/profile.png")}
-                  style={styles.profileImage}
-                />
+                <UserBadges userID={0}></UserBadges>
               )}
-            </View>
+              <View style={styles.innerContainer} pointerEvents="box-none">
+                <View style={styles.profileImageContainer}>
+                  {profileImage ? (
+                    <Image
+                      source={{ uri: profileImage }}
+                      style={styles.profileImage}
+                    />
+                  ) : (
+                    <Image
+                      source={require("../../assets/images/profile.png")}
+                      style={styles.profileImage}
+                    />
+                  )}
+                </View>
 
-            <Text style={styles.logoTitle}>
-              {userId === profileUserId || !profileUserId ? "JOUW PROFIEL" : `PROFIEL VAN ${username}`}
-            </Text>
-
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Ionicons
-                  name="person-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>Naam</Text>
-              </View>
-              {isPublic ? (
-                <Text style={styles.input}>
-                  {first_name} {lastName}
+                <Text style={styles.logoTitle}>
+                  {userId === profileUserId || !profileUserId
+                    ? "JOUW PROFIEL"
+                    : `PROFIEL VAN ${username}`}
                 </Text>
-              ) : (
-                <Text style={styles.input}>Privé account</Text>
-              )}
-            </View>
 
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Ionicons
-                  name="mail-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>E-mail</Text>
-              </View>
-              {isPublic ? (
-                <Text style={styles.input}>{email}</Text>
-              ) : (
-                <Text style={styles.input}>Privé account</Text>
-              )}
-            </View>
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelContainer}>
+                    <Ionicons
+                      name="person-outline"
+                      size={16}
+                      color={COLORS.red}
+                      style={styles.labelIcon}
+                    />
+                    <Text style={styles.inputLabel}>Naam</Text>
+                  </View>
+                  {isPublic || userId === profileUserId || !profileUserId ? (
+                    <Text style={styles.input}>
+                      {first_name} {lastName}
+                    </Text>
+                  ) : (
+                    <Text style={styles.input}>Privé account</Text>
+                  )}
+                </View>
 
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Ionicons
-                  name="at-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>Gebruikersnaam</Text>
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelContainer}>
+                    <Ionicons
+                      name="mail-outline"
+                      size={16}
+                      color={COLORS.red}
+                      style={styles.labelIcon}
+                    />
+                    <Text style={styles.inputLabel}>E-mail</Text>
+                  </View>
+                  {isPublic || userId === profileUserId || !profileUserId ? (
+                    <Text style={styles.input}>{email}</Text>
+                  ) : (
+                    <Text style={styles.input}>Privé account</Text>
+                  )}
+                </View>
+
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelContainer}>
+                    <Ionicons
+                      name="at-outline"
+                      size={16}
+                      color={COLORS.red}
+                      style={styles.labelIcon}
+                    />
+                    <Text style={styles.inputLabel}>Gebruikersnaam</Text>
+                  </View>
+                  <Text style={styles.input}>{username}</Text>
+                </View>
+                {(userId === profileUserId || !profileUserId) && (
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() => router.push("/account/edit_profile")}
+                  >
+                    <Ionicons
+                      name="create-outline"
+                      size={20}
+                      color={COLORS.textLight}
+                      style={styles.buttonIcon}
+                    />
+                    <Text style={styles.actionButtonText}>
+                      Profiel Bewerken
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
-              <Text style={styles.input}>{username}</Text>
-            </View>
-            {(userId === profileUserId || !profileUserId) && (
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => router.push("/account/edit_profile")}
-              >
-                <Ionicons
-                  name="create-outline"
-                  size={20}
-                  color={COLORS.textLight}
-                  style={styles.buttonIcon}
-                />
-                <Text style={styles.actionButtonText}>Profiel Bewerken</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>POSTS</Text>
+                {loadingPosts ? (
+                  <ActivityIndicator size="large" color={COLORS.red} />
+                ) : (
+                  <PostList
+                    posts={userPosts}
+                    showEdit={userId === (profileUserId || userId)}
+                  />
+                )}
+              </View>
+            </Container>
           </TouchableWithoutFeedback>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -250,10 +313,12 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: "center",
+    minHeight: "100%",
   },
   innerContainer: {
-    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
     paddingHorizontal: 30,
     paddingTop: 40,
     paddingBottom: 20,
@@ -270,7 +335,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputGroup: {
-    width: "100%",
+    width: Platform.OS === "web" ? "75%" : "100%",
     marginBottom: 25,
   },
   labelContainer: {
@@ -301,7 +366,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    width: "100%",
+    width: Platform.OS === "web" ? "25%" : "100%",
     alignItems: "center",
     marginTop: 30,
     marginBottom: 30,
@@ -368,5 +433,19 @@ const styles = StyleSheet.create({
   },
   statusUnavailable: {
     color: COLORS.error,
+  },
+  section: {
+    width: "100%",
+    marginTop: 30,
+    paddingHorizontal: 20,
+  },
+  noPostsText: {
+    textAlign: "center",
+    color: COLORS.text,
+    marginVertical: 20,
+  },
+  debugBorder: {
+    borderWidth: 1,
+    borderColor: "red",
   },
 });

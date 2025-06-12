@@ -1,4 +1,4 @@
-# RACademic Bronnendeling App 
+# RACademic Bronnendeling App
 
 ## Overzicht
 
@@ -20,15 +20,15 @@ Wij zijn team **Kiwi** en ons team bestaat uit:
 - Git
 
 ## Installatie
-1. Installeer Docker:
+1. **Installeer Docker**:
    - Download en installeer [Docker Desktop](https://www.docker.com/products/docker-desktop/) voor jouw besturingssysteem en zorg dat het draait.
 
-2. Clone de repository:
+2. **Clone de repository**:
    ```bash
    git clone https://github.com/Rac-Software-Development/wp4-2025-react-1d2-kiwi-wip.git
    cd wp4-2025-react-1d2-kiwi-wip
    ```
-3. Bouw en start de applicatie:
+3. ** Bouw en start de applicatie:
   ```bash
   docker-compose up --build -d
   ```
@@ -37,31 +37,26 @@ Wacht toch het installeren klaar is.
 De app is nu bereikbaar vanaf http://localhost:19006
 En het inlog scherm zou nu moeten verschijnen.
 
-4. Bekijk logs met (optioneel):
+4. Optioneel: Bekijk logs met:
   ```bash
   docker-compose logs -f
   ```
 
-**Voor de mobile versie ga verder met deze stappen:**
+Voor de mobile versie ga verder met deze stappen:
 
-5. Installeer de Expo Go app op android of ios via de playstore
+6. Installeer de Expo Go app op android of ios via de playstore
 
-6. Ga naar de root van de react client folder
+5. Ga naar de root van de react client folder
   ```bash
   cd .\react_client\
   ```
 
-7. Installeer de packages met:
-  ```bash
-  npm install --legacy-peer-deps
-  ```
-
-8. Start de dev omgeving met
+6. Start de dev omgeving met
   ```bash
   npx expo start
   ```
 
-Wacht tot je "Logs for your project will appear below. " ziet en scroll iets naar boven.
+Wacht to je "Logs for your project will appear below. " ziet en scroll iets naar boven.
 Scan de qr code met je telefoon en de website zal te zien zijn op je telefoon.
 (zorg dat je telefoon op dezelfde netwerk is verbonden als je pc)
 
@@ -97,8 +92,8 @@ flask_cors
 Om te beginnen, clonen we de repository naar je lokale machine. Gebruik de volgende opdracht:
 
 ```bash
-git clone https://github.com/Rac-Software-Development/wp4-2025-react-1d2-kiwi-wip.git
-cd wp4-2025-react-1d2-kiwi-wip
+git clone https://github.com/Rac-Software-Development/wp3-2025-rest-1d2-wip.git
+cd wp3-2025-rest-1d2-wip
 ```
 
 ### 2. Maak een virtual environment (venv) aan
@@ -127,11 +122,30 @@ Het gebruik van een virtual environment is aanbevolen om afhankelijkheden van di
 
 ### 3. Installeer afhankelijkheden
 
-#### Installeren met `requirements.txt`
+#### Optie 1: Installeren met `requirements.txt` (Aanbevolen)
 Zorg ervoor dat je virtual environment is geactiveerd. Installeer daarna de afhankelijkheden met:
 ```bash
 pip install -r requirements.txt
 ```
+
+#### Optie 2: Installeren zonder `requirements.txt`
+Als je `requirements.txt` niet wilt gebruiken, installeer je de benodigde libraries handmatig:
+```bash
+bcrypt==4.3.0
+blinker==1.9.0
+click==8.1.8
+colorama==0.4.6
+Flask==3.1.0
+flask-cors==5.0.1
+itsdangerous==2.2.0
+Jinja2==3.1.6
+MarkupSafe==3.0.2
+Werkzeug==3.1.3
+flask_jwt_extended
+flask_cors
+```
+
+---
 
 ### 4. Omgevingsvariabele Instellen
 Om de Flask-applicatie te starten met `main.py` als de hoofdapplicatie, moet je de `FLASK_APP`-omgevingsvariabele instellen. Gebruik de onderstaande commando's, afhankelijk van je besturingssysteem:
@@ -153,6 +167,7 @@ export FLASK_APP=main.py
 
 ### 5. Start de flask server
 
+#### Methode 1: Via de terminal
 1. Navigeer naar de server map:
    ```bash
    cd .\flask_server\
@@ -163,23 +178,18 @@ export FLASK_APP=main.py
    ```
 De flask server is nu toegankelijk via [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-### 6. Start de React Client
-
-1. Ga naar de root van de react client folder
+3. Ga naar de root van de react client folder
   ```bash
   cd .\react_client\
   ```
-2. Installeer de packages met:
-  ```bash
-  npm install --legacy-peer-deps
-  ```
-3. Start de dev omgeving met:
+
+4. Start de dev omgeving met
   ```bash
   npx expo start
   ```
 
 Wacht to je "Logs for your project will appear below. "
-Druk op W en je browser laat de website zien of scan de QR code voor de mobile web versie.
+Druk op W en je browser laat de website zien.
 
 
 ---

@@ -10,12 +10,15 @@ import {
   Platform,
   SafeAreaView,
   StatusBar,
+  Keyboard,
 } from "react-native";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getApiBaseUrl } from "@/constants/get_ip";
-import {Ionicons} from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import { UserStatusContext } from "./_layout";
+import LanguageSelector from "../components/account/LanguageSelector";
+import { translations } from "../constants/translations";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -30,9 +33,14 @@ const COLORS = {
   error: "#D32F2F",
 };
 
-const LoginButton = ({ onPress }: { onPress: () => void }) => (
+type LoginButtonProps = {
+  onPress: () => void;
+  text: string;
+};
+
+const LoginButton = ({ onPress, text }: LoginButtonProps) => (
   <TouchableOpacity style={styles.loginButton} onPress={onPress}>
-    <Text style={styles.loginButtonText}>Inloggen</Text>
+    <Text style={styles.loginButtonText}>{text}</Text>
   </TouchableOpacity>
 );
 
@@ -46,10 +54,11 @@ const LoginScreen = () => {
   const setUserLoggedIn = useContext(UserStatusContext);
 
   const handleLogin = async () => {
-
     if (!email || !password) {
       setErrorMessage("Vul beide velden in!");
-      console.log("Please fill in both fields.");
+      setErrorMessage(
+        translations[activeLanguage].login.errorMessages.emptyFields
+      );
       return;
     }
 
@@ -65,139 +74,130 @@ const LoginScreen = () => {
         }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        const data = await response.json();
         console.log("Login succesvol", data);
         setUserLoggedIn(true);
+
         await AsyncStorage.setItem("authToken", data["access_token"]);
-        router.push("/homepage");
+        router.push("/posts");
       } else {
-        const errorData = await response.json();
-        console.log("Fout bij inloggen:", errorData.message);
+        throw new Error(data.message || "Inloggen mislukt");
       }
     } catch (error) {
-      console.log("Er is een fout opgetreden:", error);
+      setErrorMessage(error.message || "Er is een fout opgetreden");
+      console.error("Login error:", error);
     }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardAvoidingContainer}
       >
-        <View style={styles.innerContainer}>
-          <View style={styles.languageSelector}>
-            <TouchableOpacity onPress={() => setActiveLanguage("EN")}>
-              <Text
-                style={[
-                  styles.languageText,
-                  activeLanguage === "EN" && styles.languageActiveText,
-                ]}
-              >
-                EN
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setActiveLanguage("NL")}>
-              <View
-                style={[
-                  styles.languageOption,
-                  activeLanguage === "NL" && styles.languageActiveBackground,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.languageText,
-                    activeLanguage === "NL" && styles.languageActiveText,
-                  ]}
-                >
-                  NL
+        <View style={styles.mainContainer}>
+          <View style={styles.innerContainer}>
+            <LanguageSelector
+              activeLanguage={activeLanguage}
+              onLanguageChange={setActiveLanguage}
+            />
+
+            <Image
+              source={require("../assets/images/hr-logo.png")}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <Text style={styles.logoTitle}>HOGESCHOOL ROTTERDAM</Text>
+
+            <View style={styles.inputGroup}>
+              <View style={styles.labelContainer}>
+                <Ionicons
+                  name="mail-outline"
+                  size={16}
+                  color={COLORS.red}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>EMAIL</Text>
+              </View>
+              <TextInput
+                style={[styles.input, styles.inputEmail]}
+                placeholder={
+                  translations[activeLanguage].login.emailPlaceholder
+                }
+                placeholderTextColor={COLORS.placeholderText}
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+                selectionColor={COLORS.red}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <View style={styles.labelContainer}>
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={16}
+                  color={COLORS.inputLine}
+                  style={styles.labelIcon}
+                />
+                <Text style={styles.inputLabel}>
+                  {translations[activeLanguage].login.passwordLabel}
                 </Text>
               </View>
-            </TouchableOpacity>
-          </View>
-
-          <Image
-            source={require("../assets/images/hr-logo.png")}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.logoTitle}>HOGESCHOOL ROTTERDAM</Text>
-
-          <View style={styles.inputGroup}>
-            <View style={styles.labelContainer}>
-              <Ionicons
-                name="mail-outline"
-                size={16}
-                color={COLORS.red}
-                style={styles.labelIcon}
-              />
-              <Text style={styles.inputLabel}>EMAIL</Text>
-            </View>
-            <TextInput
-              style={[styles.input, styles.inputEmail]}
-              placeholder="voorbeeld@hr.nl"
-              placeholderTextColor={COLORS.placeholderText}
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              selectionColor={COLORS.red}
-            />
-          </View>
-
-          <View style={styles.inputGroup}>
-            <View style={styles.labelContainer}>
-              <Ionicons
-                name="lock-closed-outline"
-                size={16}
-                color={COLORS.inputLine}
-                style={styles.labelIcon}
-              />
-              <Text style={styles.inputLabel}>WACHTWOORD</Text>
-            </View>
-            <View style={styles.passwordContainer}>
-              <TextInput
-                style={[styles.input, styles.inputPassword]}
-                placeholder="********"
-                placeholderTextColor={COLORS.placeholderText}
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                selectionColor={COLORS.inputLine}
-              />
-              <TouchableOpacity
-                style={styles.eyeIcon}
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                <Ionicons
-                  name={showPassword ? "eye-outline" : "eye-off-outline"}
-                  size={20}
-                  color={COLORS.inputLine}
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={[styles.input, styles.inputPassword]}
+                  placeholder="********"
+                  placeholderTextColor={COLORS.placeholderText}
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  selectionColor={COLORS.inputLine}
                 />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.eyeIcon}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Ionicons
+                    name={showPassword ? "eye-outline" : "eye-off-outline"}
+                    size={20}
+                    color={COLORS.inputLine}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
 
-          {errorMessage && (
-            <View style={styles.errorContainer}>
-              <Ionicons
-                name="alert-circle-outline"
-                size={16}
-                color={COLORS.error}
-              />
-              <Text style={styles.errorText}>{errorMessage}</Text>
+            {errorMessage && (
+              <View style={styles.errorContainer}>
+                <Ionicons
+                  name="alert-circle-outline"
+                  size={16}
+                  color={COLORS.error}
+                />
+                <Text style={styles.errorText}>{errorMessage}</Text>
+              </View>
+            )}
+
+            <LoginButton
+              onPress={handleLogin}
+              text={translations[activeLanguage].login.loginButton}
+            />
+
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>
+                {translations[activeLanguage].login.registerText}
+              </Text>
+              <Link href={"/account/register"}>
+                <Text style={styles.registerLink}>
+                  {translations[activeLanguage].login.registerLink}
+                </Text>
+              </Link>
             </View>
-          )}
-
-          <LoginButton onPress={handleLogin} />
-
-          <View style={styles.registerContainer}>
-            <Text style={styles.registerText}>Nog geen account? </Text>
-            <Link href={"/account/register"}>
-              <Text style={styles.registerLink}>Registreren</Text>
-            </Link>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -208,12 +208,16 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+
     backgroundColor: COLORS.background,
   },
   keyboardAvoidingContainer: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   innerContainer: {
+    width: "100%",
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -259,7 +263,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   inputGroup: {
-    width: "100%",
+    width: Platform.OS === "web" ? "50%" : "100%",
     marginBottom: 35,
   },
   labelContainer: {
@@ -303,7 +307,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    width: "100%",
+    width: Platform.OS === "web" ? "50%" : "100%",
     alignItems: "center",
     marginTop: 20,
     marginBottom: 30,
@@ -343,6 +347,12 @@ const styles = StyleSheet.create({
     color: COLORS.error,
     marginLeft: 5,
     fontSize: 14,
+  },
+  mainContainer: {
+    flex: 1,
+    width: "100%",
+    maxWidth: 900,
+    alignSelf: "center",
   },
 });
 

@@ -23,6 +23,8 @@ import { Switch } from "react-native";
 import { useRouter } from "expo-router";
 import ErrorMessage from "../../components/general/ErrorMessage";
 import Icon from "react-native-vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
+import Container from "../../components/general/Container";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -61,6 +63,8 @@ export default function EditProfileScreen() {
   const [passwordChangeMessageType, setPasswordChangeMessageType] = useState<
     "success" | "error" | ""
   >("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const [saveMessage, setSaveMessage] = useState("");
 
@@ -123,8 +127,6 @@ export default function EditProfileScreen() {
             setUserName(userData.username || "");
             setAccountPublic(!!userData.is_public);
 
-            
-            
             if (userData.profile_image_url) {
               setProfileImage(userData.profile_image_url);
               console.log("Profiel foto URL:", userData.profile_image_url);
@@ -226,13 +228,13 @@ export default function EditProfileScreen() {
         return;
       }
 
-    const formData: any = {
-      first_name,
-      last_name: lastName,
-      email,
-      username,
-      is_public: Boolean(AccountPublic),
-    };
+      const formData: any = {
+        first_name,
+        last_name: lastName,
+        email,
+        username,
+        is_public: Boolean(AccountPublic),
+      };
 
       if (profileImage === null) {
         formData.profile_image = "remove";
@@ -362,270 +364,301 @@ export default function EditProfileScreen() {
         style={styles.keyboardAvoidingContainer}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.innerContainer}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => router.navigate("/account/profile")}
-            >
-              <Icon name="arrow-back" size={24} color={COLORS.text} />
-            </TouchableOpacity>
+          <Container>
+            <View style={styles.innerContainer}>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => router.navigate("/account/profile")}
+              >
+                <Icon name="arrow-back" size={24} color={COLORS.text} />
+              </TouchableOpacity>
 
-            <View style={styles.profileImageContainer}>
-              <ImageUploader
-                image={profileImage}
-                onImageSelected={setProfileImage}
-              />
-            </View>
+              <View style={styles.profileImageContainer}>
+                <ImageUploader
+                  image={profileImage}
+                  onImageSelected={setProfileImage}
+                />
+              </View>
 
-            <Text style={styles.logoTitle}>PROFIEL BEWERKEN</Text>
+              <Text style={styles.logoTitle}>PROFIEL BEWERKEN</Text>
 
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
+              <View style={styles.inputGroup}>
+                <View style={styles.labelContainer}>
+                  <Icon
+                    name="person-outline"
+                    size={16}
+                    color={COLORS.red}
+                    style={styles.labelIcon}
+                  />
+                  <Text style={styles.inputLabel}>Voornaam</Text>
+                </View>
+                <TextInput
+                  value={first_name}
+                  onChangeText={setFirstName}
+                  style={styles.input}
+                  selectionColor={COLORS.red}
+                  placeholderTextColor={COLORS.placeholderText}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <View style={styles.labelContainer}>
+                  <Icon
+                    name="people-outline"
+                    size={16}
+                    color={COLORS.red}
+                    style={styles.labelIcon}
+                  />
+                  <Text style={styles.inputLabel}>Achternaam</Text>
+                </View>
+                <TextInput
+                  value={lastName}
+                  onChangeText={setLastName}
+                  style={styles.input}
+                  selectionColor={COLORS.red}
+                  placeholderTextColor={COLORS.placeholderText}
+                />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <View style={styles.labelContainer}>
+                  <Icon
+                    name="mail-outline"
+                    size={16}
+                    color={COLORS.red}
+                    style={styles.labelIcon}
+                  />
+                  <Text style={styles.inputLabel}>E-mail</Text>
+                </View>
+                <TextInput
+                  value={email}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    debouncedCheckEmail(text);
+                  }}
+                  style={styles.input}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  selectionColor={COLORS.red}
+                  placeholderTextColor={COLORS.placeholderText}
+                />
+                {emailStatus.checking ? (
+                  <Text style={emailStatusStyle}>Controleren...</Text>
+                ) : emailStatus.message ? (
+                  <Text style={emailStatusStyle}>{emailStatus.message}</Text>
+                ) : null}
+              </View>
+
+              <View style={styles.inputGroup}>
+                <View style={styles.labelContainer}>
+                  <Icon
+                    name="at-outline"
+                    size={16}
+                    color={COLORS.red}
+                    style={styles.labelIcon}
+                  />
+                  <Text style={styles.inputLabel}>Gebruikersnaam</Text>
+                </View>
+                <TextInput
+                  value={username}
+                  onChangeText={(text) => {
+                    setUserName(text);
+                    debouncedCheckUsername(text);
+                  }}
+                  style={styles.input}
+                  autoCapitalize="none"
+                  selectionColor={COLORS.red}
+                  placeholderTextColor={COLORS.placeholderText}
+                />
+                {usernameStatus.checking ? (
+                  <Text style={usernameStatusStyle}>Controleren...</Text>
+                ) : usernameStatus.message ? (
+                  <Text style={usernameStatusStyle}>
+                    {usernameStatus.message}
+                  </Text>
+                ) : null}
+              </View>
+
+              <View style={styles.toggleContainer}>
+                <View style={styles.toggleLabelContainer}>
+                  <TouchableOpacity
+                    style={styles.infoIcon}
+                    onPress={() => {
+                      if (Platform.OS === "web") {
+                        setShowTooltip(!showTooltip);
+                      }
+                    }}
+                    onPressIn={() =>
+                      Platform.OS !== "web" && setShowTooltip(true)
+                    }
+                    onPressOut={() =>
+                      Platform.OS !== "web" && setShowTooltip(false)
+                    }
+                  >
+                    <Icon
+                      name="information-circle-outline"
+                      size={20}
+                      color={COLORS.text}
+                    />
+                  </TouchableOpacity>
+                  {showTooltip && (
+                    <View
+                      style={[
+                        styles.tooltip,
+                        Platform.OS === "web" && styles.tooltipWeb,
+                      ]}
+                    >
+                      <Text style={styles.tooltipText}>
+                        Je naam en e-mailadres worden niet weergegeven op je
+                        account.
+                      </Text>
+                    </View>
+                  )}
+                  <Text style={styles.toggleLabel}>Privéaccount</Text>
+                </View>
+                <Switch
+                  value={AccountPublic}
+                  onValueChange={(value) => setAccountPublic(value)}
+                />
+              </View>
+
+              {saveMessage ? (
+                <Text style={styles.saveMessage}>{saveMessage}</Text>
+              ) : null}
+
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={saveProfile}
+              >
+                <Icon
+                  name="save-outline"
+                  size={20}
+                  color={COLORS.textLight}
+                  style={styles.buttonIcon}
+                />
+                <Text style={styles.actionButtonText}>Profiel Opslaan</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.actionButton, styles.backToProfileButton]}
+                onPress={() => router.navigate("/account/profile")}
+              >
                 <Icon
                   name="person-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
+                  size={20}
+                  color={COLORS.textLight}
+                  style={styles.buttonIcon}
                 />
-                <Text style={styles.inputLabel}>Voornaam</Text>
-              </View>
-              <TextInput
-                value={first_name}
-                onChangeText={setFirstName}
-                style={styles.input}
-                selectionColor={COLORS.red}
-                placeholderTextColor={COLORS.placeholderText}
-              />
-            </View>
+                <Text style={styles.actionButtonText}>Terug naar Profiel</Text>
+              </TouchableOpacity>
 
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Icon
-                  name="people-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>Achternaam</Text>
-              </View>
-              <TextInput
-                value={lastName}
-                onChangeText={setLastName}
-                style={styles.input}
-                selectionColor={COLORS.red}
-                placeholderTextColor={COLORS.placeholderText}
-              />
-            </View>
+              <Text style={styles.sectionTitle}>WACHTWOORD WIJZIGEN</Text>
 
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Icon
-                  name="mail-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>E-mail</Text>
-              </View>
-              <TextInput
-                value={email}
-                onChangeText={(text) => {
-                  setEmail(text);
-                  debouncedCheckEmail(text);
-                }}
-                style={styles.input}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                selectionColor={COLORS.red}
-                placeholderTextColor={COLORS.placeholderText}
-              />
-              {emailStatus.checking ? (
-                <Text style={emailStatusStyle}>Controleren...</Text>
-              ) : emailStatus.message ? (
-                <Text style={emailStatusStyle}>{emailStatus.message}</Text>
-              ) : null}
-            </View>
-
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Icon
-                  name="at-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>Gebruikersnaam</Text>
-              </View>
-              <TextInput
-                value={username}
-                onChangeText={(text) => {
-                  setUserName(text);
-                  debouncedCheckUsername(text);
-                }}
-                style={styles.input}
-                autoCapitalize="none"
-                selectionColor={COLORS.red}
-                placeholderTextColor={COLORS.placeholderText}
-              />
-              {usernameStatus.checking ? (
-                <Text style={usernameStatusStyle}>Controleren...</Text>
-              ) : usernameStatus.message ? (
-                <Text style={usernameStatusStyle}>
-                  {usernameStatus.message}
-                </Text>
-              ) : null}
-            </View>
-
-            <View style={styles.toggleContainer}>
-              <View style={styles.toggleLabelContainer}>
-                <TouchableOpacity
-                  style={styles.infoIcon}
-                  onPress={() => {
-                    if (Platform.OS === "web") {
-                      setShowTooltip(!showTooltip);
-                    }
-                  }}
-                  onPressIn={() =>
-                    Platform.OS !== "web" && setShowTooltip(true)
-                  }
-                  onPressOut={() =>
-                    Platform.OS !== "web" && setShowTooltip(false)
-                  }
-                >
+              <View style={styles.inputGroup}>
+                <View style={styles.labelContainer}>
                   <Icon
-                    name="information-circle-outline"
-                    size={20}
-                    color={COLORS.text}
+                    name="lock-closed-outline"
+                    size={16}
+                    color={COLORS.red}
+                    style={styles.labelIcon}
                   />
-                </TouchableOpacity>
-                {showTooltip && (
-                  <View
-                    style={[
-                      styles.tooltip,
-                      Platform.OS === "web" && styles.tooltipWeb,
-                    ]}
+                  <Text style={styles.inputLabel}>Huidig Wachtwoord</Text>
+                </View>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    value={oldPassword}
+                    onChangeText={setOldPassword}
+                    style={styles.input}
+                    secureTextEntry={!showPassword}
+                    selectionColor={COLORS.red}
+                    placeholderTextColor={COLORS.placeholderText}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowPassword(!showPassword)}
                   >
-                    <Text style={styles.tooltipText}>
-                      Je naam en e-mailadres worden niet weergegeven op je
-                      account.
-                    </Text>
-                  </View>
-                )}
-                <Text style={styles.toggleLabel}>Privéaccount</Text>
+                    <Ionicons
+                      name={showPassword ? "eye-outline" : "eye-off-outline"}
+                      size={20}
+                      color={COLORS.inputLine}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-              <Switch
-                value={AccountPublic}
-                onValueChange={(value) => setAccountPublic(value)}
-              />
-            </View>
 
-            {saveMessage ? (
-              <Text style={styles.saveMessage}>{saveMessage}</Text>
-            ) : null}
+              <View style={styles.inputGroup}>
+                <View style={styles.labelContainer}>
+                  <Icon
+                    name="lock-open-outline"
+                    size={16}
+                    color={COLORS.red}
+                    style={styles.labelIcon}
+                  />
+                  <Text style={styles.inputLabel}>Nieuw Wachtwoord</Text>
+                </View>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    value={newPassword}
+                    onChangeText={setNewPassword}
+                    style={styles.input}
+                    secureTextEntry={!showNewPassword}
+                    selectionColor={COLORS.red}
+                    placeholderTextColor={COLORS.placeholderText}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeIcon}
+                    onPress={() => setShowNewPassword(!showNewPassword)}
+                  >
+                    <Ionicons
+                      name={showPassword ? "eye-outline" : "eye-off-outline"}
+                      size={20}
+                      color={COLORS.inputLine}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
 
-            <TouchableOpacity style={styles.actionButton} onPress={saveProfile}>
-              <Icon
-                name="save-outline"
-                size={20}
-                color={COLORS.textLight}
-                style={styles.buttonIcon}
-              />
-              <Text style={styles.actionButtonText}>Profiel Opslaan</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.actionButton, styles.backToProfileButton]}
-              onPress={() => router.navigate("/account/profile")}
-            >
-              <Icon
-                name="person-outline"
-                size={20}
-                color={COLORS.textLight}
-                style={styles.buttonIcon}
-              />
-              <Text style={styles.actionButtonText}>Terug naar Profiel</Text>
-            </TouchableOpacity>
-
-            <Text style={styles.sectionTitle}>WACHTWOORD WIJZIGEN</Text>
-
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Icon
-                  name="lock-closed-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
+              <View style={styles.inputGroup}>
+                <View style={styles.labelContainer}>
+                  <Icon
+                    name="checkmark-done-outline"
+                    size={16}
+                    color={COLORS.red}
+                    style={styles.labelIcon}
+                  />
+                  <Text style={styles.inputLabel}>
+                    Bevestig Nieuw Wachtwoord
+                  </Text>
+                </View>
+                <TextInput
+                  value={confirmNewPassword}
+                  onChangeText={setConfirmNewPassword}
+                  style={styles.input}
+                  secureTextEntry
+                  selectionColor={COLORS.red}
+                  placeholderTextColor={COLORS.placeholderText}
                 />
-                <Text style={styles.inputLabel}>Huidig Wachtwoord</Text>
               </View>
-              <TextInput
-                value={oldPassword}
-                onChangeText={setOldPassword}
-                style={styles.input}
-                secureTextEntry
-                selectionColor={COLORS.red}
-                placeholderTextColor={COLORS.placeholderText}
-              />
-            </View>
 
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
+              <ErrorMessage
+                message={passwordChangeMessage}
+                type={passwordChangeMessageType}
+              />
+
+              <TouchableOpacity
+                style={[styles.actionButton, styles.changePasswordButton]}
+                onPress={handleChangePassword}
+              >
                 <Icon
-                  name="lock-open-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
+                  name="key-outline"
+                  size={20}
+                  color={COLORS.textLight}
+                  style={styles.buttonIcon}
                 />
-                <Text style={styles.inputLabel}>Nieuw Wachtwoord</Text>
-              </View>
-              <TextInput
-                value={newPassword}
-                onChangeText={setNewPassword}
-                style={styles.input}
-                secureTextEntry
-                selectionColor={COLORS.red}
-                placeholderTextColor={COLORS.placeholderText}
-              />
+                <Text style={styles.actionButtonText}>Wachtwoord Wijzigen</Text>
+              </TouchableOpacity>
             </View>
-
-            <View style={styles.inputGroup}>
-              <View style={styles.labelContainer}>
-                <Icon
-                  name="checkmark-done-outline"
-                  size={16}
-                  color={COLORS.red}
-                  style={styles.labelIcon}
-                />
-                <Text style={styles.inputLabel}>Bevestig Nieuw Wachtwoord</Text>
-              </View>
-              <TextInput
-                value={confirmNewPassword}
-                onChangeText={setConfirmNewPassword}
-                style={styles.input}
-                secureTextEntry
-                selectionColor={COLORS.red}
-                placeholderTextColor={COLORS.placeholderText}
-              />
-            </View>
-
-            <ErrorMessage
-              message={passwordChangeMessage}
-              type={passwordChangeMessageType}
-            />
-
-            <TouchableOpacity
-              style={[styles.actionButton, styles.changePasswordButton]}
-              onPress={handleChangePassword}
-            >
-              <Icon
-                name="key-outline"
-                size={20}
-                color={COLORS.textLight}
-                style={styles.buttonIcon}
-              />
-              <Text style={styles.actionButtonText}>Wachtwoord Wijzigen</Text>
-            </TouchableOpacity>
-          </View>
+          </Container>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -799,5 +832,13 @@ const styles = StyleSheet.create({
   },
   tooltipWeb: {
     // hier kan andere styling voor web
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 0,
   },
 });

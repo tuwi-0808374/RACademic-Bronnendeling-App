@@ -3,9 +3,8 @@ import {TextInput, StyleSheet, View, Keyboard, Platform} from 'react-native';
 import { router } from 'expo-router'
 import {Ionicons} from '@expo/vector-icons';
 
-function SearchBar({ visible, setVisible, selectedTags, API_BASE_URL }) {
+function SearchBar({ visible, setVisible, selectedTags }) {
     const [searchQuery, setSearchQuery] = useState('');
-    const [posts, setPosts] = useState({});
 
     const fetchPosts = () => {
         router.push({
@@ -18,16 +17,13 @@ function SearchBar({ visible, setVisible, selectedTags, API_BASE_URL }) {
     };
 
 
-    const handleOnKeyPress = event =>{
-        const key = event.nativeEvent.key
-        if(key ==="Enter"){
-            fetchPosts();
-            setVisible(false);
-            Keyboard.dismiss();
-        }
+    const handleSubmit = () =>{
+        fetchPosts();
+        setVisible(false);
+        Keyboard.dismiss();
     }
 
-    const pressSearch = event =>{
+    const pressSearch = () =>{
         fetchPosts();
         setVisible(false);
         Keyboard.dismiss();
@@ -40,7 +36,7 @@ function SearchBar({ visible, setVisible, selectedTags, API_BASE_URL }) {
                 placeholder="Zoeken..."
                 value={searchQuery}
                 onChangeText={setSearchQuery}
-                onKeyPress={handleOnKeyPress}
+                onSubmitEditing={handleSubmit}
                 onFocus={() => setVisible(true)}
             />
             <Ionicons
@@ -68,7 +64,6 @@ const styles = StyleSheet.create({
     searchBarContainerPhone: {
         width: '50%',
         height: '70%',
-        padding: 5,
         alignSelf: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
