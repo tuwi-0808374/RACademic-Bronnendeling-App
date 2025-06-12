@@ -51,12 +51,17 @@ En het inlog scherm zou nu moeten verschijnen.
   cd .\react_client\
   ```
 
-7. Start de dev omgeving met
+7. Installeer de packages met:
+  ```bash
+  npm install --legacy-peer-deps
+  ```
+
+8. Start de dev omgeving met
   ```bash
   npx expo start
   ```
 
-Wacht to je "Logs for your project will appear below. " ziet en scroll iets naar boven.
+Wacht tot je "Logs for your project will appear below. " ziet en scroll iets naar boven.
 Scan de qr code met je telefoon en de website zal te zien zijn op je telefoon.
 (zorg dat je telefoon op dezelfde netwerk is verbonden als je pc)
 
@@ -164,8 +169,11 @@ De flask server is nu toegankelijk via [http://127.0.0.1:5000](http://127.0.0.1:
   ```bash
   cd .\react_client\
   ```
-
-2. Start de dev omgeving met
+2. Installeer de packages met:
+  ```bash
+  npm install --legacy-peer-deps
+  ```
+3. Start de dev omgeving met:
   ```bash
   npx expo start
   ```
