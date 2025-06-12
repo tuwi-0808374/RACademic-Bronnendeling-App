@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderRadius: 30,
-    width: Platform.OS === "web" ? "25%" : "100%",
+    width: Platform.OS === "web" ? "50%" : "100%",
     alignItems: "center",
     marginTop: 20,
     marginBottom: 30,
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     width: "100%",
-    maxWidth: 650,
+    maxWidth: 900,
     alignSelf: "center",
   },
 });
