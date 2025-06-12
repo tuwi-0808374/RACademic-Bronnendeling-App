@@ -1,16 +1,3 @@
-type Translations = {
-  login: {
-    emailPlaceholder: string;
-    passwordPlaceholder: string;
-    loginButton: string;
-    registerText: string;
-    registerLink: string;
-    errorMessages: {
-      emptyFields: string;
-    };
-  };
-};
-
 export const translations: Record<"NL" | "EN", Translations> = {
   NL: {
     login: {
@@ -18,11 +5,33 @@ export const translations: Record<"NL" | "EN", Translations> = {
       passwordPlaceholder: "********",
       loginButton: "Inloggen",
       registerText: "Nog geen account? ",
-      passwordLabel: "WACHTWOORD",
       registerLink: "Registreren",
       errorMessages: {
         emptyFields: "Vul beide velden in!",
       },
+    },
+    register: {
+      firstNamePlaceholder: "Henk",
+      lastNamePlaceholder: "de Bruin",
+      usernamePlaceholder: "henk122",
+      emailPlaceholder: "voorbeeld@hr.nl",
+      passwordPlaceholder: "********",
+      confirmPasswordPlaceholder: "Bevestig wachtwoord",
+      registerButton: "Registreren",
+      loginText: "Heb je al een account? ",
+      loginLink: "Login",
+      removeImageText: "Verwijder foto",
+      firstNameLabel: "VOORNAAM",
+      lastNameLabel: "ACHTERNAAM",
+      usernameLabel: "GEBRUIKERSNAAM",
+      emailLabel: "EMAIL",
+      passwordLabel: "WACHTWOORD",
+      confirmPasswordLabel: "BEVESTIG WACHTWOORD",
+      privateAccountLabel: "Privéaccount",
+      tooltipText:
+        "Je naam en e-mailadres worden niet weergegeven op je account, maar je gebruikersnaam is wel zichtbaar voor anderen.",
+      checkingText: "Controleren op beschikbaarheid...",
+      errorCheckingText: "Fout bij controleren",
     },
   },
   EN: {
@@ -31,11 +40,33 @@ export const translations: Record<"NL" | "EN", Translations> = {
       passwordPlaceholder: "********",
       loginButton: "Login",
       registerText: "No account yet? ",
-      passwordLabel: "PASSWORD",
       registerLink: "Register",
       errorMessages: {
         emptyFields: "Please fill in both fields!",
       },
+    },
+    register: {
+      firstNamePlaceholder: "Henk",
+      lastNamePlaceholder: "de Bruin",
+      usernamePlaceholder: "henk122",
+      emailPlaceholder: "example@hr.nl",
+      passwordPlaceholder: "********",
+      confirmPasswordPlaceholder: "Confirm password",
+      registerButton: "Register",
+      loginText: "Already have an account? ",
+      loginLink: "Login",
+      removeImageText: "Remove photo",
+      firstNameLabel: "FIRST NAME",
+      lastNameLabel: "LAST NAME",
+      usernameLabel: "USERNAME",
+      emailLabel: "EMAIL",
+      passwordLabel: "PASSWORD",
+      confirmPasswordLabel: "CONFIRM PASSWORD",
+      privateAccountLabel: "Private account",
+      tooltipText:
+        "Your name and email will not be displayed on your account, but your username will be visible to others.",
+      checkingText: "Checking availability...",
+      errorCheckingText: "Error checking",
     },
   },
 };

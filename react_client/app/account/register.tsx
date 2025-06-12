@@ -21,6 +21,8 @@ import Icon from "react-native-vector-icons/Ionicons";
 import Container from "../../components/general/Container";
 import ErrorMessage from "../../components/general/ErrorMessage";
 import { Ionicons } from "@expo/vector-icons";
+import LanguageSelector from "../../components/account/LanguageSelector";
+import { translations } from "../../constants/translations";
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -223,37 +225,10 @@ const RegisterScreen = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Container>
             <View style={styles.innerContainer}>
-              <View style={styles.languageSelector}>
-                <TouchableOpacity onPress={() => setActiveLanguage("EN")}>
-                  <Text
-                    style={[
-                      styles.languageText,
-                      activeLanguage === "EN" && styles.languageActiveText,
-                    ]}
-                  >
-                    EN
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setActiveLanguage("NL")}>
-                  <View
-                    style={[
-                      styles.languageOption,
-                      activeLanguage === "NL" &&
-                        styles.languageActiveBackground,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.languageText,
-                        activeLanguage === "NL" && styles.languageActiveText,
-                      ]}
-                    >
-                      NL
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-
+              <LanguageSelector
+                activeLanguage={activeLanguage}
+                onLanguageChange={setActiveLanguage}
+              />
               <View style={styles.logoContainer}>
                 <View style={styles.logoTextContainer}>
                   <Image
@@ -274,16 +249,21 @@ const RegisterScreen = () => {
                   style={styles.removeImageButton}
                 >
                   <Text style={styles.removeImageButtonText}>
-                    Verwijder foto
+                    {translations[activeLanguage].register.removeImageText}
                   </Text>
                 </TouchableOpacity>
               )}
               <View style={styles.nameInputRow}>
                 <View style={styles.nameInputContainer}>
-                  <Text style={styles.inputLabel}>VOORNAAM</Text>
+                  <Text style={styles.inputLabel}>
+                    {translations[activeLanguage].register.firstNameLabel}
+                  </Text>
+
                   <TextInput
                     style={[styles.input, styles.inputFirstName]}
-                    placeholder="Test"
+                    placeholder={
+                      translations[activeLanguage].register.firstNamePlaceholder
+                    }
                     placeholderTextColor={COLORS.placeholderText}
                     value={firstName}
                     onChangeText={setFirstName}
@@ -292,10 +272,14 @@ const RegisterScreen = () => {
                   />
                 </View>
                 <View style={styles.nameInputContainer}>
-                  <Text style={styles.inputLabel}>ACHTERNAAM</Text>
+                  <Text style={styles.inputLabel}>
+                    {translations[activeLanguage].register.lastNameLabel}
+                  </Text>
                   <TextInput
                     style={[styles.input, styles.inputLastName]}
-                    placeholder="Test"
+                    placeholder={
+                      translations[activeLanguage].register.lastNamePlaceholder
+                    }
                     placeholderTextColor={COLORS.placeholderText}
                     value={lastName}
                     onChangeText={setLastName}
@@ -304,12 +288,15 @@ const RegisterScreen = () => {
                   />
                 </View>
               </View>
-
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>GEBRUIKERSNAAM</Text>
+                <Text style={styles.inputLabel}>
+                  {translations[activeLanguage].register.usernameLabel}
+                </Text>
                 <TextInput
                   style={[styles.input, styles.inputStandard]}
-                  placeholder="test01"
+                  placeholder={
+                    translations[activeLanguage].register.usernamePlaceholder
+                  }
                   placeholderTextColor={COLORS.placeholderText}
                   value={username}
                   onChangeText={handleUsernameChange}
@@ -317,15 +304,10 @@ const RegisterScreen = () => {
                 />
                 {usernameStatus.checking ? (
                   <Text style={usernameStatusStyle}>
-                    Controleren op beschikbaarheid...
-                  </Text>
-                ) : usernameStatus.message ? (
-                  <Text style={usernameStatusStyle}>
-                    {usernameStatus.message}
+                    {translations[activeLanguage].register.checkingText}
                   </Text>
                 ) : null}
               </View>
-
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>EMAIL</Text>
                 <TextInput
@@ -348,9 +330,10 @@ const RegisterScreen = () => {
                   <Text style={emailStatusStyle}>{emailStatus.message}</Text>
                 ) : null}
               </View>
-
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>WACHTWOORD</Text>
+                <Text style={styles.inputLabel}>
+                  {translations[activeLanguage].register.passwordLabel}
+                </Text>
                 <View style={styles.passwordContainer}>
                   <TextInput
                     style={[styles.input, styles.inputStandard]}
@@ -373,12 +356,16 @@ const RegisterScreen = () => {
                   </TouchableOpacity>
                 </View>
               </View>
-
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>BEVESTIG WACHTWOORD</Text>
+                <Text style={styles.inputLabel}>
+                  {translations[activeLanguage].register.confirmPasswordLabel}
+                </Text>
                 <TextInput
                   style={[styles.input, styles.inputStandard]}
-                  placeholder="Bevestig wachtwoord"
+                  placeholder={
+                    translations[activeLanguage].register
+                      .confirmPasswordPlaceholder
+                  }
                   placeholderTextColor={COLORS.placeholderText}
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
@@ -416,12 +403,14 @@ const RegisterScreen = () => {
                       ]}
                     >
                       <Text style={styles.tooltipText}>
-                        Je naam en e-mailadres worden niet weergegeven op je
-                        account.
+                        {translations[activeLanguage].register.tooltipText}
                       </Text>
                     </View>
                   )}
-                  <Text style={styles.toggleLabel}>Privéaccount</Text>
+
+                  <Text style={styles.toggleLabel}>
+                    {translations[activeLanguage].register.privateAccountLabel}
+                  </Text>
                 </View>
                 <Switch
                   value={AccountPublic}
@@ -429,13 +418,18 @@ const RegisterScreen = () => {
                 />
               </View>
               <ErrorMessage message={generalError} type="error" />
-
-              <PrimaryButton onPress={handleRegister} title="Registreren" />
-
+              <PrimaryButton
+                onPress={handleRegister}
+                title={translations[activeLanguage].register.registerButton}
+              />
               <View style={styles.loginContainer}>
-                <Text style={styles.loginText}>Heb je al een account? </Text>
+                <Text style={styles.loginText}>
+                  {translations[activeLanguage].register.loginText}
+                </Text>
                 <TouchableOpacity onPress={() => router.navigate("/")}>
-                  <Text style={styles.loginLink}>Login</Text>
+                  <Text style={styles.loginLink}>
+                    {translations[activeLanguage].register.loginLink}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
