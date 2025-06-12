@@ -99,7 +99,10 @@ const RegisterScreen = () => {
     fetch(`${API_BASE_URL}/check_username`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({
+        username,
+        current_user_id: null,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -111,7 +114,10 @@ const RegisterScreen = () => {
       })
       .catch((error) => {
         console.error("Error checking username:", error);
-        setUsernameStatus({ checking: false, message: "Fout bij controleren" });
+        setUsernameStatus({
+          checking: false,
+          message: "Fout bij controleren",
+        });
       });
   }, 900);
 
@@ -300,6 +306,10 @@ const RegisterScreen = () => {
                 {usernameStatus.checking ? (
                   <Text style={usernameStatusStyle}>
                     {translations[activeLanguage].register.checkingText}
+                  </Text>
+                ) : usernameStatus.message ? (
+                  <Text style={usernameStatusStyle}>
+                    {usernameStatus.message}
                   </Text>
                 ) : null}
               </View>
