@@ -5,6 +5,7 @@ WORKDIR /flask_server
 COPY ./ /flask_server/
 
 RUN pip install -r requirements.txt
+RUN mkdir -p databases
 RUN python3 lib/databasegenerator.py
 
 ENV FLASK_APP=main.py
