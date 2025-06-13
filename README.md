@@ -17,59 +17,63 @@ Wij zijn team **Kiwi** en ons team bestaat uit:
 
 # Installatie met Docker
 
-### Software
-- Docker
-- Git
-
-## Installatie
-1. Installeer Docker:
-   - Download en installeer [Docker Desktop](https://www.docker.com/products/docker-desktop/) voor jouw besturingssysteem en zorg dat het draait.
+1. Installatie programma's
+   - Download en installeer Docker Desktop https://www.docker.com/products/docker-desktop/ voor jouw besturingssysteem en zorg dat het draait.
+   - Download en installeer NodeJS https://nodejs.org/en
+   - Download en installeer NPM https://www.npmjs.com/
+   - Installeer de Expo Go app op android of ios via de playstore
 
 2. Clone de repository:
    ```bash
    git clone https://github.com/Rac-Software-Development/wp4-2025-react-1d2-kiwi-wip.git
    cd wp4-2025-react-1d2-kiwi-wip
    ```
-3. Bouw en start de applicatie:
+3. Bouw en start de app:
   ```bash
   docker-compose up --build -d
   ```
 
-Wacht toch het installeren klaar is.
-De app is nu bereikbaar vanaf http://localhost:19006
-En het inlog scherm zou nu moeten verschijnen.
+Wacht toch het installeren klaar is, dit kan even duren.
 
 4. Bekijk logs met (optioneel):
   ```bash
   docker-compose logs -f
   ```
 
-**Voor de mobile versie ga verder met deze stappen:**
-
-5. Installeer de Expo Go app op android of ios via de playstore
-
-6. Ga naar de root van de react client folder
+5. Ga naar de root van de react client folder
   ```bash
   cd .\react_client\
   ```
 
-7. Installeer de packages met:
+6. Installeer de packages met:
   ```bash
   npm install --legacy-peer-deps
   ```
 
-8. Start de dev omgeving met
+7. Start de dev omgeving met
   ```bash
   npx expo start
   ```
 
 Wacht tot je "Logs for your project will appear below. " ziet en scroll iets naar boven.
 Scan de qr code met je telefoon en de website zal te zien zijn op je telefoon.
+Of druk op W en de app opent zich in de browser.
 (zorg dat je telefoon op dezelfde netwerk is verbonden als je pc)
+
+Troubleshoot:
+Krijg je problemen met packages probeer dit
+  ```bash
+  npm install --force
+  ```
+En start opnieuw:
+  ```bash
+  npx expo start
+  ```
+
 
 # Installatie zonder Docker
 ### 1. Software en versievereisten
-Voor het uitvoeren van dit project zijn de volgende vereisten van toepassing:
+Installeer en run alles van stap 1 van, installatie met docker.
 
 - **Python-versie:** 3.x
 - **Git**
