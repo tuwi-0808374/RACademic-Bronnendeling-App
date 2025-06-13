@@ -35,22 +35,17 @@ Wij zijn team **Kiwi** en ons team bestaat uit:
 
 Wacht toch het installeren klaar is, dit kan even duren.
 
-4. Bekijk logs met (optioneel):
-  ```bash
-  docker-compose logs -f
-  ```
-
-5. Ga naar de root van de react client folder
+4. Ga naar de root van de react client folder
   ```bash
   cd .\react_client\
   ```
 
-6. Installeer de packages met:
+5. Installeer de packages met:
   ```bash
   npm install --legacy-peer-deps
   ```
 
-7. Start de dev omgeving met
+6. Start de dev omgeving met
   ```bash
   npx expo start
   ```
